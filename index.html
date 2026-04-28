@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scheduly — 智慧排班系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f11;
+  --surface: #17171a;
+  --surface2: #1e1e22;
+  --surface3: #26262b;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.14);
+  --text: #f0f0f2;
+  --text-muted: #7a7a88;
+  --text-dim: #4a4a56;
+  --accent: #6ee7b7;
+  --accent-dim: rgba(110,231,183,0.12);
+  --accent-text: #065f46;
+  --blue: #93c5fd;
+  --blue-dim: rgba(147,197,253,0.12);
+  --purple: #c4b5fd;
+  --purple-dim: rgba(196,181,253,0.12);
+  --amber: #fcd34d;
+  --amber-dim: rgba(252,211,77,0.12);
+  --red: #fca5a5;
+  --red-dim: rgba(252,165,165,0.12);
+  --radius: 10px;
+  --radius-lg: 16px;
+  --font: 'Noto Sans TC', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Layout ── */
+.app { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 0.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.logo-text {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.logo-text span { color: var(--accent); }
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  padding: 0 0.5rem;
+  margin-bottom: 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+  font-size: 13px;
+  user-select: none;
+}
+
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: var(--accent-dim); color: var(--accent); }
+.nav-item .icon { width: 16px; text-align: center; font-size: 14px; }
+
+.nav-spacer { flex: 1; }
+
+/* Plan badge */
+.plan-badge {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-top: 1rem;
+}
+
+.plan-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.plan-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.upgrade-btn {
+  width: 100%;
+  padding: 7px;
+  background: var(--accent);
+  color: #0a2e20;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.upgrade-btn:hover { opacity: 0.85; }
+
+/* ── Main ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Topbar ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+
+.page-title { font-size: 16px; font-weight: 500; }
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 6px;
+}
+
+.week-nav button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+
+.week-nav button:hover { background: var(--surface3); color: var(--text); }
+
+.week-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  min-width: 130px;
+  text-align: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  font-family: var(--font);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border-hover);
+  color: var(--text-muted);
+}
+
+.btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #0a2e20;
+  font-weight: 700;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+
+/* ── Content ── */
+.content { flex: 1; padding: 1.5rem; overflow-y: auto; }
+
+/* ── Stats row ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+}
+
+.stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.3px; }
+.stat-val { font-size: 26px; font-weight: 500; font-family: var(--mono); }
+.stat-val.green { color: var(--accent); }
+.stat-val.blue { color: var(--blue); }
+.stat-val.amber { color: var(--amber); }
+.stat-val.red { color: var(--red); }
+.stat-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+/* ── Schedule table ── */
+.table-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.table-title { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+
+.filter-pills { display: flex; gap: 6px; }
+
+.pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  font-family: var(--font);
+}
+
+.pill.active, .pill:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.sched-table { width: 100%; border-collapse: collapse; }
+
+.sched-table th {
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.sched-table th.day-th { text-align: center; }
+
+.sched-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.sched-table tr:last-child td { border-bottom: none; }
+.sched-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+.emp-cell { display: flex; align-items: center; gap: 10px; }
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.emp-info .name { font-size: 13px; font-weight: 500; }
+.emp-info .role { font-size: 11px; color: var(--text-muted); }
+
+.shift-cell { text-align: center; }
+
+.shift-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 26px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: var(--mono);
+  transition: all 0.15s;
+  position: relative;
+}
+
+.shift-tag:hover { filter: brightness(1.2); transform: scale(1.05); }
+
+.s-morning { background: rgba(110,231,183,0.15); color: var(--accent); }
+.s-evening { background: var(--blue-dim); color: var(--blue); }
+.s-night { background: var(--purple-dim); color: var(--purple); }
+.s-off { background: var(--surface3); color: var(--text-dim); }
+
+.total-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: var(--mono);
+  background: var(--surface3);
+  color: var(--text-muted);
+}
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+
+.leg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+}
+
+/* ── Locked overlay ── */
+.locked-section {
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.locked-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  filter: blur(2px);
+  pointer-events: none;
+  opacity: 0.4;
+  height: 200px;
+}
+
+.lock-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  z-index: 10;
+  background: rgba(15,15,17,0.6);
+  border-radius: var(--radius-lg);
+  border: 1px dashed rgba(252,211,77,0.3);
+}
+
+.lock-icon { font-size: 28px; }
+.lock-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.lock-desc { font-size: 12px; color: var(--text-muted); }
+.lock-badge {
+  padding: 3px 12px;
+  background: var(--amber-dim);
+  color: var(--amber);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  width: 400px;
+  max-width: 90vw;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+.plan-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+
+.plan-option {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.plan-option:hover, .plan-option.selected { border-color: var(--accent); background: var(--accent-dim); }
+.plan-option.popular { border-color: var(--amber); }
+
+.plan-option-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.plan-option-name { font-size: 14px; font-weight: 600; }
+.plan-price { font-size: 13px; font-family: var(--mono); color: var(--accent); }
+.plan-features { font-size: 11px; color: var(--text-muted); }
+
+.popular-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--amber-dim);
+  color: var(--amber);
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--surface2);
+  border: 1px solid var(--border-hover);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text);
+  z-index: 200;
+  transform: translateY(60px);
+  opacity: 0;
+  transition: all 0.25s ease;
+  max-width: 280px;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── View: dashboard ── */
+#view-dashboard { display: block; }
+#view-schedule { display: none; }
+#view-report { display: none; }
+#view-staff { display: none; }
+
+/* ── Fade in ── */
+.fade-in {
+  animation: fadeIn 0.3s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">📅</div>
+      <div class="logo-text">Sched<span>uly</span></div>
+    </div>
+
+    <div class="nav-label">主選單</div>
+    <div class="nav-item active" onclick="navigate('dashboard', this)">
+      <span class="icon">⊞</span> 總覽
+    </div>
+    <div class="nav-item" onclick="navigate('schedule', this)">
+      <span class="icon">◫</span> 排班表
+    </div>
+    <div class="nav-item" onclick="navigate('staff', this)">
+      <span class="icon">◉</span> 員工管理
+    </div>
+    <div class="nav-item locked-nav" onclick="showUpgrade()">
+      <span class="icon">🔒</span> 報表分析 <span style="font-size:10px;margin-left:auto;color:var(--amber)">Pro</span>
+    </div>
+    <div class="nav-item locked-nav" onclick="showUpgrade()">
+      <span class="icon">🔒</span> 通知設定 <span style="font-size:10px;margin-left:auto;color:var(--amber)">Pro</span>
+    </div>
+
+    <div class="nav-spacer"></div>
+
+    <div class="plan-badge">
+      <div class="plan-name">Free 方案</div>
+      <div class="plan-desc">5 位員工・基本排班<br>升級解鎖更多功能</div>
+      <button class="upgrade-btn" onclick="showUpgrade()">升級 Pro ↑</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="page-title" id="page-title">總覽</div>
+        <div class="week-nav">
+          <button onclick="changeWeek(-1)">←</button>
+          <span class="week-label" id="week-label">–</span>
+          <button onclick="changeWeek(1)">→</button>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost" onclick="exportCSV()">↓ 匯出 CSV</button>
+        <button class="btn btn-primary" onclick="showAddStaff()">+ 新增員工</button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Dashboard view -->
+      <div id="view-dashboard" class="fade-in">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">本週員工</div>
+            <div class="stat-val green" id="d-emp">6</div>
+            <div class="stat-sub">上限 5（Free）</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">排定班次</div>
+            <div class="stat-val blue" id="d-shifts">—</div>
+            <div class="stat-sub">7 天合計</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">未排人次</div>
+            <div class="stat-val amber" id="d-off">—</div>
+            <div class="stat-sub">休假天數</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">覆蓋率</div>
+            <div class="stat-val red" id="d-cover">—</div>
+            <div class="stat-sub">早+晚+夜 / 總班</div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+          <div class="table-toolbar">
+            <span class="table-title">本週班表</span>
+            <div class="filter-pills">
+              <button class="pill active" onclick="filterShift('all', this)">全部</button>
+              <button class="pill" onclick="filterShift('morning', this)">早班</button>
+              <button class="pill" onclick="filterShift('evening', this)">晚班</button>
+              <button class="pill" onclick="filterShift('night', this)">夜班</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="sched-table">
+              <thead>
+                <tr>
+                  <th style="width:160px">員工</th>
+                  <th class="day-th" id="th0"></th>
+                  <th class="day-th" id="th1"></th>
+                  <th class="day-th" id="th2"></th>
+                  <th class="day-th" id="th3"></th>
+                  <th class="day-th" id="th4"></th>
+                  <th class="day-th" id="th5"></th>
+                  <th class="day-th" id="th6"></th>
+                  <th style="text-align:center;width:60px">班次</th>
+                </tr>
+              </thead>
+              <tbody id="sched-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(110,231,183,0.5)"></div>早班 08:00–16:00</div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(147,197,253,0.5)"></div>晚班 16:00–24:00</div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(196,181,253,0.5)"></div>夜班 00:00–08:00</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#26262b"></div>休假</div>
+        </div>
+
+        <!-- Locked: analytics -->
+        <div class="locked-section">
+          <div class="locked-card"></div>
+          <div class="lock-overlay" onclick="showUpgrade()">
+            <div class="lock-icon">📊</div>
+            <div class="lock-title">員工出勤報表</div>
+            <div class="lock-desc">查看加班時數、換班紀錄、月度統計</div>
+            <div class="lock-badge">升級 Pro 解鎖</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule view -->
+      <div id="view-schedule" style="display:none" class="fade-in">
+        <div class="table-card">
+          <div class="table-toolbar">
+            <span class="table-title">完整排班管理</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="sched-table">
+              <thead>
+                <tr>
+                  <th style="width:160px">員工</th>
+                  <th class="day-th" id="sth0"></th>
+                  <th class="day-th" id="sth1"></th>
+                  <th class="day-th" id="sth2"></th>
+                  <th class="day-th" id="sth3"></th>
+                  <th class="day-th" id="sth4"></th>
+                  <th class="day-th" id="sth5"></th>
+                  <th class="day-th" id="sth6"></th>
+                  <th style="text-align:center;width:60px">班次</th>
+                </tr>
+              </thead>
+              <tbody id="sched-tbody2"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Staff view -->
+      <div id="view-staff" style="display:none" class="fade-in">
+        <div class="table-card">
+          <div class="table-toolbar">
+            <span class="table-title">員工名單（Free：上限 5 人）</span>
+            <button class="btn btn-primary" onclick="showAddStaff()">+ 新增員工</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="sched-table">
+              <thead>
+                <tr>
+                  <th>員工</th>
+                  <th>職位</th>
+                  <th>本週班次</th>
+                  <th>狀態</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="staff-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="locked-section" style="margin-top:1rem">
+          <div class="locked-card"></div>
+          <div class="lock-overlay" onclick="showUpgrade()">
+            <div class="lock-icon">👥</div>
+            <div class="lock-title">無限員工人數</div>
+            <div class="lock-desc">Free 方案限制 5 人，Pro 無上限</div>
+            <div class="lock-badge">升級 Pro 解鎖</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<!-- Upgrade Modal -->
+<div class="modal-overlay" id="upgrade-modal">
+  <div class="modal">
+    <div class="modal-title">升級方案</div>
+    <div class="modal-sub">解鎖進階功能，讓排班更有效率</div>
+    <div class="plan-options">
+      <div class="plan-option" onclick="selectPlan(this, 'free')">
+        <div class="plan-option-top">
+          <div class="plan-option-name">Free</div>
+          <div class="plan-price">NT$0 / 月</div>
+        </div>
+        <div class="plan-features">5 位員工・基本排班・CSV 匯出</div>
+      </div>
+      <div class="plan-option popular" onclick="selectPlan(this, 'pro')">
+        <div class="plan-option-top">
+          <div class="plan-option-name">Pro <span class="popular-tag">推薦</span></div>
+          <div class="plan-price">NT$499 / 月</div>
+        </div>
+        <div class="plan-features">無限員工・報表分析・通知功能・換班申請・優先客服</div>
+      </div>
+      <div class="plan-option" onclick="selectPlan(this, 'team')">
+        <div class="plan-option-top">
+          <div class="plan-option-name">Team</div>
+          <div class="plan-price">NT$1,299 / 月</div>
+        </div>
+        <div class="plan-features">多分店管理・跨店調度・API 整合・專屬 AM</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="closeModal(); showToast('功能開發中，感謝您的支持！')">立即升級</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Staff Modal -->
+<div class="modal-overlay" id="add-staff-modal">
+  <div class="modal">
+    <div class="modal-title">新增員工</div>
+    <div class="modal-sub" id="add-staff-desc">填寫基本資訊</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:1.5rem" id="add-staff-form">
+      <div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">姓名</div>
+        <input id="new-name" type="text" placeholder="例：王大明" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none">
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">職位</div>
+        <select id="new-role" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none">
+          <option>全職</option>
+          <option>兼職</option>
+          <option>店長</option>
+          <option>工讀生</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAddStaff()">取消</button>
+      <button class="btn btn-primary" onclick="addStaff()">確認新增</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Mock Data ──
+const PLAN = 'free'; // 'free' | 'pro' | 'team'
+const FREE_LIMIT = 5;
+const DAYS = ['一','二','三','四','五','六','日'];
+const SHIFTS = ['早','晚','夜','休'];
+const SHIFT_CLASSES = ['s-morning','s-evening','s-night','s-off'];
+const SHIFT_LABELS = ['早 08-16','晚 16-24','夜 00-08','休'];
+
+const AVATAR_COLORS = [
+  ['rgba(110,231,183,0.2)','#6ee7b7'],
+  ['rgba(147,197,253,0.2)','#93c5fd'],
+  ['rgba(196,181,253,0.2)','#c4b5fd'],
+  ['rgba(252,211,77,0.2)','#fcd34d'],
+  ['rgba(252,165,165,0.2)','#fca5a5'],
+  ['rgba(110,231,183,0.15)','#34d399'],
+  ['rgba(253,186,116,0.2)','#fb923c'],
+];
+
+let employees = [
+  { id:1, name:'林小玲', role:'店長', initials:'林' },
+  { id:2, name:'張志明', role:'全職', initials:'張' },
+  { id:3, name:'陳美慧', role:'全職', initials:'陳' },
+  { id:4, name:'王大偉', role:'兼職', initials:'王' },
+  { id:5, name:'李思穎', role:'兼職', initials:'李' },
+  { id:6, name:'吳俊宏', role:'全職', initials:'吳' },
+];
+
+// schedules[empId][dayIndex] = shiftIndex
+let schedules = {
+  1: [0,0,1,0,0,3,3],
+  2: [0,1,2,0,1,3,0],
+  3: [3,0,0,1,0,0,2],
+  4: [1,3,0,0,1,2,3],
+  5: [0,0,3,1,0,1,0],
+  6: [2,0,0,0,1,0,1],
+};
+
+let weekOffset = 0;
+let currentFilter = 'all';
+let currentView = 'dashboard';
+
+// ── Week helpers ──
+function getWeekStart(offset = 0) {
+  const now = new Date();
+  const day = now.getDay();
+  const mon = new Date(now);
+  mon.setDate(now.getDate() - (day === 0 ? 6 : day - 1) + offset * 7);
+  mon.setHours(0,0,0,0);
+  return mon;
+}
+
+function fmt(d) { return `${d.getMonth()+1}/${d.getDate()}`; }
+
+function updateWeekLabel() {
+  const mon = getWeekStart(weekOffset);
+  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  document.getElementById('week-label').textContent = `${fmt(mon)} – ${fmt(sun)}`;
+}
+
+function updateHeaders(prefix = '') {
+  const mon = getWeekStart(weekOffset);
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon); d.setDate(mon.getDate() + i);
+    const isToday = new Date().toDateString() === d.toDateString();
+    const el = document.getElementById((prefix || '') + 'th' + i);
+    if (!el) continue;
+    const color = isToday ? 'var(--accent)' : 'var(--text-dim)';
+    el.innerHTML = `<span style="display:block;font-size:11px;color:${color}">${DAYS[i]}</span><span style="font-size:11px">${fmt(d)}</span>`;
+  }
+}
+
+function changeWeek(dir) {
+  weekOffset += dir;
+  updateWeekLabel();
+  updateHeaders();
+  updateHeaders('s');
+  renderTable();
+  renderTable2();
+  renderStats();
+}
+
+// ── Stats ──
+function renderStats() {
+  let total = 0, off = 0;
+  employees.forEach(emp => {
+    const row = schedules[emp.id] || [];
+    row.forEach(s => { if(s < 3) total++; else off++; });
+  });
+  const cover = total + off > 0 ? Math.round(total / (total + off) * 100) : 0;
+  document.getElementById('d-emp').textContent = employees.length;
+  document.getElementById('d-shifts').textContent = total;
+  document.getElementById('d-off').textContent = off;
+  document.getElementById('d-cover').textContent = cover + '%';
+}
+
+// ── Table ──
+function renderTable(tbodyId = 'sched-tbody') {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  employees.forEach((emp, idx) => {
+    if (PLAN === 'free' && idx >= FREE_LIMIT) return;
+
+    const row = schedules[emp.id] || [3,3,3,3,3,3,3];
+    const [avBg, avColor] = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+    const totalWorked = row.filter(s => s < 3).length;
+
+    // filter
+    if (currentFilter !== 'all') {
+      const filterMap = { morning:0, evening:1, night:2 };
+      const has = row.some(s => s === filterMap[currentFilter]);
+      if (!has) return;
+    }
+
+    const tr = document.createElement('tr');
+    tr.dataset.empId = emp.id;
+
+    let cells = `
+      <td>
+        <div class="emp-cell">
+          <div class="avatar" style="background:${avBg};color:${avColor}">${emp.initials}</div>
+          <div class="emp-info">
+            <div class="name">${emp.name}</div>
+            <div class="role">${emp.role}</div>
+          </div>
+        </div>
+      </td>
+    `;
+
+    row.forEach((s, di) => {
+      cells += `<td class="shift-cell">
+        <button class="shift-tag ${SHIFT_CLASSES[s]}" 
+          onclick="cycleShift(${emp.id},${di})" 
+          title="${SHIFT_LABELS[s]}">${SHIFTS[s]}</button>
+      </td>`;
+    });
+
+    cells += `<td style="text-align:center"><span class="total-chip">${totalWorked}</span></td>`;
+    tr.innerHTML = cells;
+    tbody.appendChild(tr);
+  });
+
+  // Locked rows for free plan
+  if (PLAN === 'free' && employees.length > FREE_LIMIT) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="9" style="text-align:center;padding:16px;color:var(--amber);font-size:12px;cursor:pointer" onclick="showUpgrade()">
+      🔒 還有 ${employees.length - FREE_LIMIT} 位員工被隱藏 — 升級 Pro 查看全部
+    </td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function renderTable2() { renderTable('sched-tbody2'); }
+
+function cycleShift(empId, dayIdx) {
+  if (!schedules[empId]) schedules[empId] = [3,3,3,3,3,3,3];
+  schedules[empId][dayIdx] = (schedules[empId][dayIdx] + 1) % 4;
+  renderTable();
+  renderTable2();
+  renderStats();
+  renderStaffTable();
+  showToast('班表已更新');
+}
+
+// ── Staff table ──
+function renderStaffTable() {
+  const tbody = document.getElementById('staff-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  employees.forEach((emp, idx) => {
+    const row = schedules[emp.id] || [];
+    const worked = row.filter(s => s < 3).length;
+    const isLocked = PLAN === 'free' && idx >= FREE_LIMIT;
+    const [avBg, avColor] = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+    const statusColor = isLocked ? 'var(--amber)' : 'var(--accent)';
+    const statusText = isLocked ? '受限' : '正常';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <div class="emp-cell">
+          <div class="avatar" style="background:${avBg};color:${avColor}">${emp.initials}</div>
+          <div class="emp-info">
+            <div class="name">${emp.name}</div>
+            <div class="role">${emp.role}</div>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--text-muted);font-size:13px">${emp.role}</td>
+      <td style="text-align:center"><span class="total-chip">${worked}</span></td>
+      <td><span style="color:${statusColor};font-size:12px">${statusText}</span></td>
+      <td style="text-align:right">
+        ${isLocked
+          ? `<button class="btn btn-ghost" onclick="showUpgrade()" style="font-size:11px;padding:4px 10px">🔒 Pro</button>`
+          : `<button class="btn btn-ghost" onclick="removeStaff(${emp.id})" style="font-size:11px;padding:4px 10px;color:var(--red);border-color:var(--red-dim)">移除</button>`
+        }
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function removeStaff(id) {
+  employees = employees.filter(e => e.id !== id);
+  delete schedules[id];
+  renderTable(); renderTable2(); renderStats(); renderStaffTable();
+  showToast('員工已移除');
+}
+
+// ── Navigation ──
+function navigate(view, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-dashboard').style.display = 'none';
+  document.getElementById('view-schedule').style.display = 'none';
+  document.getElementById('view-staff').style.display = 'none';
+  document.getElementById('view-' + view).style.display = 'block';
+  document.getElementById('view-' + view).classList.add('fade-in');
+  document.getElementById('page-title').textContent = { dashboard:'總覽', schedule:'排班表', staff:'員工管理' }[view] || view;
+  currentView = view;
+  if (view === 'schedule') { updateHeaders('s'); renderTable2(); }
+  if (view === 'staff') renderStaffTable();
+}
+
+// ── Filter ──
+function filterShift(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-pills .pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+// ── Export CSV ──
+function exportCSV() {
+  const mon = getWeekStart(weekOffset);
+  const dates = Array.from({length:7}, (_,i) => { const d = new Date(mon); d.setDate(mon.getDate()+i); return fmt(d); });
+  let csv = ['員工,職位,' + dates.join(',') + ',總班次'];
+  employees.forEach((emp, idx) => {
+    if (PLAN === 'free' && idx >= FREE_LIMIT) return;
+    const row = schedules[emp.id] || [];
+    const worked = row.filter(s => s < 3).length;
+    csv.push([emp.name, emp.role, ...row.map(s => SHIFTS[s]), worked].join(','));
+  });
+  const blob = new Blob(['\uFEFF' + csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'schedule.csv'; a.click();
+  showToast('CSV 匯出成功');
+}
+
+// ── Modals ──
+function showUpgrade() {
+  document.getElementById('upgrade-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('upgrade-modal').classList.remove('open');
+}
+
+function showAddStaff() {
+  if (PLAN === 'free' && employees.length >= FREE_LIMIT) {
+    document.getElementById('add-staff-desc').textContent = `Free 方案上限 ${FREE_LIMIT} 人，請升級 Pro`;
+    document.getElementById('add-staff-form').style.opacity = '0.3';
+    document.getElementById('add-staff-form').style.pointerEvents = 'none';
+  } else {
+    document.getElementById('add-staff-desc').textContent = '填寫基本資訊';
+    document.getElementById('add-staff-form').style.opacity = '1';
+    document.getElementById('add-staff-form').style.pointerEvents = 'auto';
+  }
+  document.getElementById('add-staff-modal').classList.add('open');
+}
+
+function closeAddStaff() {
+  document.getElementById('add-staff-modal').classList.remove('open');
+}
+
+function addStaff() {
+  if (PLAN === 'free' && employees.length >= FREE_LIMIT) { showUpgrade(); return; }
+  const name = document.getElementById('new-name').value.trim();
+  const role = document.getElementById('new-role').value;
+  if (!name) { showToast('請輸入姓名'); return; }
+  const initials = name[0];
+  const id = Date.now();
+  employees.push({ id, name, role, initials });
+  schedules[id] = [3,3,3,3,3,3,3];
+  closeAddStaff();
+  renderTable(); renderTable2(); renderStats(); renderStaffTable();
+  document.getElementById('new-name').value = '';
+  showToast(`已新增 ${name}`);
+}
+
+function selectPlan(el, plan) {
+  document.querySelectorAll('.plan-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// close modal on overlay click
+document.getElementById('upgrade-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.getElementById('add-staff-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeAddStaff();
+});
+
+// ── Init ──
+updateWeekLabel();
+updateHeaders();
+updateHeaders('s');
+renderTable();
+renderStats();
+</script>
+</body>
+</html>
