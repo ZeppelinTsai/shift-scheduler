@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scheduly — 智慧排班系統</title>
+<title>Scheduly — Smart Shift Scheduler</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #0f0f11;
@@ -30,7 +30,7 @@
   --red-dim: rgba(252,165,165,0.12);
   --radius: 10px;
   --radius-lg: 16px;
-  --font: 'Noto Sans TC', sans-serif;
+  --font: 'Noto Sans TC', 'Noto Sans JP', sans-serif;
   --mono: 'DM Mono', monospace;
 }
 
@@ -243,6 +243,34 @@ body {
 }
 
 .btn-primary:hover { opacity: 0.85; }
+
+/* ── Lang Switcher ── */
+.lang-switcher {
+  display: flex;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.lang-btn:last-child { border-right: none; }
+.lang-btn:hover { background: var(--surface3); color: var(--text); }
+.lang-btn.active { background: var(--accent-dim); color: var(--accent); }
 
 /* ── Content ── */
 .content { flex: 1; padding: 1.5rem; overflow-y: auto; }
@@ -563,29 +591,29 @@ body {
       <div class="logo-text">Sched<span>uly</span></div>
     </div>
 
-    <div class="nav-label">主選單ABC</div>
+    <div class="nav-label" data-i18n="nav_label">MENU</div>
     <div class="nav-item active" onclick="navigate('dashboard', this)">
-      <span class="icon">⊞</span> 總覽
+      <span class="icon">⊞</span> <span data-i18n="nav_dashboard">Overview</span>
     </div>
     <div class="nav-item" onclick="navigate('schedule', this)">
-      <span class="icon">◫</span> 排班表
+      <span class="icon">◫</span> <span data-i18n="nav_schedule">Schedule</span>
     </div>
     <div class="nav-item" onclick="navigate('staff', this)">
-      <span class="icon">◉</span> 員工管理
+      <span class="icon">◉</span> <span data-i18n="nav_staff">Staff</span>
     </div>
     <div class="nav-item locked-nav" onclick="showUpgrade()">
-      <span class="icon">🔒</span> 報表分析 <span style="font-size:10px;margin-left:auto;color:var(--amber)">Pro</span>
+      <span class="icon">🔒</span> <span data-i18n="nav_reports">Reports</span> <span style="font-size:10px;margin-left:auto;color:var(--amber)">Pro</span>
     </div>
     <div class="nav-item locked-nav" onclick="showUpgrade()">
-      <span class="icon">🔒</span> 通知設定 <span style="font-size:10px;margin-left:auto;color:var(--amber)">Pro</span>
+      <span class="icon">🔒</span> <span data-i18n="nav_notifications">Notifications</span> <span style="font-size:10px;margin-left:auto;color:var(--amber)">Pro</span>
     </div>
 
     <div class="nav-spacer"></div>
 
     <div class="plan-badge">
-      <div class="plan-name">Free 方案</div>
-      <div class="plan-desc">5 位員工・基本排班<br>升級解鎖更多功能</div>
-      <button class="upgrade-btn" onclick="showUpgrade()">升級 Pro ↑</button>
+      <div class="plan-name" data-i18n="plan_name">Free Plan</div>
+      <div class="plan-desc" data-i18n-html="plan_desc">5 staff · Basic scheduling<br>Upgrade for more features</div>
+      <button class="upgrade-btn" onclick="showUpgrade()" data-i18n="upgrade_btn">Upgrade Pro ↑</button>
     </div>
   </aside>
 
@@ -595,7 +623,7 @@ body {
     <!-- Topbar -->
     <div class="topbar">
       <div class="topbar-left">
-        <div class="page-title" id="page-title">總覽</div>
+        <div class="page-title" id="page-title">Overview</div>
         <div class="week-nav">
           <button onclick="changeWeek(-1)">←</button>
           <span class="week-label" id="week-label">–</span>
@@ -603,8 +631,13 @@ body {
         </div>
       </div>
       <div class="topbar-right">
-        <button class="btn btn-ghost" onclick="exportCSV()">↓ 匯出 CSV</button>
-        <button class="btn btn-primary" onclick="showAddStaff()">+ 新增員工</button>
+        <div class="lang-switcher">
+          <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" data-lang="zh" onclick="setLang('zh')">中</button>
+          <button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日</button>
+        </div>
+        <button class="btn btn-ghost" onclick="exportCSV()" data-i18n="export_csv">↓ Export CSV</button>
+        <button class="btn btn-primary" onclick="showAddStaff()" data-i18n="add_staff_btn">+ Add Staff</button>
       </div>
     </div>
 
@@ -615,43 +648,43 @@ body {
       <div id="view-dashboard" class="fade-in">
         <div class="stats-row">
           <div class="stat-card">
-            <div class="stat-label">本週員工</div>
+            <div class="stat-label" data-i18n="stat_emp">Staff This Week</div>
             <div class="stat-val green" id="d-emp">6</div>
-            <div class="stat-sub">上限 5（Free）</div>
+            <div class="stat-sub" data-i18n="stat_emp_sub">Limit 5 (Free)</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">排定班次</div>
+            <div class="stat-label" data-i18n="stat_shifts">Scheduled Shifts</div>
             <div class="stat-val blue" id="d-shifts">—</div>
-            <div class="stat-sub">7 天合計</div>
+            <div class="stat-sub" data-i18n="stat_shifts_sub">7-day total</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">未排人次</div>
+            <div class="stat-label" data-i18n="stat_off">Days Off</div>
             <div class="stat-val amber" id="d-off">—</div>
-            <div class="stat-sub">休假天數</div>
+            <div class="stat-sub" data-i18n="stat_off_sub">Leave days</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">覆蓋率</div>
+            <div class="stat-label" data-i18n="stat_cover">Coverage</div>
             <div class="stat-val red" id="d-cover">—</div>
-            <div class="stat-sub">早+晚+夜 / 總班</div>
+            <div class="stat-sub" data-i18n="stat_cover_sub">AM+PM+Night / Total</div>
           </div>
         </div>
 
         <!-- Table -->
         <div class="table-card">
           <div class="table-toolbar">
-            <span class="table-title">本週班表</span>
+            <span class="table-title" data-i18n="week_schedule">This Week's Schedule</span>
             <div class="filter-pills">
-              <button class="pill active" onclick="filterShift('all', this)">全部</button>
-              <button class="pill" onclick="filterShift('morning', this)">早班</button>
-              <button class="pill" onclick="filterShift('evening', this)">晚班</button>
-              <button class="pill" onclick="filterShift('night', this)">夜班</button>
+              <button class="pill active" onclick="filterShift('all', this)" data-i18n="filter_all">All</button>
+              <button class="pill" onclick="filterShift('morning', this)" data-i18n="filter_morning">Morning</button>
+              <button class="pill" onclick="filterShift('evening', this)" data-i18n="filter_evening">Evening</button>
+              <button class="pill" onclick="filterShift('night', this)" data-i18n="filter_night">Night</button>
             </div>
           </div>
           <div style="overflow-x:auto">
             <table class="sched-table">
               <thead>
                 <tr>
-                  <th style="width:160px">員工</th>
+                  <th style="width:160px" data-i18n="col_emp">Staff</th>
                   <th class="day-th" id="th0"></th>
                   <th class="day-th" id="th1"></th>
                   <th class="day-th" id="th2"></th>
@@ -659,7 +692,7 @@ body {
                   <th class="day-th" id="th4"></th>
                   <th class="day-th" id="th5"></th>
                   <th class="day-th" id="th6"></th>
-                  <th style="text-align:center;width:60px">班次</th>
+                  <th style="text-align:center;width:60px" data-i18n="col_shifts">Shifts</th>
                 </tr>
               </thead>
               <tbody id="sched-tbody"></tbody>
@@ -668,10 +701,10 @@ body {
         </div>
 
         <div class="legend">
-          <div class="leg-item"><div class="leg-dot" style="background:rgba(110,231,183,0.5)"></div>早班 08:00–16:00</div>
-          <div class="leg-item"><div class="leg-dot" style="background:rgba(147,197,253,0.5)"></div>晚班 16:00–24:00</div>
-          <div class="leg-item"><div class="leg-dot" style="background:rgba(196,181,253,0.5)"></div>夜班 00:00–08:00</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#26262b"></div>休假</div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(110,231,183,0.5)"></div><span data-i18n="legend_morning">Morning 08:00–16:00</span></div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(147,197,253,0.5)"></div><span data-i18n="legend_evening">Evening 16:00–24:00</span></div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(196,181,253,0.5)"></div><span data-i18n="legend_night">Night 00:00–08:00</span></div>
+          <div class="leg-item"><div class="leg-dot" style="background:#26262b"></div><span data-i18n="legend_off">Day Off</span></div>
         </div>
 
         <!-- Locked: analytics -->
@@ -679,9 +712,9 @@ body {
           <div class="locked-card"></div>
           <div class="lock-overlay" onclick="showUpgrade()">
             <div class="lock-icon">📊</div>
-            <div class="lock-title">員工出勤報表</div>
-            <div class="lock-desc">查看加班時數、換班紀錄、月度統計</div>
-            <div class="lock-badge">升級 Pro 解鎖</div>
+            <div class="lock-title" data-i18n="attendance_report">Attendance Reports</div>
+            <div class="lock-desc" data-i18n="attendance_desc">Overtime hours, shift swaps, monthly stats</div>
+            <div class="lock-badge" data-i18n="upgrade_unlock">Upgrade to Pro to Unlock</div>
           </div>
         </div>
       </div>
@@ -690,13 +723,13 @@ body {
       <div id="view-schedule" style="display:none" class="fade-in">
         <div class="table-card">
           <div class="table-toolbar">
-            <span class="table-title">完整排班管理</span>
+            <span class="table-title" data-i18n="full_schedule">Full Schedule Management</span>
           </div>
           <div style="overflow-x:auto">
             <table class="sched-table">
               <thead>
                 <tr>
-                  <th style="width:160px">員工</th>
+                  <th style="width:160px" data-i18n="col_emp">Staff</th>
                   <th class="day-th" id="sth0"></th>
                   <th class="day-th" id="sth1"></th>
                   <th class="day-th" id="sth2"></th>
@@ -704,7 +737,7 @@ body {
                   <th class="day-th" id="sth4"></th>
                   <th class="day-th" id="sth5"></th>
                   <th class="day-th" id="sth6"></th>
-                  <th style="text-align:center;width:60px">班次</th>
+                  <th style="text-align:center;width:60px" data-i18n="col_shifts">Shifts</th>
                 </tr>
               </thead>
               <tbody id="sched-tbody2"></tbody>
@@ -717,17 +750,17 @@ body {
       <div id="view-staff" style="display:none" class="fade-in">
         <div class="table-card">
           <div class="table-toolbar">
-            <span class="table-title">員工名單（Free：上限 5 人）</span>
-            <button class="btn btn-primary" onclick="showAddStaff()">+ 新增員工</button>
+            <span class="table-title" data-i18n="staff_list">Staff List (Free: 5 max)</span>
+            <button class="btn btn-primary" onclick="showAddStaff()" data-i18n="add_staff_btn">+ Add Staff</button>
           </div>
           <div style="overflow-x:auto">
             <table class="sched-table">
               <thead>
                 <tr>
-                  <th>員工</th>
-                  <th>職位</th>
-                  <th>本週班次</th>
-                  <th>狀態</th>
+                  <th data-i18n="col_emp">Staff</th>
+                  <th data-i18n="col_position">Position</th>
+                  <th data-i18n="col_week_shifts">Weekly Shifts</th>
+                  <th data-i18n="col_status">Status</th>
                   <th></th>
                 </tr>
               </thead>
@@ -739,9 +772,9 @@ body {
           <div class="locked-card"></div>
           <div class="lock-overlay" onclick="showUpgrade()">
             <div class="lock-icon">👥</div>
-            <div class="lock-title">無限員工人數</div>
-            <div class="lock-desc">Free 方案限制 5 人，Pro 無上限</div>
-            <div class="lock-badge">升級 Pro 解鎖</div>
+            <div class="lock-title" data-i18n="unlimited_staff">Unlimited Staff</div>
+            <div class="lock-desc" data-i18n="unlimited_staff_desc">Free plan is limited to 5. Pro is unlimited.</div>
+            <div class="lock-badge" data-i18n="upgrade_unlock">Upgrade to Pro to Unlock</div>
           </div>
         </div>
       </div>
@@ -753,34 +786,34 @@ body {
 <!-- Upgrade Modal -->
 <div class="modal-overlay" id="upgrade-modal">
   <div class="modal">
-    <div class="modal-title">升級方案</div>
-    <div class="modal-sub">解鎖進階功能，讓排班更有效率</div>
+    <div class="modal-title" data-i18n="upgrade_title">Upgrade Plan</div>
+    <div class="modal-sub" data-i18n="upgrade_sub">Unlock advanced features for smarter scheduling</div>
     <div class="plan-options">
       <div class="plan-option" onclick="selectPlan(this, 'free')">
         <div class="plan-option-top">
           <div class="plan-option-name">Free</div>
-          <div class="plan-price">NT$0 / 月</div>
+          <div class="plan-price" data-i18n="price_free">$0 / mo</div>
         </div>
-        <div class="plan-features">5 位員工・基本排班・CSV 匯出</div>
+        <div class="plan-features" data-i18n="plan_free_features">5 staff · Basic scheduling · CSV export</div>
       </div>
       <div class="plan-option popular" onclick="selectPlan(this, 'pro')">
         <div class="plan-option-top">
-          <div class="plan-option-name">Pro <span class="popular-tag">推薦</span></div>
-          <div class="plan-price">NT$499 / 月</div>
+          <div class="plan-option-name">Pro <span class="popular-tag" data-i18n="popular_tag">Popular</span></div>
+          <div class="plan-price" data-i18n="price_pro">$14 / mo</div>
         </div>
-        <div class="plan-features">無限員工・報表分析・通知功能・換班申請・優先客服</div>
+        <div class="plan-features" data-i18n="plan_pro_features">Unlimited staff · Reports · Notifications · Shift swap · Priority support</div>
       </div>
       <div class="plan-option" onclick="selectPlan(this, 'team')">
         <div class="plan-option-top">
           <div class="plan-option-name">Team</div>
-          <div class="plan-price">NT$1,299 / 月</div>
+          <div class="plan-price" data-i18n="price_team">$36 / mo</div>
         </div>
-        <div class="plan-features">多分店管理・跨店調度・API 整合・專屬 AM</div>
+        <div class="plan-features" data-i18n="plan_team_features">Multi-store · Cross-store dispatch · API · Dedicated AM</div>
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
-      <button class="btn btn-primary" onclick="closeModal(); showToast('功能開發中，感謝您的支持！')">立即升級</button>
+      <button class="btn btn-ghost" onclick="closeModal()" data-i18n="cancel">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal(); showToast(T.toast_wip)" data-i18n="upgrade_now">Upgrade Now</button>
     </div>
   </div>
 </div>
@@ -788,26 +821,26 @@ body {
 <!-- Add Staff Modal -->
 <div class="modal-overlay" id="add-staff-modal">
   <div class="modal">
-    <div class="modal-title">新增員工</div>
-    <div class="modal-sub" id="add-staff-desc">填寫基本資訊</div>
+    <div class="modal-title" data-i18n="add_staff_title">Add Staff</div>
+    <div class="modal-sub" id="add-staff-desc" data-i18n="add_staff_desc_default">Fill in basic info</div>
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:1.5rem" id="add-staff-form">
       <div>
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">姓名</div>
-        <input id="new-name" type="text" placeholder="例：王大明" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px" data-i18n="name_label">Name</div>
+        <input id="new-name" type="text" data-i18n-placeholder="name_placeholder" placeholder="e.g. John Smith" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none">
       </div>
       <div>
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">職位</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px" data-i18n="role_label">Position</div>
         <select id="new-role" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none">
-          <option>全職</option>
-          <option>兼職</option>
-          <option>店長</option>
-          <option>工讀生</option>
+          <option data-i18n="role_fulltime">Full-time</option>
+          <option data-i18n="role_parttime">Part-time</option>
+          <option data-i18n="role_manager">Manager</option>
+          <option data-i18n="role_intern">Student Worker</option>
         </select>
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeAddStaff()">取消</button>
-      <button class="btn btn-primary" onclick="addStaff()">確認新增</button>
+      <button class="btn btn-ghost" onclick="closeAddStaff()" data-i18n="cancel">Cancel</button>
+      <button class="btn btn-primary" onclick="addStaff()" data-i18n="confirm_add">Confirm</button>
     </div>
   </div>
 </div>
@@ -816,13 +849,293 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
+// ── i18n ──
+const TRANSLATIONS = {
+  en: {
+    nav_label: 'Menu',
+    nav_dashboard: 'Overview',
+    nav_schedule: 'Schedule',
+    nav_staff: 'Staff',
+    nav_reports: 'Reports',
+    nav_notifications: 'Notifications',
+    plan_name: 'Free Plan',
+    plan_desc: '5 staff · Basic scheduling<br>Upgrade for more features',
+    upgrade_btn: 'Upgrade Pro ↑',
+    export_csv: '↓ Export CSV',
+    add_staff_btn: '+ Add Staff',
+    stat_emp: 'Staff This Week',
+    stat_emp_sub: 'Limit 5 (Free)',
+    stat_shifts: 'Scheduled Shifts',
+    stat_shifts_sub: '7-day total',
+    stat_off: 'Days Off',
+    stat_off_sub: 'Leave days',
+    stat_cover: 'Coverage',
+    stat_cover_sub: 'AM+PM+Night / Total',
+    week_schedule: "This Week's Schedule",
+    filter_all: 'All',
+    filter_morning: 'Morning',
+    filter_evening: 'Evening',
+    filter_night: 'Night',
+    col_emp: 'Staff',
+    col_shifts: 'Shifts',
+    legend_morning: 'Morning 08:00–16:00',
+    legend_evening: 'Evening 16:00–24:00',
+    legend_night: 'Night 00:00–08:00',
+    legend_off: 'Day Off',
+    attendance_report: 'Attendance Reports',
+    attendance_desc: 'Overtime hours, shift swaps, monthly stats',
+    upgrade_unlock: 'Upgrade to Pro to Unlock',
+    full_schedule: 'Full Schedule Management',
+    staff_list: 'Staff List (Free: 5 max)',
+    col_position: 'Position',
+    col_week_shifts: 'Weekly Shifts',
+    col_status: 'Status',
+    unlimited_staff: 'Unlimited Staff',
+    unlimited_staff_desc: 'Free plan is limited to 5. Pro is unlimited.',
+    upgrade_title: 'Upgrade Plan',
+    upgrade_sub: 'Unlock advanced features for smarter scheduling',
+    price_free: '$0 / mo',
+    price_pro: '$14 / mo',
+    price_team: '$36 / mo',
+    plan_free_features: '5 staff · Basic scheduling · CSV export',
+    plan_pro_features: 'Unlimited staff · Reports · Notifications · Shift swap · Priority support',
+    plan_team_features: 'Multi-store · Cross-store dispatch · API · Dedicated AM',
+    popular_tag: 'Popular',
+    cancel: 'Cancel',
+    upgrade_now: 'Upgrade Now',
+    add_staff_title: 'Add Staff',
+    add_staff_desc_default: 'Fill in basic info',
+    add_staff_desc_limit: 'Free plan limit is 5. Upgrade to Pro.',
+    name_label: 'Name',
+    name_placeholder: 'e.g. John Smith',
+    role_label: 'Position',
+    role_fulltime: 'Full-time',
+    role_parttime: 'Part-time',
+    role_manager: 'Manager',
+    role_intern: 'Student Worker',
+    confirm_add: 'Confirm',
+    status_normal: 'Active',
+    status_locked: 'Restricted',
+    days: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    shifts: ['AM','PM','NT','OFF'],
+    shift_labels: ['AM 08-16','PM 16-24','NT 00-08','Off'],
+    page_titles: { dashboard: 'Overview', schedule: 'Schedule', staff: 'Staff' },
+    toast_updated: 'Schedule updated',
+    toast_removed: 'Staff removed',
+    toast_csv: 'CSV exported successfully',
+    toast_name_required: 'Please enter a name',
+    toast_added: 'Added',
+    toast_wip: 'Feature coming soon — thank you for your support!',
+    csv_emp: 'Staff',
+    csv_role: 'Position',
+    csv_total: 'Total Shifts',
+    hidden_staff: n => `🔒 ${n} more staff hidden — Upgrade to Pro to see all`,
+    remove: 'Remove',
+  },
+  zh: {
+    nav_label: '主選單',
+    nav_dashboard: '總覽',
+    nav_schedule: '排班表',
+    nav_staff: '員工管理',
+    nav_reports: '報表分析',
+    nav_notifications: '通知設定',
+    plan_name: 'Free 方案',
+    plan_desc: '5 位員工・基本排班<br>升級解鎖更多功能',
+    upgrade_btn: '升級 Pro ↑',
+    export_csv: '↓ 匯出 CSV',
+    add_staff_btn: '+ 新增員工',
+    stat_emp: '本週員工',
+    stat_emp_sub: '上限 5（Free）',
+    stat_shifts: '排定班次',
+    stat_shifts_sub: '7 天合計',
+    stat_off: '未排人次',
+    stat_off_sub: '休假天數',
+    stat_cover: '覆蓋率',
+    stat_cover_sub: '早+晚+夜 / 總班',
+    week_schedule: '本週班表',
+    filter_all: '全部',
+    filter_morning: '早班',
+    filter_evening: '晚班',
+    filter_night: '夜班',
+    col_emp: '員工',
+    col_shifts: '班次',
+    legend_morning: '早班 08:00–16:00',
+    legend_evening: '晚班 16:00–24:00',
+    legend_night: '夜班 00:00–08:00',
+    legend_off: '休假',
+    attendance_report: '員工出勤報表',
+    attendance_desc: '查看加班時數、換班紀錄、月度統計',
+    upgrade_unlock: '升級 Pro 解鎖',
+    full_schedule: '完整排班管理',
+    staff_list: '員工名單（Free：上限 5 人）',
+    col_position: '職位',
+    col_week_shifts: '本週班次',
+    col_status: '狀態',
+    unlimited_staff: '無限員工人數',
+    unlimited_staff_desc: 'Free 方案限制 5 人，Pro 無上限',
+    upgrade_title: '升級方案',
+    upgrade_sub: '解鎖進階功能，讓排班更有效率',
+    price_free: 'NT$0 / 月',
+    price_pro: 'NT$499 / 月',
+    price_team: 'NT$1,299 / 月',
+    plan_free_features: '5 位員工・基本排班・CSV 匯出',
+    plan_pro_features: '無限員工・報表分析・通知功能・換班申請・優先客服',
+    plan_team_features: '多分店管理・跨店調度・API 整合・專屬 AM',
+    popular_tag: '推薦',
+    cancel: '取消',
+    upgrade_now: '立即升級',
+    add_staff_title: '新增員工',
+    add_staff_desc_default: '填寫基本資訊',
+    add_staff_desc_limit: 'Free 方案上限 5 人，請升級 Pro',
+    name_label: '姓名',
+    name_placeholder: '例：王大明',
+    role_label: '職位',
+    role_fulltime: '全職',
+    role_parttime: '兼職',
+    role_manager: '店長',
+    role_intern: '工讀生',
+    confirm_add: '確認新增',
+    status_normal: '正常',
+    status_locked: '受限',
+    days: ['一','二','三','四','五','六','日'],
+    shifts: ['早','晚','夜','休'],
+    shift_labels: ['早 08-16','晚 16-24','夜 00-08','休'],
+    page_titles: { dashboard: '總覽', schedule: '排班表', staff: '員工管理' },
+    toast_updated: '班表已更新',
+    toast_removed: '員工已移除',
+    toast_csv: 'CSV 匯出成功',
+    toast_name_required: '請輸入姓名',
+    toast_added: '已新增',
+    toast_wip: '功能開發中，感謝您的支持！',
+    csv_emp: '員工',
+    csv_role: '職位',
+    csv_total: '總班次',
+    hidden_staff: n => `🔒 還有 ${n} 位員工被隱藏 — 升級 Pro 查看全部`,
+    remove: '移除',
+  },
+  ja: {
+    nav_label: 'メニュー',
+    nav_dashboard: 'ダッシュボード',
+    nav_schedule: 'シフト表',
+    nav_staff: 'スタッフ管理',
+    nav_reports: 'レポート',
+    nav_notifications: '通知設定',
+    plan_name: 'Freeプラン',
+    plan_desc: '5名・基本シフト<br>アップグレードで機能解放',
+    upgrade_btn: 'Proにアップグレード ↑',
+    export_csv: '↓ CSV出力',
+    add_staff_btn: '+ スタッフ追加',
+    stat_emp: '今週のスタッフ',
+    stat_emp_sub: '上限 5（Free）',
+    stat_shifts: '確定シフト数',
+    stat_shifts_sub: '7日間合計',
+    stat_off: '休日人数',
+    stat_off_sub: '休暇日数',
+    stat_cover: 'カバー率',
+    stat_cover_sub: '早+遅+夜 / 合計',
+    week_schedule: '今週のシフト',
+    filter_all: 'すべて',
+    filter_morning: '早番',
+    filter_evening: '遅番',
+    filter_night: '夜番',
+    col_emp: 'スタッフ',
+    col_shifts: 'シフト',
+    legend_morning: '早番 08:00–16:00',
+    legend_evening: '遅番 16:00–24:00',
+    legend_night: '夜番 00:00–08:00',
+    legend_off: '休日',
+    attendance_report: '勤怠レポート',
+    attendance_desc: '残業時間・シフト交換・月次統計の確認',
+    upgrade_unlock: 'Proにアップグレードして解放',
+    full_schedule: 'シフト管理',
+    staff_list: 'スタッフ一覧（Free：5名まで）',
+    col_position: '役職',
+    col_week_shifts: '今週のシフト',
+    col_status: 'ステータス',
+    unlimited_staff: 'スタッフ無制限',
+    unlimited_staff_desc: 'Freeプランは5名まで。Proは無制限。',
+    upgrade_title: 'プランのアップグレード',
+    upgrade_sub: '高度な機能を解放してシフト管理を効率化',
+    price_free: '¥0 / 月',
+    price_pro: '¥1,500 / 月',
+    price_team: '¥3,900 / 月',
+    plan_free_features: '5名・基本シフト・CSVエクスポート',
+    plan_pro_features: '無制限スタッフ・レポート・通知・交換申請・優先サポート',
+    plan_team_features: '複数店舗管理・跨店調動・API連携・専任AM',
+    popular_tag: 'おすすめ',
+    cancel: 'キャンセル',
+    upgrade_now: '今すぐアップグレード',
+    add_staff_title: 'スタッフ追加',
+    add_staff_desc_default: '基本情報を入力してください',
+    add_staff_desc_limit: 'Freeプランは5名まで。Proにアップグレードしてください。',
+    name_label: '名前',
+    name_placeholder: '例：山田太郎',
+    role_label: '役職',
+    role_fulltime: '正社員',
+    role_parttime: 'パート',
+    role_manager: '店長',
+    role_intern: 'アルバイト',
+    confirm_add: '追加する',
+    status_normal: '正常',
+    status_locked: '制限中',
+    days: ['月','火','水','木','金','土','日'],
+    shifts: ['早','遅','夜','休'],
+    shift_labels: ['早番 08-16','遅番 16-24','夜番 00-08','休日'],
+    page_titles: { dashboard: 'ダッシュボード', schedule: 'シフト表', staff: 'スタッフ管理' },
+    toast_updated: 'シフトを更新しました',
+    toast_removed: 'スタッフを削除しました',
+    toast_csv: 'CSVを出力しました',
+    toast_name_required: '名前を入力してください',
+    toast_added: '追加しました',
+    toast_wip: '機能は開発中です。ご支援ありがとうございます！',
+    csv_emp: 'スタッフ',
+    csv_role: '役職',
+    csv_total: '合計シフト',
+    hidden_staff: n => `🔒 あと${n}名が非表示 — Proにアップグレードして全員を確認`,
+    remove: '削除',
+  },
+};
+
+let currentLang = localStorage.getItem('lang') || 'en';
+let T = TRANSLATIONS[currentLang];
+
+function setLang(lang) {
+  currentLang = lang;
+  T = TRANSLATIONS[lang];
+  localStorage.setItem('lang', lang);
+  document.documentElement.lang = lang === 'zh' ? 'zh-TW' : lang;
+  applyLang();
+}
+
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = T[el.dataset.i18n];
+    if (v !== undefined) el.textContent = v;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const v = T[el.dataset.i18nHtml];
+    if (v !== undefined) el.innerHTML = v;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const v = T[el.dataset.i18nPlaceholder];
+    if (v !== undefined) el.placeholder = v;
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === currentLang);
+  });
+  document.getElementById('page-title').textContent = T.page_titles[currentView] || currentView;
+  updateHeaders();
+  updateHeaders('s');
+  renderTable();
+  renderTable2();
+  renderStats();
+  renderStaffTable();
+}
+
 // ── Mock Data ──
-const PLAN = 'free'; // 'free' | 'pro' | 'team'
+const PLAN = 'free';
 const FREE_LIMIT = 5;
-const DAYS = ['一','二','三','四','五','六','日'];
-const SHIFTS = ['早','晚','夜','休'];
 const SHIFT_CLASSES = ['s-morning','s-evening','s-night','s-off'];
-const SHIFT_LABELS = ['早 08-16','晚 16-24','夜 00-08','休'];
 
 const AVATAR_COLORS = [
   ['rgba(110,231,183,0.2)','#6ee7b7'],
@@ -883,7 +1196,7 @@ function updateHeaders(prefix = '') {
     const el = document.getElementById((prefix || '') + 'th' + i);
     if (!el) continue;
     const color = isToday ? 'var(--accent)' : 'var(--text-dim)';
-    el.innerHTML = `<span style="display:block;font-size:11px;color:${color}">${DAYS[i]}</span><span style="font-size:11px">${fmt(d)}</span>`;
+    el.innerHTML = `<span style="display:block;font-size:11px;color:${color}">${T.days[i]}</span><span style="font-size:11px">${fmt(d)}</span>`;
   }
 }
 
@@ -924,7 +1237,6 @@ function renderTable(tbodyId = 'sched-tbody') {
     const [avBg, avColor] = AVATAR_COLORS[idx % AVATAR_COLORS.length];
     const totalWorked = row.filter(s => s < 3).length;
 
-    // filter
     if (currentFilter !== 'all') {
       const filterMap = { morning:0, evening:1, night:2 };
       const has = row.some(s => s === filterMap[currentFilter]);
@@ -948,9 +1260,9 @@ function renderTable(tbodyId = 'sched-tbody') {
 
     row.forEach((s, di) => {
       cells += `<td class="shift-cell">
-        <button class="shift-tag ${SHIFT_CLASSES[s]}" 
-          onclick="cycleShift(${emp.id},${di})" 
-          title="${SHIFT_LABELS[s]}">${SHIFTS[s]}</button>
+        <button class="shift-tag ${SHIFT_CLASSES[s]}"
+          onclick="cycleShift(${emp.id},${di})"
+          title="${T.shift_labels[s]}">${T.shifts[s]}</button>
       </td>`;
     });
 
@@ -959,11 +1271,10 @@ function renderTable(tbodyId = 'sched-tbody') {
     tbody.appendChild(tr);
   });
 
-  // Locked rows for free plan
   if (PLAN === 'free' && employees.length > FREE_LIMIT) {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td colspan="9" style="text-align:center;padding:16px;color:var(--amber);font-size:12px;cursor:pointer" onclick="showUpgrade()">
-      🔒 還有 ${employees.length - FREE_LIMIT} 位員工被隱藏 — 升級 Pro 查看全部
+      ${T.hidden_staff(employees.length - FREE_LIMIT)}
     </td>`;
     tbody.appendChild(tr);
   }
@@ -978,7 +1289,7 @@ function cycleShift(empId, dayIdx) {
   renderTable2();
   renderStats();
   renderStaffTable();
-  showToast('班表已更新');
+  showToast(T.toast_updated);
 }
 
 // ── Staff table ──
@@ -992,7 +1303,7 @@ function renderStaffTable() {
     const isLocked = PLAN === 'free' && idx >= FREE_LIMIT;
     const [avBg, avColor] = AVATAR_COLORS[idx % AVATAR_COLORS.length];
     const statusColor = isLocked ? 'var(--amber)' : 'var(--accent)';
-    const statusText = isLocked ? '受限' : '正常';
+    const statusText = isLocked ? T.status_locked : T.status_normal;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -1011,7 +1322,7 @@ function renderStaffTable() {
       <td style="text-align:right">
         ${isLocked
           ? `<button class="btn btn-ghost" onclick="showUpgrade()" style="font-size:11px;padding:4px 10px">🔒 Pro</button>`
-          : `<button class="btn btn-ghost" onclick="removeStaff(${emp.id})" style="font-size:11px;padding:4px 10px;color:var(--red);border-color:var(--red-dim)">移除</button>`
+          : `<button class="btn btn-ghost" onclick="removeStaff(${emp.id})" style="font-size:11px;padding:4px 10px;color:var(--red);border-color:var(--red-dim)">${T.remove}</button>`
         }
       </td>
     `;
@@ -1023,7 +1334,7 @@ function removeStaff(id) {
   employees = employees.filter(e => e.id !== id);
   delete schedules[id];
   renderTable(); renderTable2(); renderStats(); renderStaffTable();
-  showToast('員工已移除');
+  showToast(T.toast_removed);
 }
 
 // ── Navigation ──
@@ -1035,7 +1346,7 @@ function navigate(view, el) {
   document.getElementById('view-staff').style.display = 'none';
   document.getElementById('view-' + view).style.display = 'block';
   document.getElementById('view-' + view).classList.add('fade-in');
-  document.getElementById('page-title').textContent = { dashboard:'總覽', schedule:'排班表', staff:'員工管理' }[view] || view;
+  document.getElementById('page-title').textContent = T.page_titles[view] || view;
   currentView = view;
   if (view === 'schedule') { updateHeaders('s'); renderTable2(); }
   if (view === 'staff') renderStaffTable();
@@ -1053,17 +1364,17 @@ function filterShift(type, btn) {
 function exportCSV() {
   const mon = getWeekStart(weekOffset);
   const dates = Array.from({length:7}, (_,i) => { const d = new Date(mon); d.setDate(mon.getDate()+i); return fmt(d); });
-  let csv = ['員工,職位,' + dates.join(',') + ',總班次'];
+  let csv = [T.csv_emp + ',' + T.csv_role + ',' + dates.join(',') + ',' + T.csv_total];
   employees.forEach((emp, idx) => {
     if (PLAN === 'free' && idx >= FREE_LIMIT) return;
     const row = schedules[emp.id] || [];
     const worked = row.filter(s => s < 3).length;
-    csv.push([emp.name, emp.role, ...row.map(s => SHIFTS[s]), worked].join(','));
+    csv.push([emp.name, emp.role, ...row.map(s => T.shifts[s]), worked].join(','));
   });
-  const blob = new Blob(['\uFEFF' + csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob(['﻿' + csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = 'schedule.csv'; a.click();
-  showToast('CSV 匯出成功');
+  showToast(T.toast_csv);
 }
 
 // ── Modals ──
@@ -1077,11 +1388,11 @@ function closeModal() {
 
 function showAddStaff() {
   if (PLAN === 'free' && employees.length >= FREE_LIMIT) {
-    document.getElementById('add-staff-desc').textContent = `Free 方案上限 ${FREE_LIMIT} 人，請升級 Pro`;
+    document.getElementById('add-staff-desc').textContent = T.add_staff_desc_limit;
     document.getElementById('add-staff-form').style.opacity = '0.3';
     document.getElementById('add-staff-form').style.pointerEvents = 'none';
   } else {
-    document.getElementById('add-staff-desc').textContent = '填寫基本資訊';
+    document.getElementById('add-staff-desc').textContent = T.add_staff_desc_default;
     document.getElementById('add-staff-form').style.opacity = '1';
     document.getElementById('add-staff-form').style.pointerEvents = 'auto';
   }
@@ -1096,7 +1407,7 @@ function addStaff() {
   if (PLAN === 'free' && employees.length >= FREE_LIMIT) { showUpgrade(); return; }
   const name = document.getElementById('new-name').value.trim();
   const role = document.getElementById('new-role').value;
-  if (!name) { showToast('請輸入姓名'); return; }
+  if (!name) { showToast(T.toast_name_required); return; }
   const initials = name[0];
   const id = Date.now();
   employees.push({ id, name, role, initials });
@@ -1104,7 +1415,7 @@ function addStaff() {
   closeAddStaff();
   renderTable(); renderTable2(); renderStats(); renderStaffTable();
   document.getElementById('new-name').value = '';
-  showToast(`已新增 ${name}`);
+  showToast(`${T.toast_added} ${name}`);
 }
 
 function selectPlan(el, plan) {
@@ -1129,10 +1440,8 @@ document.getElementById('add-staff-modal').addEventListener('click', function(e)
 });
 
 // ── Init ──
+setLang(currentLang);
 updateWeekLabel();
-updateHeaders();
-updateHeaders('s');
-renderTable();
 renderStats();
 </script>
 </body>
