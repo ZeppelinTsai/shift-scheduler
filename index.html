@@ -562,6 +562,53 @@ body {
 #view-schedule { display: none; }
 #view-report { display: none; }
 #view-staff { display: none; }
+.time-select {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border-hover);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  outline: none;
+  min-width: 96px;
+}
+
+.time-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+.count-select {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border-hover);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  outline: none;
+  min-width: 80px;
+}
+
+.count-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+
+/* ── Time Overview / Sales CTA ── */
+.time-overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.time-day-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; }
+.time-day-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+.time-shift-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; margin-bottom: 8px; }
+.time-shift-head { display: flex; justify-content: space-between; gap: 8px; align-items: center; color: var(--text-muted); font-size: 12px; margin-bottom: 6px; }
+.time-people { display:flex; flex-wrap:wrap; gap:6px; }
+.person-chip { display: inline-flex; align-items: center; gap: 4px; background: var(--surface3); border: 1px solid var(--border); color: var(--text); padding: 3px 8px; border-radius: 999px; font-size: 11px; }
+.missing-chip { color: var(--red); font-size: 11px; font-weight: 700; }
+.pro-cta-card { background: linear-gradient(135deg, rgba(110,231,183,0.12), rgba(252,211,77,0.09)); border: 1px solid var(--border-hover); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pro-cta-title { font-weight:700; font-size:14px; }
+.pro-cta-desc { color:var(--text-muted); font-size:12px; }
+.mail-link { color: var(--accent); text-decoration: none; font-weight:700; }
+.mail-link:hover { text-decoration: underline; }
 
 /* ── Fade in ── */
 .fade-in {
@@ -601,10 +648,13 @@ body {
     <div class="nav-item" onclick="navigate('staff', this)">
       <span class="icon">◉</span> <span data-i18n="nav_staff">Staff</span>
     </div>
-    <div class="nav-item locked-nav" onclick="showUpgrade()">
+    <div class="nav-item" onclick="navigate('shifts', this)">
+      <span class="icon">◷</span> <span data-i18n="nav_shifts">Shift Settings</span>
+    </div>
+    <div class="nav-item locked-nav" onclick="showPaidContact()">
       <span class="icon">🔒</span> <span data-i18n="nav_reports">Reports</span> <span style="font-size:10px;margin-left:auto;color:var(--amber)">Pro</span>
     </div>
-    <div class="nav-item locked-nav" onclick="showUpgrade()">
+    <div class="nav-item locked-nav" onclick="showPaidContact()">
       <span class="icon">🔒</span> <span data-i18n="nav_notifications">Notifications</span> <span style="font-size:10px;margin-left:auto;color:var(--amber)">Pro</span>
     </div>
 
@@ -613,13 +663,17 @@ body {
     <div class="plan-badge">
       <div class="plan-name" data-i18n="plan_name">Free Plan</div>
       <div class="plan-desc" data-i18n-html="plan_desc">5 staff · Basic scheduling<br>Upgrade for more features</div>
-      <button class="upgrade-btn" onclick="showUpgrade()" data-i18n="upgrade_btn">Upgrade Pro ↑</button>
+      <button class="upgrade-btn" onclick="showPaidContact()" data-i18n="upgrade_btn">Upgrade Pro ↑</button>
     </div>
   </aside>
 
   <!-- Main -->
   <main class="main">
-
+    <div style="display:flex;gap:8px;margin-bottom:1rem">
+      <button class="btn btn-primary" data-i18n="validate_schedule_btn" onclick="validateSchedule()">Check Legal</button>
+      <button class="btn btn-ghost" data-i18n="auto_fix_btn" onclick="showPaidContact(T.auto_fix_feature)">Auto Fix Pro</button>
+      <button class="btn btn-primary" data-i18n="generate_schedule_btn" onclick="showPaidContact(T.generate_feature)">Generate Schedule Pro</button>
+    </div>
     <!-- Topbar -->
     <div class="topbar">
       <div class="topbar-left">
@@ -669,16 +723,34 @@ body {
           </div>
         </div>
 
-        <!-- Table -->
+        <div class="pro-cta-card">
+          <div>
+            <div class="pro-cta-title" data-i18n="trial_cta_title">Free trial: legal validation + coverage preview</div>
+            <div class="pro-cta-desc"><span data-i18n="trial_cta_desc">Need one-click auto scheduling? Contact</span> <a class="mail-link" href="mailto:luxandpei@gmail.com?subject=Scheduly%20Auto%20Scheduling%20Inquiry">luxandpei@gmail.com</a></div>
+          </div>
+          <button class="btn btn-primary" data-i18n="contact_for_pro" onclick="showPaidContact(T.auto_scheduling_feature)">Contact for Pro</button>
+        </div>
+
+        <!-- Time-based Overview -->
+        <div class="table-card" style="margin-bottom:1rem">
+          <div class="table-toolbar">
+            <div>
+              <span class="table-title" data-i18n="coverage_overview_title">Coverage Overview</span>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:3px" data-i18n="coverage_overview_hint">Time-first view: see whether each shift is covered.</div>
+            </div>
+            <button class="btn btn-ghost" data-i18n="view_staff_schedule" onclick="navigate('schedule', document.querySelector('[onclick*=schedule]'))">Open Full Schedule</button>
+          </div>
+          <div id="time-overview" style="padding:1rem"></div>
+        </div>
+
+        <!-- Staff-based preview -->
         <div class="table-card">
           <div class="table-toolbar">
-            <span class="table-title" data-i18n="week_schedule">This Week's Schedule</span>
-            <div class="filter-pills">
-              <button class="pill active" onclick="filterShift('all', this)" data-i18n="filter_all">All</button>
-              <button class="pill" onclick="filterShift('morning', this)" data-i18n="filter_morning">Morning</button>
-              <button class="pill" onclick="filterShift('evening', this)" data-i18n="filter_evening">Evening</button>
-              <button class="pill" onclick="filterShift('night', this)" data-i18n="filter_night">Night</button>
+            <div>
+              <span class="table-title" data-i18n="staff_schedule_preview_title">Staff Schedule Preview</span>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:3px" data-i18n="staff_schedule_preview_hint">People-first view: edit shifts directly and run free legal validation.</div>
             </div>
+            <button class="btn btn-primary" data-i18n="validate_schedule_btn" onclick="validateSchedule()">Check Legal</button>
           </div>
           <div style="overflow-x:auto">
             <table class="sched-table">
@@ -710,7 +782,7 @@ body {
         <!-- Locked: analytics -->
         <div class="locked-section">
           <div class="locked-card"></div>
-          <div class="lock-overlay" onclick="showUpgrade()">
+          <div class="lock-overlay" onclick="showPaidContact()">
             <div class="lock-icon">📊</div>
             <div class="lock-title" data-i18n="attendance_report">Attendance Reports</div>
             <div class="lock-desc" data-i18n="attendance_desc">Overtime hours, shift swaps, monthly stats</div>
@@ -759,6 +831,8 @@ body {
                 <tr>
                   <th data-i18n="col_emp">Staff</th>
                   <th data-i18n="col_position">Position</th>
+                  <th data-i18n="col_min_shifts">Min Shifts</th>
+                  <th data-i18n="col_max_shifts">Max Shifts</th>
                   <th data-i18n="col_week_shifts">Weekly Shifts</th>
                   <th data-i18n="col_status">Status</th>
                   <th></th>
@@ -770,7 +844,7 @@ body {
         </div>
         <div class="locked-section" style="margin-top:1rem">
           <div class="locked-card"></div>
-          <div class="lock-overlay" onclick="showUpgrade()">
+          <div class="lock-overlay" onclick="showPaidContact()">
             <div class="lock-icon">👥</div>
             <div class="lock-title" data-i18n="unlimited_staff">Unlimited Staff</div>
             <div class="lock-desc" data-i18n="unlimited_staff_desc">Free plan is limited to 5. Pro is unlimited.</div>
@@ -778,8 +852,48 @@ body {
           </div>
         </div>
       </div>
-
+      <!-- Shift settings view -->
+      <div id="view-shifts" style="display:none" class="fade-in">
+        <div class="table-card">
+          <div class="table-toolbar">
+            <span class="table-title" data-i18n="shift_settings_title">Shift Settings</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="sched-table">
+              <thead>
+                <tr>
+                  <th data-i18n="shift_col_name">Shift</th>
+                  <th data-i18n="shift_col_code">Code</th>
+                  <th data-i18n="shift_col_start">Start</th>
+                  <th data-i18n="shift_col_end">End</th>
+                  <th data-i18n="shift_col_required">Daily Demand</th>
+                </tr>
+              </thead>
+              <tbody id="shift-settings-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div><!-- /content -->
+    <aside id="issue-panel" style="
+      position: fixed;
+      top: 0;
+      right: -360px;
+      width: 360px;
+      height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border-hover);
+      z-index: 300;
+      padding: 20px;
+      transition: right 0.25s ease;
+      overflow-y: auto;
+    ">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h3 style="font-size:16px" data-i18n="issue_panel_title">⚠️ Scheduling Issues</h3>
+        <button class="btn btn-ghost" onclick="closeIssuePanel()">×</button>
+      </div>
+      <div id="issue-list"></div>
+    </aside>
   </main>
 </div>
 
@@ -845,6 +959,26 @@ body {
   </div>
 </div>
 
+
+<!-- Contact / Pro Modal -->
+<div class="modal-overlay" id="contact-modal">
+  <div class="modal">
+    <div class="modal-title" data-i18n="contact_modal_title">Unlock Pro Scheduling</div>
+    <div class="modal-sub" id="contact-modal-sub" data-i18n="contact_modal_sub">One-click generate schedule is available for paid/custom users.</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:1rem">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px" data-i18n="contact_label">Contact</div>
+      <a class="mail-link" href="mailto:luxandpei@gmail.com?subject=Scheduly%20Pro%20Inquiry">luxandpei@gmail.com</a>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:1.5rem">
+      <span data-i18n="contact_modal_desc">Free users can edit schedules and run legal validation locally. Auto generation is kept as a paid backend feature.</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-i18n="cancel" onclick="closeContactModal()">Cancel</button>
+      <button class="btn btn-primary" data-i18n="email_me" onclick="location.href='mailto:luxandpei@gmail.com?subject=Scheduly%20Pro%20Inquiry'">Email me</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -856,6 +990,7 @@ const TRANSLATIONS = {
     nav_dashboard: 'Overview',
     nav_schedule: 'Schedule',
     nav_staff: 'Staff',
+    nav_shifts: 'Shift Settings',
     nav_reports: 'Reports',
     nav_notifications: 'Notifications',
     plan_name: 'Free Plan',
@@ -888,6 +1023,8 @@ const TRANSLATIONS = {
     full_schedule: 'Full Schedule Management',
     staff_list: 'Staff List (Free: 5 max)',
     col_position: 'Position',
+    col_min_shifts: 'Min Shifts',
+    col_max_shifts: 'Max Shifts',
     col_week_shifts: 'Weekly Shifts',
     col_status: 'Status',
     unlimited_staff: 'Unlimited Staff',
@@ -919,7 +1056,7 @@ const TRANSLATIONS = {
     days: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
     shifts: ['AM','PM','NT','OFF'],
     shift_labels: ['AM 08-16','PM 16-24','NT 00-08','Off'],
-    page_titles: { dashboard: 'Overview', schedule: 'Schedule', staff: 'Staff' },
+    page_titles: { dashboard: 'Overview', schedule: 'Schedule', staff: 'Staff', shifts: 'Shift Settings' },
     toast_updated: 'Schedule updated',
     toast_removed: 'Staff removed',
     toast_csv: 'CSV exported successfully',
@@ -931,12 +1068,58 @@ const TRANSLATIONS = {
     csv_total: 'Total Shifts',
     hidden_staff: n => `🔒 ${n} more staff hidden — Upgrade to Pro to see all`,
     remove: 'Remove',
+    generate_schedule_btn: 'Generate Pro',
+    auto_fix_btn: 'Auto Fix Pro',
+    validate_schedule_btn: 'Check Legal',
+    trial_cta_title: 'Free trial: legal validation + coverage preview',
+    trial_cta_desc: 'Need one-click auto scheduling? Contact',
+    contact_for_pro: 'Contact for Pro',
+    coverage_overview_title: 'Coverage Overview (time-first)',
+    coverage_overview_hint: 'Time-first view: see whether each shift is covered.',
+    staff_schedule_preview_title: 'Staff Schedule Preview',
+    staff_schedule_preview_hint: 'People-first view: edit shifts directly and run free legal validation.',
+    view_staff_schedule: 'View Staff Schedule',
+    shift_settings_title: 'Shift Settings',
+    shift_col_name: 'Shift',
+    shift_col_code: 'Code',
+    shift_col_start: 'Start',
+    shift_col_end: 'End',
+    shift_col_required: 'Daily Demand',
+    contact_modal_title: 'Unlock Pro Scheduling',
+    contact_modal_sub: 'One-click generate schedule is available for paid/custom users.',
+    contact_label: 'Contact',
+    contact_modal_desc: 'Free users can edit schedules and run legal validation locally. Auto generation is kept as a paid backend feature.',
+    email_me: 'Email me',
+    issue_panel_title: '⚠️ Scheduling Issues',
+    auto_fix_feature: 'Auto Fix',
+    generate_feature: 'Generate Schedule',
+    auto_scheduling_feature: 'Auto Scheduling',
+    unmet_title: n => `Unmet demand: ${n} shift(s)`,
+    missing_shift: (day, shift) => `Missing: ${day} ${shift}`,
+    violation_title: n => `Legal violations: ${n}`,
+    valid_message: 'Schedule is legal and demand is covered ✅',
+    no_staff: '⚠️ No staff',
+    missing_people: n => `Short ${n} staff`,
+    person_unit: 'staff',
+    shift_unit: 'shifts',
+    staff_setting_updated: 'Staff scheduling settings updated',
+    shift_setting_updated: 'Shift settings updated',
+    schedule_valid_toast: 'Schedule is legal ✅',
+    paid_feature_message: feature => `${feature} is a paid backend feature. Please contact luxandpei@gmail.com for access or customization.`,
+    employee_fallback: id => `Staff ${id}`,
+    daily_hours_exceeded: (name, day, hours) => `${name} ${day} worked ${hours} hours, over 8 hours`,
+    weekly_hours_exceeded: (name, hours) => `${name} worked ${hours} hours this week, over 40 hours`,
+    consecutive_days_exceeded: (name, streak) => `${name} worked ${streak} consecutive days, may violate rest-day rules`,
+    rest_too_short: (name, hours) => `${name} only has ${hours} hours between shifts, less than 11 hours`,
+    shift_names: ['Morning','Evening','Night','Day Off'],
+    shift_shorts: ['AM','PM','NT','OFF'],
   },
   zh: {
     nav_label: '主選單',
     nav_dashboard: '總覽',
     nav_schedule: '排班表',
     nav_staff: '員工管理',
+    nav_shifts: '班次設定',
     nav_reports: '報表分析',
     nav_notifications: '通知設定',
     plan_name: 'Free 方案',
@@ -969,6 +1152,8 @@ const TRANSLATIONS = {
     full_schedule: '完整排班管理',
     staff_list: '員工名單（Free：上限 5 人）',
     col_position: '職位',
+    col_min_shifts: '最少班數',
+    col_max_shifts: '最多班數',
     col_week_shifts: '本週班次',
     col_status: '狀態',
     unlimited_staff: '無限員工人數',
@@ -1000,7 +1185,7 @@ const TRANSLATIONS = {
     days: ['一','二','三','四','五','六','日'],
     shifts: ['早','晚','夜','休'],
     shift_labels: ['早 08-16','晚 16-24','夜 00-08','休'],
-    page_titles: { dashboard: '總覽', schedule: '排班表', staff: '員工管理' },
+    page_titles: { dashboard: '總覽', schedule: '排班表', staff: '員工管理', shifts: '班次設定' },
     toast_updated: '班表已更新',
     toast_removed: '員工已移除',
     toast_csv: 'CSV 匯出成功',
@@ -1012,12 +1197,58 @@ const TRANSLATIONS = {
     csv_total: '總班次',
     hidden_staff: n => `🔒 還有 ${n} 位員工被隱藏 — 升級 Pro 查看全部`,
     remove: '移除',
+    generate_schedule_btn: '付費生成',
+    auto_fix_btn: 'Pro修正',
+    validate_schedule_btn: '合法性檢查',
+    trial_cta_title: '免費試用：合法性檢查 + 覆蓋預覽',
+    trial_cta_desc: '需要一鍵自動排班？請聯絡',
+    contact_for_pro: '聯絡開通 Pro',
+    coverage_overview_title: '覆蓋總覽（時間優先）',
+    coverage_overview_hint: '時間優先視角：快速確認每個班次是否有人覆蓋。',
+    staff_schedule_preview_title: '人員排班預覽',
+    staff_schedule_preview_hint: '人員優先視角：直接調整班表，並免費檢查合法性。',
+    view_staff_schedule: '查看人員班表',
+    shift_settings_title: '班次設定',
+    shift_col_name: '班次',
+    shift_col_code: '代碼',
+    shift_col_start: '開始',
+    shift_col_end: '結束',
+    shift_col_required: '每日需求人數',
+    contact_modal_title: '開通 Pro 自動排班',
+    contact_modal_sub: '一鍵生成班表提供給付費 / 客製用戶使用。',
+    contact_label: '聯絡方式',
+    contact_modal_desc: '免費用戶可以編輯班表並在前端執行合法性檢查；自動生成排班保留為付費後端功能。',
+    email_me: '寄信給我',
+    issue_panel_title: '⚠️ 排班問題',
+    auto_fix_feature: '自動修正',
+    generate_feature: '生成排班',
+    auto_scheduling_feature: '自動排班',
+    unmet_title: n => `未滿足需求：${n} 班`,
+    missing_shift: (day, shift) => `缺班：${day} ${shift}`,
+    violation_title: n => `法規違規：${n} 項`,
+    valid_message: '班表合法且需求滿足 ✅',
+    no_staff: '⚠️ 無人',
+    missing_people: n => `少 ${n} 人`,
+    person_unit: '人',
+    shift_unit: '班',
+    staff_setting_updated: '員工排班設定已更新',
+    shift_setting_updated: '班次設定已更新',
+    schedule_valid_toast: '班表合法 ✅',
+    paid_feature_message: feature => `${feature} 是付費後端功能，如需開通或客製請聯絡 luxandpei@gmail.com。`,
+    employee_fallback: id => `員工 ${id}`,
+    daily_hours_exceeded: (name, day, hours) => `${name} ${day} 工時 ${hours} 小時，超過 8 小時`,
+    weekly_hours_exceeded: (name, hours) => `${name} 本週工時 ${hours} 小時，超過 40 小時`,
+    consecutive_days_exceeded: (name, streak) => `${name} 連續工作 ${streak} 天，可能違反休息日規則`,
+    rest_too_short: (name, hours) => `${name} 班與班間隔只有 ${hours} 小時，少於 11 小時`,
+    shift_names: ['早班','晚班','夜班','休假'],
+    shift_shorts: ['早','晚','夜','休'],
   },
   ja: {
     nav_label: 'メニュー',
     nav_dashboard: 'ダッシュボード',
     nav_schedule: 'シフト表',
     nav_staff: 'スタッフ管理',
+    nav_shifts: '班次設定',
     nav_reports: 'レポート',
     nav_notifications: '通知設定',
     plan_name: 'Freeプラン',
@@ -1050,6 +1281,8 @@ const TRANSLATIONS = {
     full_schedule: 'シフト管理',
     staff_list: 'スタッフ一覧（Free：5名まで）',
     col_position: '役職',
+    col_min_shifts: '最少班數',
+    col_max_shifts: '最多班數',
     col_week_shifts: '今週のシフト',
     col_status: 'ステータス',
     unlimited_staff: 'スタッフ無制限',
@@ -1081,7 +1314,7 @@ const TRANSLATIONS = {
     days: ['月','火','水','木','金','土','日'],
     shifts: ['早','遅','夜','休'],
     shift_labels: ['早番 08-16','遅番 16-24','夜番 00-08','休日'],
-    page_titles: { dashboard: 'ダッシュボード', schedule: 'シフト表', staff: 'スタッフ管理' },
+    page_titles: { dashboard: 'ダッシュボード', schedule: 'シフト表', staff: 'スタッフ管理', shifts: 'シフト設定' },
     toast_updated: 'シフトを更新しました',
     toast_removed: 'スタッフを削除しました',
     toast_csv: 'CSVを出力しました',
@@ -1093,12 +1326,57 @@ const TRANSLATIONS = {
     csv_total: '合計シフト',
     hidden_staff: n => `🔒 あと${n}名が非表示 — Proにアップグレードして全員を確認`,
     remove: '削除',
+    generate_schedule_btn: 'Pro生成',
+    auto_fix_btn: 'Pro修正',
+    validate_schedule_btn: '法令チェック',
+    trial_cta_title: '無料トライアル：法令チェック + カバー状況プレビュー',
+    trial_cta_desc: 'ワンクリック自動シフト作成が必要な場合はお問い合わせください：',
+    contact_for_pro: 'Proについて問い合わせる',
+    coverage_overview_title: 'カバー状況（時間優先）',
+    coverage_overview_hint: '時間優先ビュー：各シフトがカバーされているか確認できます。',
+    staff_schedule_preview_title: 'スタッフ別シフトプレビュー',
+    staff_schedule_preview_hint: 'スタッフ優先ビュー：シフトを直接編集し、無料で法令チェックできます。',
+    view_staff_schedule: 'スタッフ別シフトを見る',
+    shift_settings_title: 'シフト設定',
+    shift_col_name: 'シフト',
+    shift_col_code: 'コード',
+    shift_col_start: '開始',
+    shift_col_end: '終了',
+    shift_col_required: '1日の必要人数',
+    contact_modal_title: 'Pro自動シフト作成を開放',
+    contact_modal_sub: 'ワンクリック生成は有料 / カスタムユーザー向け機能です。',
+    contact_label: '連絡先',
+    contact_modal_desc: '無料ユーザーはシフト編集とローカル法令チェックを利用できます。自動生成は有料バックエンド機能です。',
+    email_me: 'メールする',
+    issue_panel_title: '⚠️ シフト問題',
+    auto_fix_feature: '自動修正',
+    generate_feature: 'シフト生成',
+    auto_scheduling_feature: '自動シフト作成',
+    unmet_title: n => `未充足シフト：${n} 件`,
+    missing_shift: (day, shift) => `不足：${day} ${shift}`,
+    violation_title: n => `法令違反：${n} 件`,
+    valid_message: 'シフトは合法で、必要人数も満たしています ✅',
+    no_staff: '⚠️ 人員なし',
+    missing_people: n => `${n}名不足`,
+    person_unit: '名',
+    shift_unit: 'シフト',
+    staff_setting_updated: 'スタッフのシフト設定を更新しました',
+    shift_setting_updated: 'シフト設定を更新しました',
+    schedule_valid_toast: 'シフトは合法です ✅',
+    paid_feature_message: feature => `${feature} は有料バックエンド機能です。利用・カスタムについては luxandpei@gmail.com までお問い合わせください。`,
+    employee_fallback: id => `スタッフ ${id}`,
+    daily_hours_exceeded: (name, day, hours) => `${name} ${day} の勤務時間は ${hours} 時間で、8時間を超えています`,
+    weekly_hours_exceeded: (name, hours) => `${name} の週勤務時間は ${hours} 時間で、40時間を超えています`,
+    consecutive_days_exceeded: (name, streak) => `${name} は ${streak} 日連続勤務です。休日ルールに抵触する可能性があります`,
+    rest_too_short: (name, hours) => `${name} の勤務間隔は ${hours} 時間のみで、11時間未満です`,
+    shift_names: ['早番','遅番','夜勤','休日'],
+    shift_shorts: ['早','遅','夜','休'],
   },
 };
 
 let currentLang = localStorage.getItem('lang') || 'en';
 let T = TRANSLATIONS[currentLang];
-
+let lastUnmet = [];
 function setLang(lang) {
   currentLang = lang;
   T = TRANSLATIONS[lang];
@@ -1130,13 +1408,20 @@ function applyLang() {
   renderTable2();
   renderStats();
   renderStaffTable();
+  renderTimeOverview();
+  if (currentView === 'shifts') renderShiftSettings();
 }
 
 // ── Mock Data ──
 const PLAN = 'free';
 const FREE_LIMIT = 5;
 const SHIFT_CLASSES = ['s-morning','s-evening','s-night','s-off'];
-
+let shiftSettings = [
+  { id: 0, key: "morning", name: "早班", short: "早", start: "08:00", end: "16:00", required: 2 },
+  { id: 1, key: "evening", name: "晚班", short: "晚", start: "16:00", end: "24:00", required: 2 },
+  { id: 2, key: "night", name: "夜班", short: "夜", start: "00:00", end: "08:00", required: 1 },
+  { id: 3, key: "off", name: "休假", short: "休", start: "", end: "", required: 0 }
+];
 const AVATAR_COLORS = [
   ['rgba(110,231,183,0.2)','#6ee7b7'],
   ['rgba(147,197,253,0.2)','#93c5fd'],
@@ -1148,12 +1433,11 @@ const AVATAR_COLORS = [
 ];
 
 let employees = [
-  { id:1, name:'林小玲', role:'店長', initials:'林' },
-  { id:2, name:'張志明', role:'全職', initials:'張' },
-  { id:3, name:'陳美慧', role:'全職', initials:'陳' },
-  { id:4, name:'王大偉', role:'兼職', initials:'王' },
-  { id:5, name:'李思穎', role:'兼職', initials:'李' },
-  { id:6, name:'吳俊宏', role:'全職', initials:'吳' },
+  { id:1, name:'林小玲', role:'店長', initials:'林', minShifts: 4, maxShifts: 5 },
+  { id:2, name:'張志明', role:'全職', initials:'張', minShifts: 4, maxShifts: 5 },
+  { id:3, name:'陳美慧', role:'全職', initials:'陳', minShifts: 4, maxShifts: 5 },
+  { id:4, name:'王大偉', role:'兼職', initials:'王', minShifts: 2, maxShifts: 4 },
+  { id:5, name:'李思穎', role:'兼職', initials:'李', minShifts: 2, maxShifts: 4 }
 ];
 
 // schedules[empId][dayIndex] = shiftIndex
@@ -1208,20 +1492,44 @@ function changeWeek(dir) {
   renderTable();
   renderTable2();
   renderStats();
+  renderTimeOverview();
 }
 
 // ── Stats ──
 function renderStats() {
   let total = 0, off = 0;
+
   employees.forEach(emp => {
     const row = schedules[emp.id] || [];
-    row.forEach(s => { if(s < 3) total++; else off++; });
+    row.forEach(s => {
+      if (s < 3) total++;
+      else off++;
+    });
   });
-  const cover = total + off > 0 ? Math.round(total / (total + off) * 100) : 0;
+
+  const requiredShiftsPerDay = shiftSettings
+    .filter(s => s.id !== 3)
+    .reduce((sum, s) => sum + Number(s.required || 0), 0);
+  const totalRequired = 7 * requiredShiftsPerDay;
+  const cover = totalRequired > 0 ? Math.round((total / totalRequired) * 100) : 100;
+
   document.getElementById('d-emp').textContent = employees.length;
   document.getElementById('d-shifts').textContent = total;
   document.getElementById('d-off').textContent = off;
   document.getElementById('d-cover').textContent = cover + '%';
+}
+// ── Shift label helpers ──
+function getShiftNameById(id) {
+  return T.shift_names?.[id] || shiftSettings.find(s => s.id === id)?.name || '';
+}
+function getShiftShortById(id) {
+  return T.shift_shorts?.[id] || shiftSettings.find(s => s.id === id)?.short || '';
+}
+function getShiftDisplay(setting) {
+  return {
+    name: getShiftNameById(setting.id),
+    short: getShiftShortById(setting.id)
+  };
 }
 
 // ── Table ──
@@ -1259,10 +1567,13 @@ function renderTable(tbodyId = 'sched-tbody') {
     `;
 
     row.forEach((s, di) => {
+      const setting = shiftSettings.find(x => x.id === s) || shiftSettings[3];
+      const display = getShiftDisplay(setting);
+      const label = s === 3 ? (T.shifts[3] || display.short) : `${display.name} ${setting.start}-${setting.end}`;
       cells += `<td class="shift-cell">
         <button class="shift-tag ${SHIFT_CLASSES[s]}"
           onclick="cycleShift(${emp.id},${di})"
-          title="${T.shift_labels[s]}">${T.shifts[s]}</button>
+          title="${label}">${display.short}</button>
       </td>`;
     });
 
@@ -1273,7 +1584,7 @@ function renderTable(tbodyId = 'sched-tbody') {
 
   if (PLAN === 'free' && employees.length > FREE_LIMIT) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td colspan="9" style="text-align:center;padding:16px;color:var(--amber);font-size:12px;cursor:pointer" onclick="showUpgrade()">
+    tr.innerHTML = `<td colspan="9" style="text-align:center;padding:16px;color:var(--amber);font-size:12px;cursor:pointer" onclick="showPaidContact()">
       ${T.hidden_staff(employees.length - FREE_LIMIT)}
     </td>`;
     tbody.appendChild(tr);
@@ -1289,6 +1600,7 @@ function cycleShift(empId, dayIdx) {
   renderTable2();
   renderStats();
   renderStaffTable();
+  renderTimeOverview();
   showToast(T.toast_updated);
 }
 
@@ -1317,11 +1629,24 @@ function renderStaffTable() {
         </div>
       </td>
       <td style="color:var(--text-muted);font-size:13px">${emp.role}</td>
+
+      <td>
+        <select class="count-select" onchange="updateEmployeeSetting(${emp.id}, 'minShifts', Number(this.value))">
+          ${renderShiftCountOptions(emp.minShifts ?? 0)}
+        </select>
+      </td>
+
+      <td>
+        <select class="count-select" onchange="updateEmployeeSetting(${emp.id}, 'maxShifts', Number(this.value))">
+          ${renderShiftCountOptions(emp.maxShifts ?? 5)}
+        </select>
+      </td>
+
       <td style="text-align:center"><span class="total-chip">${worked}</span></td>
       <td><span style="color:${statusColor};font-size:12px">${statusText}</span></td>
       <td style="text-align:right">
         ${isLocked
-          ? `<button class="btn btn-ghost" onclick="showUpgrade()" style="font-size:11px;padding:4px 10px">🔒 Pro</button>`
+          ? `<button class="btn btn-ghost" onclick="showPaidContact()" style="font-size:11px;padding:4px 10px">🔒 Pro</button>`
           : `<button class="btn btn-ghost" onclick="removeStaff(${emp.id})" style="font-size:11px;padding:4px 10px;color:var(--red);border-color:var(--red-dim)">${T.remove}</button>`
         }
       </td>
@@ -1329,7 +1654,19 @@ function renderStaffTable() {
     tbody.appendChild(tr);
   });
 }
+function updateEmployeeSetting(empId, field, value) {
+  const emp = employees.find(e => e.id === empId);
+  if (!emp) return;
 
+  emp[field] = value;
+
+  if ((emp.minShifts ?? 0) > (emp.maxShifts ?? 0)) {
+    emp.maxShifts = emp.minShifts;
+  }
+
+  renderStaffTable();
+  showToast(T.staff_setting_updated);
+}
 function removeStaff(id) {
   employees = employees.filter(e => e.id !== id);
   delete schedules[id];
@@ -1344,12 +1681,14 @@ function navigate(view, el) {
   document.getElementById('view-dashboard').style.display = 'none';
   document.getElementById('view-schedule').style.display = 'none';
   document.getElementById('view-staff').style.display = 'none';
+  document.getElementById('view-shifts').style.display = 'none';
   document.getElementById('view-' + view).style.display = 'block';
   document.getElementById('view-' + view).classList.add('fade-in');
   document.getElementById('page-title').textContent = T.page_titles[view] || view;
   currentView = view;
   if (view === 'schedule') { updateHeaders('s'); renderTable2(); }
   if (view === 'staff') renderStaffTable();
+  if (view === 'shifts') renderShiftSettings();
 }
 
 // ── Filter ──
@@ -1369,7 +1708,7 @@ function exportCSV() {
     if (PLAN === 'free' && idx >= FREE_LIMIT) return;
     const row = schedules[emp.id] || [];
     const worked = row.filter(s => s < 3).length;
-    csv.push([emp.name, emp.role, ...row.map(s => T.shifts[s]), worked].join(','));
+    csv.push([emp.name, emp.role, ...row.map(s => getShiftShortById(s)), worked].join(','));
   });
   const blob = new Blob(['﻿' + csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -1378,9 +1717,6 @@ function exportCSV() {
 }
 
 // ── Modals ──
-function showUpgrade() {
-  document.getElementById('upgrade-modal').classList.add('open');
-}
 
 function closeModal() {
   document.getElementById('upgrade-modal').classList.remove('open');
@@ -1404,7 +1740,7 @@ function closeAddStaff() {
 }
 
 function addStaff() {
-  if (PLAN === 'free' && employees.length >= FREE_LIMIT) { showUpgrade(); return; }
+  if (PLAN === 'free' && employees.length >= FREE_LIMIT) { showPaidContact(); return; }
   const name = document.getElementById('new-name').value.trim();
   const role = document.getElementById('new-role').value;
   if (!name) { showToast(T.toast_name_required); return; }
@@ -1430,7 +1766,83 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
+function getEmployeeLabel(employeeId) {
+  const emp = employees.find(e => e.id === employeeId);
+  if (!emp) return T.employee_fallback(employeeId);
+  return `${employeeId} - ${emp.name}`;
+}
 
+function focusIssue(employeeId, date) {
+  const row = document.querySelector(`tr[data-emp-id="${employeeId}"]`);
+  if (!row) return;
+
+  row.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  row.style.boxShadow = "0 0 0 2px rgba(252,211,77,0.8)";
+  setTimeout(() => {
+    row.style.boxShadow = "";
+  }, 1600);
+
+  if (date && date.startsWith("day-")) {
+    const dayIndex = parseInt(date.replace("day-", ""));
+    const cell = row.children[dayIndex + 1];
+    if (cell) {
+      cell.style.outline = "3px solid rgba(252,211,77,0.9)";
+      setTimeout(() => {
+        cell.style.outline = "2px solid rgba(252,165,165,0.8)";
+      }, 1600);
+    }
+  }
+}
+
+function openIssuePanel(violations = [], unmet = []) {
+  const panel = document.getElementById("issue-panel");
+  const list = document.getElementById("issue-list");
+
+  const dayNames = T.days;
+  const shiftNames = Object.fromEntries(shiftSettings.map(s => [s.id, getShiftShortById(s.id)]));
+
+  let html = "";
+
+  if (unmet.length > 0) {
+    html += `<div style="margin-bottom:16px;color:var(--amber);font-weight:700">${T.unmet_title(unmet.length)}</div>`;
+    unmet.forEach(u => {
+      html += `
+        <div style="padding:10px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--surface2)">
+          ${T.missing_shift(dayNames[u.day], shiftNames[u.shiftType])}
+        </div>
+      `;
+    });
+  }
+
+  if (violations.length > 0) {
+    html += `<div style="margin:16px 0;color:var(--red);font-weight:700">${T.violation_title(violations.length)}</div>`;
+    violations.forEach(v => {
+      const empLabel = getEmployeeLabel(v.employeeId);
+      const safeDate = v.date || "";
+
+      html += `
+        <div
+          onclick="focusIssue(${v.employeeId}, '${safeDate}')"
+          style="padding:10px;border:1px solid var(--red-dim);border-radius:10px;margin-bottom:8px;background:rgba(252,165,165,0.08);cursor:pointer"
+        >
+          <div style="font-weight:700;margin-bottom:4px">${empLabel}</div>
+          <div style="font-size:12px;color:var(--text-muted)">${v.message}</div>
+        </div>
+      `;
+    });
+  }
+
+  if (!html) {
+    html = `<div style="color:var(--accent)">${T.valid_message}</div>`;
+  }
+
+  list.innerHTML = html;
+  panel.style.right = "0";
+}
+function closeIssuePanel() {
+  document.getElementById("issue-panel").style.right = "-360px";
+}
 // close modal on overlay click
 document.getElementById('upgrade-modal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
@@ -1438,11 +1850,359 @@ document.getElementById('upgrade-modal').addEventListener('click', function(e) {
 document.getElementById('add-staff-modal').addEventListener('click', function(e) {
   if (e.target === this) closeAddStaff();
 });
+document.getElementById('contact-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeContactModal();
+});
 
+let currentFeature = "";
+
+function showPaidContact(feature = "Pro feature") {
+  currentFeature = feature;
+
+  const modal = document.getElementById("contact-modal");
+  const sub = document.getElementById("contact-modal-sub");
+
+  if (sub) {
+    sub.innerHTML = `
+      ${feature} is a paid feature.<br><br>
+      ✔ Auto scheduling based on labor laws<br>
+      ✔ Handle staff shortages automatically<br>
+      ✔ Save hours of manual planning<br><br>
+      Contact me to unlock or customize for your business.
+    `;
+  }
+
+  modal.classList.add("open");
+}
+
+function sendMailFromModal() {
+  const subject = encodeURIComponent(`Scheduly - ${currentFeature}`);
+  const body = encodeURIComponent(
+`Hi,
+
+I'm interested in: ${currentFeature}
+
+Company size:
+Country:
+Needs:
+
+Thanks`
+  );
+
+  window.location.href =
+    `mailto:luxandpei@gmail.com?subject=${subject}&body=${body}`;
+}
+function closeContactModal() {
+  document.getElementById("contact-modal").classList.remove("open");
+}
+
+function parseTimeToHour(value) {
+  if (value === "24:00") return 24;
+  const [h, m] = value.split(":").map(Number);
+  return h + m / 60;
+}
+
+function calculateShiftHours(start, end) {
+  let diff = parseTimeToHour(end) - parseTimeToHour(start);
+  if (diff <= 0) diff += 24;
+  return diff;
+}
+
+function validateScheduleLocally() {
+  const violations = [];
+  const weeklyHours = {};
+  const employeeDays = {};
+  const shiftsByEmployee = {};
+
+  employees.forEach(emp => {
+    const row = schedules[emp.id] || [];
+    row.forEach((shiftIndex, dayIndex) => {
+      if (shiftIndex === 3) return;
+      const setting = shiftSettings.find(s => s.id === shiftIndex);
+      if (!setting) return;
+
+      const hours = calculateShiftHours(setting.start, setting.end);
+      weeklyHours[emp.id] = (weeklyHours[emp.id] || 0) + hours;
+      if (!employeeDays[emp.id]) employeeDays[emp.id] = [];
+      employeeDays[emp.id].push(dayIndex);
+      if (!shiftsByEmployee[emp.id]) shiftsByEmployee[emp.id] = [];
+      shiftsByEmployee[emp.id].push({ emp, dayIndex, setting, start: setting.start, end: setting.end });
+
+      if (hours > 8) {
+        violations.push({
+          employeeId: emp.id,
+          date: `day-${dayIndex}`,
+          type: "DAILY_HOURS_EXCEEDED",
+          message: T.daily_hours_exceeded(emp.name, T.days[dayIndex], Number(hours.toFixed(1)))
+        });
+      }
+    });
+  });
+
+  Object.entries(weeklyHours).forEach(([employeeId, hours]) => {
+    if (hours > 40) {
+      const emp = employees.find(e => String(e.id) === String(employeeId));
+      violations.push({
+        employeeId: Number(employeeId),
+        date: "week",
+        type: "WEEKLY_HOURS_EXCEEDED",
+        message: T.weekly_hours_exceeded(emp?.name || T.employee_fallback(employeeId), Number(hours.toFixed(1)))
+      });
+    }
+  });
+
+  Object.entries(employeeDays).forEach(([employeeId, days]) => {
+    days = [...new Set(days)].sort((a,b) => a-b);
+    let streak = 1;
+    for (let i = 1; i < days.length; i++) {
+      streak = days[i] === days[i-1] + 1 ? streak + 1 : 1;
+      if (streak >= 6) {
+        const emp = employees.find(e => String(e.id) === String(employeeId));
+        violations.push({
+          employeeId: Number(employeeId),
+          date: `day-${days[i]}`,
+          type: "CONSECUTIVE_WORK_DAYS_EXCEEDED",
+          message: T.consecutive_days_exceeded(emp?.name || T.employee_fallback(employeeId), streak)
+        });
+        break;
+      }
+    }
+  });
+
+  Object.entries(shiftsByEmployee).forEach(([employeeId, empShifts]) => {
+    empShifts.sort((a,b) => a.dayIndex - b.dayIndex);
+    let prev = null;
+    let prevEndAbs = null;
+    empShifts.forEach(item => {
+      const startAbs = item.dayIndex * 24 + parseTimeToHour(item.start);
+      let endAbs = item.dayIndex * 24 + parseTimeToHour(item.end);
+      if (parseTimeToHour(item.end) <= parseTimeToHour(item.start)) endAbs += 24;
+
+      if (prev && prevEndAbs !== null) {
+        const restHours = startAbs - prevEndAbs;
+        if (restHours < 11) {
+          violations.push({
+            employeeId: Number(employeeId),
+            date: `day-${item.dayIndex}`,
+            from: `day-${prev.dayIndex}`,
+            to: `day-${item.dayIndex}`,
+            type: "REST_BETWEEN_SHIFTS_TOO_SHORT",
+            message: T.rest_too_short(item.emp.name, Number(restHours.toFixed(1)))
+          });
+        }
+      }
+      prev = item;
+      prevEndAbs = endAbs;
+    });
+  });
+
+  return { valid: violations.length === 0, violations };
+}
+
+function validateSchedule() {
+  const unmet = checkDemandCoverage();
+  const data = validateScheduleLocally();
+
+  lastUnmet = unmet;
+
+  highlightViolations(data.violations);
+
+  if (data.valid && unmet.length === 0) {
+    showToast(T.valid_message);
+    openIssuePanel([], []);
+  } else {
+    openIssuePanel(data.violations, unmet);
+  }
+}
+function checkDemandCoverage() {
+  const unmet = [];
+
+  for (let day = 0; day < 7; day++) {
+    shiftSettings.forEach(shift => {
+      if (shift.id === 3) return;
+
+      const assigned = employees.filter(emp => {
+        return schedules[emp.id]?.[day] === shift.id;
+      });
+
+      const missing = Number(shift.required || 0) - assigned.length;
+
+      for (let i = 0; i < missing; i++) {
+        unmet.push({
+          day,
+          shiftType: shift.id
+        });
+      }
+    });
+  }
+
+  return unmet;
+}
+function highlightViolations(violations) {
+  document.querySelectorAll(".shift-cell").forEach(td => {
+    td.style.outline = "";
+  });
+
+  violations.forEach(v => {
+    if (v.date) {
+      const dayIndex = parseInt(v.date.replace("day-", ""));
+      const row = document.querySelector(`tr[data-emp-id="${v.employeeId}"]`);
+      if (!row) return;
+
+      const cell = row.children[dayIndex + 1]; // +1 因為第一欄是員工
+      if (cell) {
+        cell.style.outline = "2px solid rgba(252,165,165,0.8)";
+        cell.title = v.message;
+      }
+    }
+  });
+}
+function autoFix() {
+  showPaidContact(T.auto_fix_feature);
+}
+function generateSchedule() {
+  showPaidContact(T.generate_feature);
+}
+function renderShiftSettings() {
+  const tbody = document.getElementById("shift-settings-tbody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  shiftSettings.forEach(s => {
+    if (s.id === 3) return;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${getShiftNameById(s.id)}</td>
+      <td>${getShiftShortById(s.id)}</td>
+      <td>
+        <select class="time-select" onchange="updateShiftSetting(${s.id}, 'start', this.value)">
+          ${renderTimeOptions(s.start)}
+        </select>
+      </td>
+      <td>
+        <select class="time-select" onchange="updateShiftSetting(${s.id}, 'end', this.value)">
+          ${renderTimeOptions(s.end)}
+        </select>
+      </td>
+      <td>
+        <select class="count-select" onchange="updateShiftSetting(${s.id}, 'required', Number(this.value))">
+          ${renderCountOptions(s.required)}
+        </select>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function updateShiftSetting(id, field, value) {
+  const s = shiftSettings.find(x => x.id === id);
+  if (!s) return;
+
+  // HTML time input cannot represent 24:00, so keep the common 16:00→24:00 shift semantic.
+  if (field === 'end' && id === 1 && value === '00:00') {
+    s[field] = '24:00';
+  } else {
+    s[field] = value;
+  }
+
+  renderShiftSettings();
+  renderTable();
+  renderTable2();
+  renderStats();
+  renderTimeOverview();
+  showToast(T.shift_setting_updated);
+}
+
+function renderTimeOptions(selected) {
+  let html = "";
+  for (let h = 0; h < 24; h++) {
+    for (let m of [0, 30]) {
+      const value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      html += `<option value="${value}" ${value === selected ? "selected" : ""}>${value}</option>`;
+    }
+  }
+  html += `<option value="24:00" ${selected === "24:00" ? "selected" : ""}>24:00</option>`;
+  return html;
+}
+
+function renderCountOptions(selected) {
+  let html = "";
+  for (let i = 0; i <= 10; i++) {
+    html += `<option value="${i}" ${i === selected ? "selected" : ""}>${i} ${T.person_unit}</option>`;
+  }
+  return html;
+}
+function renderShiftCountOptions(selected) {
+  let html = "";
+  for (let i = 0; i <= 7; i++) {
+    html += `<option value="${i}" ${i === selected ? "selected" : ""}>${i} ${T.shift_unit}</option>`;
+  }
+  return html;
+}
+function buildTimeView() {
+  const result = [];
+
+  for (let day = 0; day < 7; day++) {
+    const dayData = {
+      day,
+      shifts: []
+    };
+
+    shiftSettings.forEach(s => {
+      if (s.id === 3) return;
+
+      const assigned = employees.filter(emp => {
+        return schedules[emp.id]?.[day] === s.id;
+      });
+
+      dayData.shifts.push({
+        shift: s,
+        people: assigned
+      });
+    });
+
+    result.push(dayData);
+  }
+
+  return result;
+}
+function renderTimeOverview() {
+  const container = document.getElementById("time-overview");
+  if (!container) return;
+  const data = buildTimeView();
+  container.innerHTML = `<div class="time-overview-grid">${data.map(d => {
+    const mon = getWeekStart(weekOffset);
+    const date = new Date(mon); date.setDate(mon.getDate() + d.day);
+    return `
+      <div class="time-day-card">
+        <div class="time-day-title">${T.days[d.day]} ${fmt(date)}</div>
+        ${d.shifts.map(item => {
+          const required = Number(item.shift.required || 0);
+          const missing = Math.max(0, required - item.people.length);
+          return `
+            <div class="time-shift-card">
+              <div class="time-shift-head">
+                <span>${getShiftNameById(item.shift.id)} ${item.shift.start}-${item.shift.end}</span>
+                <span>${item.people.length}/${required}</span>
+              </div>
+              <div class="time-people">
+                ${item.people.length ? item.people.map(p => `<span class="person-chip">👤 ${p.name}</span>`).join("") : `<span class="missing-chip">${T.no_staff}</span>`}
+                ${missing > 0 ? `<span class="missing-chip">${T.missing_people(missing)}</span>` : ""}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }).join("")}</div>`;
+}
 // ── Init ──
 setLang(currentLang);
 updateWeekLabel();
 renderStats();
+renderTimeOverview();
 </script>
 </body>
 </html>
