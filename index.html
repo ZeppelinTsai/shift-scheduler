@@ -1165,6 +1165,13 @@ const TRANSLATIONS = {
     rest_too_short: (name, hours) => `${name} only has ${hours} hours between shifts, less than 11 hours`,
     shift_names: ['Morning','Evening','Night','Day Off'],
     shift_shorts: ['AM','PM','NT','OFF'],
+    paid_modal_content: feature => `
+      ${feature} is a paid feature.<br><br>
+      ✔ Auto scheduling based on labor laws<br>
+      ✔ Handle staff shortages automatically<br>
+      ✔ Save hours of manual planning<br><br>
+      Contact me to unlock or customize for your business.
+    `,
   },
   zh: {
     nav_label: '主選單',
@@ -1294,6 +1301,13 @@ const TRANSLATIONS = {
     rest_too_short: (name, hours) => `${name} 班與班間隔只有 ${hours} 小時，少於 11 小時`,
     shift_names: ['早班','晚班','夜班','休假'],
     shift_shorts: ['早','晚','夜','休'],
+    paid_modal_content: feature => `
+      ${feature} 為付費功能。<br><br>
+      ✔ 根據勞基法自動排班<br>
+      ✔ 自動處理人力不足問題<br>
+      ✔ 節省大量人工排班時間<br><br>
+      如需開通或客製功能，請聯絡我。
+    `,
   },
   ja: {
     nav_label: 'メニュー',
@@ -1423,6 +1437,13 @@ const TRANSLATIONS = {
     rest_too_short: (name, hours) => `${name} の勤務間隔は ${hours} 時間のみで、11時間未満です`,
     shift_names: ['早番','遅番','夜勤','休日'],
     shift_shorts: ['早','遅','夜','休'],
+    paid_modal_content: feature => `
+      ${feature} は有料機能です。<br><br>
+      ✔ 労働法に基づいた自動シフト作成<br>
+      ✔ 人員不足の自動調整<br>
+      ✔ 手動作業の時間を大幅削減<br><br>
+      利用またはカスタマイズについてはご連絡ください。
+    `,
   },
 };
 
@@ -1919,20 +1940,15 @@ document.getElementById('contact-modal').addEventListener('click', function(e) {
 
 let currentFeature = "";
 
-function showPaidContact(feature = "Pro feature") {
-  currentFeature = feature;
-
+function showPaidContact(featureKey = "auto_scheduling_feature") {
   const modal = document.getElementById("contact-modal");
   const sub = document.getElementById("contact-modal-sub");
 
+  // 讓 feature 也能翻譯
+  const featureText = T[featureKey] || featureKey;
+
   if (sub) {
-    sub.innerHTML = `
-      ${feature} is a paid feature.<br><br>
-      ✔ Auto scheduling based on labor laws<br>
-      ✔ Handle staff shortages automatically<br>
-      ✔ Save hours of manual planning<br><br>
-      Contact me to unlock or customize for your business.
-    `;
+    sub.innerHTML = T.paid_modal_content(featureText);
   }
 
   modal.classList.add("open");
