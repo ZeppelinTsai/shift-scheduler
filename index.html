@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scheduly — Smart Shift Scheduler</title>
+<meta name="description" content="免費排班系統 Scheduly，支援員工排班、班次設定、休假設定與台灣勞基法合法性檢查，適用餐飲、保全、門市排班。">
+<title>免費排班系統｜台灣勞基法排班檢查｜員工排班工具 Scheduly</title>
+<link rel="canonical" href="https://zeppelintsai.github.io/shift-scheduler/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -626,9 +628,47 @@ body {
   .stats-row { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Scheduly",
+  "operatingSystem": "Web",
+  "applicationCategory": "BusinessApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TWD"
+  },
+  "description": "免費排班系統，支援台灣勞基法排班檢查、員工休假設定、班次管理與缺班檢查。"
+}
+</script>
 </head>
 <body>
+<header>
+  <section id="seo-content" style="margin:24px">
+    <h1>免費排班系統｜支援台灣勞基法排班檢查</h1>
+    <p>
+      Scheduly 是一套線上排班工具，適合餐飲業、保全業、門市與中小企業使用。
+      你可以建立員工資料、設定班次、管理休假與假日，並檢查班表是否有人力不足、
+      連續上班、工時過長或違反台灣勞基法排班規則。
+    </p>
 
+    <h2>適合誰使用？</h2>
+    <p>
+      適合正在使用 Excel 排班表、需要輪班管理、想快速檢查員工休假衝突與缺班問題的店家。
+    </p>
+
+    <h2>核心功能</h2>
+    <ul>
+      <li>員工排班表建立</li>
+      <li>班次設定與每日需求人數</li>
+      <li>員工休假與假日設定</li>
+      <li>台灣勞基法排班檢查</li>
+      <li>缺班與人力不足提醒</li>
+    </ul>
+  </section>
+</header>
 <div class="app">
 
   <!-- Sidebar -->
@@ -694,10 +734,10 @@ body {
         <button class="btn btn-primary" onclick="showAddStaff()" data-i18n="add_staff_btn">+ Add Staff</button>
       </div>
     </div>
-
+    
     <!-- Content -->
     <div class="content">
-
+      
       <!-- Dashboard view -->
       <div id="view-dashboard" class="fade-in">
         <div class="stats-row">
@@ -874,6 +914,18 @@ body {
           </div>
         </div>
       </div>
+      <section id="faq" style="margin:24px">
+        <h2>常見問題</h2>
+
+        <h3>這是免費排班系統嗎？</h3>
+        <p>是，免費版可使用基本排班、員工管理、班次設定與合法性檢查。</p>
+
+        <h3>可以檢查台灣勞基法嗎？</h3>
+        <p>可以，Scheduly 可協助檢查工時、休息時間、連續上班與人力不足等排班風險。</p>
+
+        <h3>可以取代 Excel 排班表嗎？</h3>
+        <p>可以，適合原本用 Excel 管理班表，但希望更快檢查缺班、休假衝突與班次覆蓋率的店家。</p>
+      </section>
     </div><!-- /content -->
     <aside id="issue-panel" style="
       position: fixed;
@@ -1374,7 +1426,7 @@ const TRANSLATIONS = {
   },
 };
 
-let currentLang = localStorage.getItem('lang') || 'en';
+let currentLang = localStorage.getItem('lang') || 'zh';
 let T = TRANSLATIONS[currentLang];
 let lastUnmet = [];
 
@@ -1384,6 +1436,11 @@ function setLang(lang) {
   T = TRANSLATIONS[lang];
   localStorage.setItem('lang', lang);
   document.documentElement.lang = lang === 'zh' ? 'zh-TW' : lang;
+  document.title = {
+    en: "Free Shift Scheduler | Labor Law Checker | Scheduly",
+    zh: "免費排班系統｜勞基法排班檢查｜Scheduly",
+    ja: "無料シフト管理｜労働法チェック｜Scheduly"
+  }[lang];
   applyLang();
 }
 
@@ -2227,11 +2284,13 @@ function renderTimeOverview() {
     `;
   }).join("")}</div>`;
 }
+
 // ── Init ──
 setLang(currentLang);
 updateWeekLabel();
 renderStats();
 renderTimeOverview();
 </script>
+
 </body>
 </html>
