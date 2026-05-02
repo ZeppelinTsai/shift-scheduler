@@ -1377,6 +1377,8 @@ const TRANSLATIONS = {
 let currentLang = localStorage.getItem('lang') || 'en';
 let T = TRANSLATIONS[currentLang];
 let lastUnmet = [];
+
+
 function setLang(lang) {
   currentLang = lang;
   T = TRANSLATIONS[lang];
@@ -1805,11 +1807,15 @@ function openIssuePanel(violations = [], unmet = []) {
   let html = "";
 
   if (unmet.length > 0) {
-    html += `<div style="margin-bottom:16px;color:var(--amber);font-weight:700">${T.unmet_title(unmet.length)}</div>`;
+    const totalMissing = unmet.reduce((sum, u) => sum + Number(u.missing || 0), 0);
+    html += `<div style="margin-bottom:16px;color:var(--amber);font-weight:700">${T.unmet_title(totalMissing)}</div>`;
     unmet.forEach(u => {
       html += `
         <div style="padding:10px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--surface2)">
           ${T.missing_shift(dayNames[u.day], shiftNames[u.shiftType])}
+          <div style="font-size:12px;color:var(--red);font-weight:700;margin-top:4px">
+            ${T.missing_people(u.missing)}
+          </div>
         </div>
       `;
     });
@@ -1998,7 +2004,28 @@ function validateScheduleLocally() {
 
   return { valid: violations.length === 0, violations };
 }
+function validateStaffAvailability() {
+  const violations = [];
 
+  employees.forEach(emp => {
+    const row = schedules[emp.id] || [];
+
+    row.forEach((shiftIndex, dayIndex) => {
+      if (shiftIndex === 3) return;
+
+      if ((emp.unavailableDays || []).includes(dayIndex)) {
+        violations.push({
+          employeeId: emp.id,
+          date: `day-${dayIndex}`,
+          type: "EMPLOYEE_UNAVAILABLE",
+          message: `${emp.name} 在 ${T.days[dayIndex]} 已設定休假，但仍被排班`
+        });
+      }
+    });
+  });
+
+  return violations;
+}
 function validateSchedule() {
   const unmet = checkDemandCoverage();
   const data = validateScheduleLocally();
@@ -2027,10 +2054,11 @@ function checkDemandCoverage() {
 
       const missing = Number(shift.required || 0) - assigned.length;
 
-      for (let i = 0; i < missing; i++) {
+      if (missing > 0) {
         unmet.push({
           day,
-          shiftType: shift.id
+          shiftType: shift.id,
+          missing
         });
       }
     });
@@ -2038,6 +2066,7 @@ function checkDemandCoverage() {
 
   return unmet;
 }
+
 function highlightViolations(violations) {
   document.querySelectorAll(".shift-cell").forEach(td => {
     td.style.outline = "";
