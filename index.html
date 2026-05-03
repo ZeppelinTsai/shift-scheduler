@@ -82,7 +82,9 @@
   <div class="topbar">
     <div class="topbar-left"><div class="page-title" id="page-title" style="display:none;">總覽</div>
     <div class="month-nav"><button onclick="changeMonth(-1)">←</button><span id="month-label" class="month-label">—</span><button onclick="changeMonth(1)">→</button><button onclick="goThisMonth()" data-i18n="this_month">本月</button></div></div>
-    <div class="topbar-right"><button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button><button class="btn btn-ghost" onclick="autoFixSchedulePro()" data-i18n="auto_fix_btn">Pro 修正</button><button class="btn btn-amber" onclick="generateSchedulePro()" data-i18n="generate_schedule_btn">自動排班 Pro</button><div class="lang-switcher"><button class="lang-btn active" data-lang="zh" onclick="setLang('zh')">中</button><button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button><button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日</button></div><button class="btn btn-ghost" onclick="exportCSV()" data-i18n="export_csv">匯出 CSV</button>
+    <div class="topbar-right">
+      <button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button>
+      <button class="btn btn-ghost" onclick="autoFixSchedulePro()" data-i18n="auto_fix_btn">Pro 修正</button><button class="btn btn-amber" onclick="generateSchedulePro()" data-i18n="generate_schedule_btn">自動排班 Pro</button><div class="lang-switcher"><button class="lang-btn active" data-lang="zh" onclick="setLang('zh')">中</button><button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button><button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日</button></div><button class="btn btn-ghost" onclick="exportCSV()" data-i18n="export_csv">匯出 CSV</button>
       <button id="login-top-btn" class="btn btn-ghost" onclick="openLoginModal()">登入</button>
       <button id="menu-top-btn" class="btn btn-ghost" onclick="toggleMenu()" style="display:none">☰</button>
     
@@ -103,17 +105,6 @@
     <div class="issue-item" onclick="navigate('plans',document.querySelector('[data-view=plans]'));toggleMenu()">◆ 方案功能</div>
 
     <hr style="margin:10px 0;border-color:var(--border)">
-    <div class="issue-item"><button class="btn btn-primary" onclick="validateSchedule();toggleMenu()">合法性檢查</button></div>
-    <div class="issue-item"><button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()">Pro 修正</button></div>
-    <div class="issue-item"><button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()">自動排班 Pro</button></div>
-    <div class="issue-item"><button class="btn btn-ghost" onclick="exportCSV();toggleMenu()">匯出 CSV</button></div>
-
-    <hr style="margin:10px 0;border-color:var(--border)">
-
-    <div class="issue-item"><button class="btn btn-ghost" onclick="saveScheduleToBackend();toggleMenu()">雲端儲存</button></div>
-    <div class="issue-item"><button class="btn btn-ghost" onclick="loadScheduleFromBackend();toggleMenu()">雲端讀取</button></div>
-
-    <hr style="margin:10px 0;border-color:var(--border)">
 
     <div class="issue-item">
       <div class="hint" style="margin-bottom:8px">語言</div>
@@ -132,9 +123,25 @@
   <div class="content">
     <section id="view-dashboard" class="view active">
       <div class="stats-row"><div class="stat-card"><div class="stat-label" data-i18n="stat_emp">員工數</div><div id="d-emp" class="stat-val green">—</div><div class="stat-sub" data-i18n="stat_emp_sub">Free 上限 5 人</div></div><div class="stat-card"><div class="stat-label" data-i18n="stat_shifts">本月排定班次</div><div id="d-shifts" class="stat-val blue">—</div><div class="stat-sub" data-i18n="stat_shifts_sub">不含休假</div></div><div class="stat-card"><div class="stat-label" data-i18n="stat_holidays">本月假日</div><div id="d-holidays" class="stat-val amber">—</div><div class="stat-sub" data-i18n="stat_holidays_sub">可自訂</div></div><div class="stat-card"><div class="stat-label" data-i18n="stat_cover">覆蓋率</div><div id="d-cover" class="stat-val red">—</div><div class="stat-sub" data-i18n="stat_cover_sub">需求班次覆蓋</div></div></div>
-      <div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="month_overview">月排班總覽</div><div class="hint" data-i18n="month_overview_hint">以月份為單位檢查缺班、假日與個人休假衝突。</div></div><button class="btn btn-primary" onclick="navigate('schedule',document.querySelector('[data-view=schedule]'))" data-i18n="open_month_schedule">開啟月排班</button></div><div id="dashboard-grid" class="month-grid"></div></div>
+      <div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="month_overview">月排班總覽</div><div class="hint" data-i18n="month_overview_hint">以月份為單位檢查缺班、假日與個人休假衝突。</div></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="btn btn-primary" onclick="navigate('schedule',document.querySelector('[data-view=schedule]'))" data-i18n="open_month_schedule">開啟月排班</button>
+        <button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()">Pro 修正</button>
+        <button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()">自動排班 Pro</button>
+      </div>
+    </div><div id="dashboard-grid" class="month-grid"></div></div>
     </section>
-    <section id="view-schedule" class="view"><div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="monthly_schedule">月排班</div><div class="hint" data-i18n="monthly_schedule_hint">點「編輯」可設定該日每個班次的人員；假日與個人休假會標記在日期上。</div></div><button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button></div><div id="schedule-grid" class="month-grid"></div></div></section>
+    <section id="view-schedule" class="view"><div class="table-card"><div class="toolbar">
+      <div>
+        <div class="table-title" data-i18n="monthly_schedule">月排班</div>
+        <div class="hint" data-i18n="monthly_schedule_hint">點「編輯」可設定該日每個班次的人員；假日與個人休假會標記在日期上。</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button>
+        <button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()">Pro 修正</button>
+        <button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()">自動排班 Pro</button>
+      </div>
+    </div><div id="schedule-grid" class="month-grid"></div></div></section>
     <section id="view-staff" class="view"><div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="staff_list">員工資料</div><div class="hint" data-i18n="staff_hint">免費版最多 5 人；超過人數會保留資料，但需 Pro 才能完整使用。</div></div><button class="btn btn-primary" onclick="showStaffModal()" data-i18n="add_staff_btn">新增員工</button></div><div class="table-wrap"><table class="sched-table"><thead><tr><th data-i18n="col_emp">員工</th><th data-i18n="col_position">職位</th><th data-i18n="col_role_group">角色限制</th><th data-i18n="col_status">狀態</th><th></th></tr></thead><tbody id="staff-tbody"></tbody></table></div></div></section>
     <section id="view-shifts" class="view"><div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="shift_settings_title">班次設定</div><div class="hint" data-i18n="shift_settings_hint">免費版可調整班次時間與每日需求人數；多角色限制屬於進階版。</div></div></div><div class="table-wrap"><table class="sched-table"><thead><tr><th data-i18n="shift_col_name">班次</th><th data-i18n="shift_col_code">代碼</th><th data-i18n="shift_col_start">開始</th><th data-i18n="shift_col_end">結束</th><th data-i18n="shift_col_required">每日需求人數</th><th data-i18n="shift_col_role">角色限制</th></tr></thead><tbody id="shift-tbody"></tbody></table></div></div></section>
     <section id="view-holidays" class="view"><div class="settings-list"><div class="card"><div class="table-title" data-i18n="holiday_settings">假日設定</div><div class="hint" data-i18n="holiday_hint">設定國定假日、店休日或特殊日，會出現在月排班上。</div><div class="form-grid" style="margin-top:14px"><div class="field"><label data-i18n="date_label">日期</label><input id="holiday-date" type="date"></div><div class="field"><label data-i18n="holiday_name_label">假日名稱</label><input id="holiday-name" data-i18n-placeholder="holiday_name_placeholder" placeholder="例如：端午節"></div></div><button class="btn btn-primary" style="margin-top:12px" onclick="addHoliday()" data-i18n="add_holiday">新增假日</button></div><div class="card"><div class="table-title" data-i18n="holiday_list">假日清單</div><div id="holiday-list" style="margin-top:12px"></div></div></div></section>
