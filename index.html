@@ -256,7 +256,7 @@ async function generateSchedulePro(){
   }
   try{
     showToast('正在自動排班…');
-    const res = await fetch(`${API_BASE}/api/pro/schedule/generate?key=${PRO_KEY}`, {
+    const res = await fetch(`${API_BASE}/api/pro/schedule/generate`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(buildProPayload())
@@ -305,7 +305,7 @@ async function autoFixSchedulePro(){
     const payload = buildProPayload()
     payload.schedules = schedulesForBackend()
 
-    const res = await fetch(`${API_BASE}/api/pro/schedule/autofix?key=${PRO_KEY}`, {
+    const res = await fetch(`${API_BASE}/api/pro/schedule/autofix`, {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify(payload)
