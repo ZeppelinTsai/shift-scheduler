@@ -392,6 +392,7 @@ async function login(){
   const company = document.getElementById('login-company').value.trim()
   const username = document.getElementById('login-username').value.trim()
   const password = document.getElementById('login-password').value.trim()
+  const btn = document.getElementById('auth-submit-btn')
 
   if(!company || !username || !password){
     showToast('請輸入公司代碼、帳號與密碼')
@@ -399,38 +400,39 @@ async function login(){
   }
 
   try{
-    showToast('登入中…')
+    btn.disabled = true
+    btn.innerText = '登入中...'
 
     const res = await fetchWithTimeout(`${API_BASE}/api/auth/login`, {
       method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify({
-        company_code: company,
-        username,
-        password
-      })
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ company_code: company, username, password })
     }, 10000)
-    
+
     const text = await res.text()
-    console.log('login status:', res.status)
-    console.log('login response:', text)
+    let data = {}
+
+    try{
+      data = JSON.parse(text)
+    }catch{
+      data = { detail: text }
+    }
 
     if(!res.ok){
-      showToast(`登入失敗：${res.status}`)
+      if(res.status === 401) showToast('公司代碼、帳號或密碼錯誤')
+      else if(res.status === 404) showToast('找不到這個工作區，請先註冊')
+      else if(res.status === 500) showToast('系統暫時異常，請稍後再試')
+      else showToast(data.detail || `登入失敗：${res.status}`)
       return
     }
 
-    const data = JSON.parse(text)
-
     currentCompanyCode = data.company_code
     currentUsername = data.username
-
-    localStorage.setItem('scheduly_company_code', currentCompanyCode)
-    localStorage.setItem('scheduly_username', currentUsername)
-
     currentToken = data.token || ''
     currentPlan = data.plan || 'free'
 
+    localStorage.setItem('scheduly_company_code', currentCompanyCode)
+    localStorage.setItem('scheduly_username', currentUsername)
     localStorage.setItem('scheduly_token', currentToken)
     localStorage.setItem('scheduly_plan', currentPlan)
 
@@ -441,13 +443,13 @@ async function login(){
     showToast(`已登入：${currentCompanyCode}`)
   }catch(err){
     console.error('login error:', err)
-    if(err.name === 'AbortError'){
-      showToast('登入逾時，請稍後重試')
-    }else{
-      showToast('登入失敗：無法連線到後端')
-    }
+    showToast(err.name === 'AbortError' ? '登入逾時，請稍後重試' : '登入失敗：無法連線到後端')
+  }finally{
+    btn.disabled = false
+    btn.innerText = authMode === 'login' ? '登入' : '建立並繼續'
   }
 }
+
 function logout(){
   localStorage.removeItem('scheduly_company_code')
   localStorage.removeItem('scheduly_username')
