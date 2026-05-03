@@ -347,34 +347,45 @@ async function login(){
     return
   }
 
-  const res = await fetch(`${API_BASE}/api/auth/login`, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({
-      company_code: company,
-      username,
-      password
+  try{
+    showToast('登入中…')
+
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        company_code: company,
+        username,
+        password
+      })
     })
-  })
 
-  if(!res.ok){
-    showToast('登入失敗，請檢查公司代碼、帳號或密碼')
-    return
+    const text = await res.text()
+    console.log('login status:', res.status)
+    console.log('login response:', text)
+
+    if(!res.ok){
+      showToast(`登入失敗：${res.status}`)
+      return
+    }
+
+    const data = JSON.parse(text)
+
+    currentCompanyCode = data.company_code
+    currentUsername = data.username
+
+    localStorage.setItem('scheduly_company_code', currentCompanyCode)
+    localStorage.setItem('scheduly_username', currentUsername)
+
+    closeLoginModal()
+    refreshTopAuthUI()
+    await loadScheduleFromBackend()
+
+    showToast(`已登入：${currentCompanyCode}`)
+  }catch(err){
+    console.error('login error:', err)
+    showToast('登入失敗：無法連線到後端')
   }
-
-  const data = await res.json()
-
-  currentCompanyCode = data.company_code
-  currentUsername = data.username
-
-  localStorage.setItem('scheduly_company_code', currentCompanyCode)
-  localStorage.setItem('scheduly_username', currentUsername)
-
-  closeLoginModal()
-  refreshTopAuthUI()
-  await loadScheduleFromBackend()
-
-  showToast(`已登入：${currentCompanyCode}`)
 }
 function logout(){
   localStorage.removeItem('scheduly_company_code')
