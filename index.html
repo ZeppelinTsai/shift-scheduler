@@ -74,12 +74,12 @@
     </div>
 
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeLoginModal()">取消</button>
-      <button id="auth-submit-btn" class="btn btn-primary" onclick="submitAuth()">登入</button>
+      <button class="btn btn-ghost" onclick="closeLoginModal()" data-i18n="cancel">取消</button>
+      <button id="auth-submit-btn" class="btn btn-primary" onclick="submitAuth()" data-i18n="login">登入</button>
     </div>
 
     <div id="auth-switch-text" class="hint" style="margin-top:12px;text-align:right">
-      還沒有工作區？<a href="#" onclick="setAuthMode('register')">註冊 / 建立雲端工作區</a>
+      還沒有工作區？<a href="#" onclick="setAuthMode('register')" data-i18n="register">註冊 / 建立雲端工作區</a>
     </div>
   </div>
 </div>
@@ -103,12 +103,12 @@
 </aside>
 <main class="main">
   <div class="topbar">
-    <div class="topbar-left"><div class="page-title" id="page-title" style="display:none;">總覽</div>
+    <div class="topbar-left"><div class="page-title" id="page-title" style="display:none;" data-i18n="dashboard">總覽</div>
     <div class="month-nav"><button onclick="changeMonth(-1)">←</button><span id="month-label" class="month-label">—</span><button onclick="changeMonth(1)">→</button><button onclick="goThisMonth()" data-i18n="this_month">本月</button></div></div>
     <div class="topbar-right">
       <button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button>
       <button class="btn btn-ghost" onclick="autoFixSchedulePro()" data-i18n="auto_fix_btn">Pro 修正</button><button class="btn btn-amber" onclick="generateSchedulePro()" data-i18n="generate_schedule_btn">自動排班 Pro</button><div class="lang-switcher"><button class="lang-btn active" data-lang="zh" onclick="setLang('zh')">中</button><button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button><button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日</button></div><button class="btn btn-ghost" onclick="exportCSV()" data-i18n="export_csv">匯出 CSV</button>
-      <button id="login-top-btn" class="btn btn-ghost" onclick="openLoginModal()">登入</button>
+      <button id="login-top-btn" class="btn btn-ghost" onclick="openLoginModal()" data-i18n="login">登入</button>
       <button id="menu-top-btn" class="btn btn-ghost" onclick="toggleMenu()" style="display:none">☰</button>
     
     </div>
@@ -182,7 +182,11 @@ let currentPlan = localStorage.getItem('LumShift_plan') || 'free'
 let currentToken = localStorage.getItem('LumShift_token') || ''
 localStorage.setItem('LumShift_plan', currentPlan)
 const TRANSLATIONS=
-{zh:{language:'語言',login_status:'登入狀態',logout:'登出',nav_label:'主選單',nav_dashboard:'總覽',nav_schedule:'月排班',nav_staff:'員工資料',nav_shifts:'班次設定',nav_holidays:'假日設定',nav_leaves:'個人休假',nav_plans:'方案功能',plan_name:'Free 方案',plan_desc:'5 位員工・月排班・基本法規<br>進階功能需 Pro',upgrade_btn:'升級 Pro ↑',this_month:'本月',validate_schedule_btn:'合法性檢查',auto_fix_btn:'Pro 修正',
+{zh:{
+  language:'語言',login_status:'登入狀態',
+  login:'登入',
+  logout:'登出',
+  nav_label:'主選單',nav_dashboard:'總覽',nav_schedule:'月排班',nav_staff:'員工資料',nav_shifts:'班次設定',nav_holidays:'假日設定',nav_leaves:'個人休假',nav_plans:'方案功能',plan_name:'Free 方案',plan_desc:'5 位員工・月排班・基本法規<br>進階功能需 Pro',upgrade_btn:'升級 Pro ↑',this_month:'本月',validate_schedule_btn:'合法性檢查',auto_fix_btn:'Pro 修正',
 generate_schedule_btn:'自動排班 Pro',export_csv:'匯出 CSV',stat_emp:'員工數',stat_emp_sub:'Free 上限 5 人',stat_shifts:'本月排定班次',stat_shifts_sub:'不含休假',
 stat_holidays:'本月假日',stat_holidays_sub:'可自訂',stat_cover:'覆蓋率',stat_cover_sub:'需求班次覆蓋',month_overview:'月排班總覽',month_overview_hint:'以月份為單位檢查缺班、假日與個人休假衝突。',
 open_month_schedule:'開啟月排班',monthly_schedule:'月排班',monthly_schedule_hint:'點「編輯」可設定該日每個班次的人員；假日與個人休假會標記在日期上。',staff_list:'員工資料',
@@ -211,6 +215,7 @@ csv_date:'日期',csv_shift:'班次',csv_staff:'員工'},
 en:{
   language:'Language',
 login_status:'Login Status',
+login:'Login',
 logout:'Logout',
   nav_label:'Menu',nav_dashboard:'Overview',nav_schedule:'Monthly Schedule',nav_staff:'Staff',
 nav_shifts:'Shift Settings',nav_holidays:'Holidays',nav_leaves:'Personal Leave',
@@ -220,6 +225,7 @@ open_month_schedule:'Open Monthly Schedule',monthly_schedule:'Monthly Schedule',
 ja:{
   language:'言語',
 login_status:'ログイン状態',
+login:'ログイン',
 logout:'ログアウト',
   nav_label:'メニュー',nav_dashboard:'概要',nav_schedule:'月間シフト',nav_staff:'スタッフ',nav_shifts:'シフト設定',nav_holidays:'祝日設定',nav_leaves:'個人休暇',nav_plans:'プラン',plan_name:'Freeプラン',plan_desc:'5名・月間シフト・基本ルール<br>高度機能はPro',upgrade_btn:'Proへ ↑',this_month:'今月',validate_schedule_btn:'法令チェック',auto_fix_btn:'Pro修正',generate_schedule_btn:'自動作成 Pro',export_csv:'CSV出力',stat_emp:'スタッフ数',stat_emp_sub:'Free上限5名',stat_shifts:'今月のシフト',stat_shifts_sub:'休日除く',stat_holidays:'祝日',stat_holidays_sub:'カスタム可',stat_cover:'カバー率',stat_cover_sub:'必要人数カバー',month_overview:'月間概要',month_overview_hint:'月単位で不足・祝日・休暇衝突を確認。',open_month_schedule:'月間シフトを開く',monthly_schedule:'月間シフト',monthly_schedule_hint:'編集で各シフトのスタッフを設定。祝日と休暇が表示されます。',staff_list:'スタッフ情報',staff_hint:'Freeは5名まで。超過分はProで利用可能。',add_staff_btn:'スタッフ追加',col_emp:'スタッフ',col_position:'役職',col_role_group:'役割制限',col_status:'状態',shift_settings_title:'シフト設定',shift_settings_hint:'Freeは時間と必要人数を編集可能。役割制限はPro。',shift_col_name:'シフト',shift_col_code:'コード',shift_col_start:'開始',shift_col_end:'終了',shift_col_required:'必要人数',shift_col_role:'役割制限',holiday_settings:'祝日設定',holiday_hint:'祝日、店休日、特別日を設定します。',date_label:'日付',holiday_name_label:'祝日名',holiday_name_placeholder:'例：端午節',add_holiday:'祝日追加',holiday_list:'祝日一覧',leave_settings:'個人休暇設定',leave_hint:'休暇日にシフトが入るとチェックで警告します。',staff_label:'スタッフ',leave_reason_label:'理由',leave_reason_placeholder:'例：有休',add_leave:'休暇追加',leave_list:'休暇一覧',free_features_title:'無料版',free_features_desc:'✔ シフト作成<br>✔ シフト検証<br>✔ スタッフ情報<br>✔ シフト設定<br>✔ 祝日設定<br>✔ 個人休暇設定<br>✔ 基本法令ルール',pro_features_desc:'✔ 自動シフト作成<br>✔ 自動修正<br>✔ 人数上限解除<br>✔ 高度な法令ルール<br>✔ 複数拠点<br>✔ 複数役割制限',issue_panel_title:'⚠️ シフト問題',cancel:'キャンセル',save:'保存',add_staff_title:'スタッフ追加',add_staff_desc:'スタッフ情報を入力',name_label:'名前',name_placeholder:'例：山田太郎',role_label:'役職',role_placeholder:'例：正社員',role_group_label:'役割制限',confirm_add:'追加',contact_modal_title:'Pro機能を開放',contact_modal_sub:'高度なシフト機能は有料/カスタム向けです。',contact_label:'連絡先',contact_modal_desc:'無料ユーザーは月間シフト、スタッフ、シフト設定、祝日、個人休暇、基本チェックを利用可能。自動作成・修正・高度ルールはPro。',email_me:'メールする',page_titles:{dashboard:'概要',schedule:'月間シフト',staff:'スタッフ',shifts:'シフト設定',holidays:'祝日設定',leaves:'個人休暇',plans:'プラン'},days:['日','月','火','水','木','金','土'],months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],edit:'編集',holiday:'祝日',leave:'休暇',no_data:'データなし',remove:'削除',active:'正常',locked:'Free上限超過',required:'必要',assigned:'配置済',missing:n=>`${n}名不足`,covered:'充足',select_staff:'スタッフ選択',none:'なし',toast_saved:'保存しました',toast_added:'追加しました',toast_removed:'削除しました',toast_csv:'CSVを出力しました',toast_name_required:'名前を入力してください',toast_date_required:'日付を選択してください',valid_message:'シフトは合法で必要人数も満たしています ✅',unmet_title:n=>`未充足シフト：${n}件`,leave_conflict_title:n=>`休暇衝突：${n}件`,holiday_shift_title:n=>`祝日シフト注意：${n}件`,weekly_hours_exceeded:(name,h)=>`${name}の週労働時間は${h}時間で基本40時間を超えています`,daily_hours_exceeded:(name,d,h)=>`${name}は${d}に${h}時間勤務、8時間超過`,consecutive_days_exceeded:(name,s)=>`${name}は${s}日連続勤務です。休日ルールを確認してください。`,paid_feature_message:f=>`${f||'この機能'}はPro/カスタム機能です。luxandpei@gmail.comまで。`,auto_fix_feature:'自動修正',generate_feature:'自動作成',csv_date:'日付',csv_shift:'シフト',csv_staff:'スタッフ'}};
 let currentLang=localStorage.getItem('LumShift_lang')||'zh';let T=TRANSLATIONS[currentLang];let currentView='dashboard';let cursor=new Date();cursor.setDate(1);let editingDate=null;
