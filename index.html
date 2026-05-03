@@ -119,13 +119,13 @@
       <h3>選單</h3>
       <button class="btn btn-ghost" onclick="toggleMenu()">×</button>
     </div>
-    <div class="issue-item" onclick="navigate('dashboard',document.querySelector('[data-view=dashboard]'));toggleMenu()">⊞ 總覽</div>
-    <div class="issue-item" onclick="navigate('schedule',document.querySelector('[data-view=schedule]'));toggleMenu()">◫ 月排班</div>
-    <div class="issue-item" onclick="navigate('staff',document.querySelector('[data-view=staff]'));toggleMenu()">◉ 員工資料</div>
-    <div class="issue-item" onclick="navigate('shifts',document.querySelector('[data-view=shifts]'));toggleMenu()">◷ 班次設定</div>
-    <div class="issue-item" onclick="navigate('holidays',document.querySelector('[data-view=holidays]'));toggleMenu()">◎ 假日設定</div>
-    <div class="issue-item" onclick="navigate('leaves',document.querySelector('[data-view=leaves]'));toggleMenu()">◌ 個人休假</div>
-    <div class="issue-item" onclick="navigate('plans',document.querySelector('[data-view=plans]'));toggleMenu()">◆ 方案功能</div>
+    <div class="issue-item" onclick="navigate('dashboard',document.querySelector('[data-view=dashboard]'));toggleMenu()" data-i18n="dashboard">⊞ 總覽</div>
+    <div class="issue-item" onclick="navigate('schedule',document.querySelector('[data-view=schedule]'));toggleMenu()" data-i18n="schedule">◫ 月排班</div>
+    <div class="issue-item" onclick="navigate('staff',document.querySelector('[data-view=staff]'));toggleMenu()" data-i18n="staff">◉ 員工資料</div>
+    <div class="issue-item" onclick="navigate('shifts',document.querySelector('[data-view=shifts]'));toggleMenu()" data-i18n="shifts">◷ 班次設定</div>
+    <div class="issue-item" onclick="navigate('holidays',document.querySelector('[data-view=holidays]'));toggleMenu()" data-i18n="holidays">◎ 假日設定</div>
+    <div class="issue-item" onclick="navigate('leaves',document.querySelector('[data-view=leaves]'));toggleMenu()" data-i18n="leaves">◌ 個人休假</div>
+    <div class="issue-item" onclick="navigate('plans',document.querySelector('[data-view=plans]'));toggleMenu()" data-i18n="plans">◆ 方案功能</div>
 
     <hr style="margin:10px 0;border-color:var(--border)">
 
@@ -149,8 +149,8 @@
       <div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="month_overview">月排班總覽</div><div class="hint" data-i18n="month_overview_hint">以月份為單位檢查缺班、假日與個人休假衝突。</div></div>
       <div style="display:flex;align-items:center;gap:6px">
         <button class="btn btn-primary" onclick="navigate('schedule',document.querySelector('[data-view=schedule]'))" data-i18n="open_month_schedule">開啟月排班</button>
-        <button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()">Pro 修正</button>
-        <button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()">自動排班 Pro</button>
+        <button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()" data-i18n="auto_fix_btn">Pro 修正</button>
+        <button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()" data-i18n="generate_schedule_btn">自動排班 Pro</button>
       </div>
     </div><div id="dashboard-grid" class="month-grid"></div></div>
     </section>
@@ -161,8 +161,8 @@
       </div>
       <div style="display:flex;align-items:center;gap:6px">
         <button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button>
-        <button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()">Pro 修正</button>
-        <button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()">自動排班 Pro</button>
+        <button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()" data-i18n="auto_fix_btn">Pro 修正</button>
+        <button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()" data-i18n="generate_schedule_btn">自動排班 Pro</button>
       </div>
     </div><div id="schedule-grid" class="month-grid"></div></div></section>
     <section id="view-staff" class="view"><div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="staff_list">員工資料</div><div class="hint" data-i18n="staff_hint">免費版最多 5 人；超過人數會保留資料，但需 Pro 才能完整使用。</div></div><button class="btn btn-primary" onclick="showStaffModal()" data-i18n="add_staff_btn">新增員工</button></div><div class="table-wrap"><table class="sched-table"><thead><tr><th data-i18n="col_emp">員工</th><th data-i18n="col_position">職位</th><th data-i18n="col_role_group">角色限制</th><th data-i18n="col_status">狀態</th><th></th></tr></thead><tbody id="staff-tbody"></tbody></table></div></div></section>
