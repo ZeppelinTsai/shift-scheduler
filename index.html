@@ -59,18 +59,18 @@
     <div class="modal-sub" id="auth-sub">登入後可使用雲端儲存、讀取與未來 Pro 功能。</div>
 
     <div class="field" style="margin-bottom:12px">
-      <label>公司 / 部門代碼</label>
-      <input id="login-company" placeholder="例如 demo">
+      <label data-i18n="company_code_label">公司 / 部門代碼</label>
+      <input id="login-company" data-i18n-placeholder="company_code_placeholder" placeholder="例如 demo">
     </div>
 
     <div class="field" style="margin-bottom:12px">
-      <label>帳號</label>
-      <input id="login-username" placeholder="例如 admin">
+      <label data-i18n="username_label">帳號</label>
+      <input id="login-username" data-i18n-placeholder="username_placeholder" placeholder="例如 admin">
     </div>
 
     <div class="field" style="margin-bottom:16px">
-      <label>密碼</label>
-      <input id="login-password" type="password" placeholder="例如 123456">
+      <label data-i18n="password_label">密碼</label>
+      <input id="login-password" type="password" data-i18n-placeholder="password_placeholder" placeholder="例如 123456">
     </div>
 
     <div class="modal-actions">
@@ -116,7 +116,7 @@
   
   <div id="menu-panel" class="issue-panel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <h3>選單</h3>
+      <h3 data-i18n="menu_title">選單</h3>
       <button class="btn btn-ghost" onclick="toggleMenu()">×</button>
     </div>
     <div class="issue-item" onclick="navigate('dashboard',document.querySelector('[data-view=dashboard]'));toggleMenu()" data-i18n="dashboard">⊞ 總覽</div>
@@ -174,7 +174,7 @@
 </main></div>
 <aside id="issue-panel" class="issue-panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3 data-i18n="issue_panel_title">⚠️ 排班問題</h3><button class="btn btn-ghost" onclick="closeIssuePanel()">×</button></div><div id="issue-list"></div></aside>
 <div id="edit-modal" class="modal-overlay"><div class="modal"><div class="modal-title" id="edit-title">編輯排班</div><div class="modal-sub" id="edit-sub"></div><div id="edit-form"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeEditModal()" data-i18n="cancel">取消</button><button class="btn btn-primary" onclick="saveDaySchedule()" data-i18n="save">儲存</button></div></div></div>
-<div id="staff-modal" class="modal-overlay"><div class="modal"><div class="modal-title" data-i18n="add_staff_title">新增員工</div><div class="modal-sub" data-i18n="add_staff_desc">填寫基本員工資料</div><div class="form-grid"><div class="field"><label data-i18n="name_label">姓名</label><input id="new-name" data-i18n-placeholder="name_placeholder" placeholder="例：王大明"></div><div class="field"><label data-i18n="role_label">職位</label><input id="new-role" data-i18n-placeholder="role_placeholder" placeholder="例：全職"></div><div class="field"><label data-i18n="role_group_label">角色限制</label><select id="new-role-group"><option value="general">General</option><option value="manager">Manager</option><option value="cook">Cook</option><option value="cashier">Cashier</option></select></div></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeStaffModal()" data-i18n="cancel">取消</button><button class="btn btn-primary" onclick="addStaff()" data-i18n="confirm_add">確認新增</button></div></div></div>
+<div id="staff-modal" class="modal-overlay"><div class="modal"><div class="modal-title" data-i18n="add_staff_title">新增員工</div><div class="modal-sub" data-i18n="add_staff_desc">填寫基本員工資料</div><div class="form-grid"><div class="field"><label data-i18n="name_label">姓名</label><input id="new-name" data-i18n-placeholder="name_placeholder" placeholder="例：王大明"></div><div class="field"><label data-i18n="role_label">職位</label><input id="new-role" data-i18n-placeholder="role_placeholder" placeholder="例：全職"></div><div class="field"><label data-i18n="role_group_label">角色限制</label><select id="new-role-group"><option value="general" data-i18n="role_general">一般</option><option value="manager" data-i18n="role_manager">管理者</option><option value="cook" data-i18n="role_cook">廚房</option><option value="cashier" data-i18n="role_cashier">收銀</option></select></div></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeStaffModal()" data-i18n="cancel">取消</button><button class="btn btn-primary" onclick="addStaff()" data-i18n="confirm_add">確認新增</button></div></div></div>
 <div id="contact-modal" class="modal-overlay"><div class="modal"><div class="modal-title" data-i18n="contact_modal_title">開通 Pro 功能</div><div class="modal-sub" id="contact-sub" data-i18n="contact_modal_sub">進階排班功能提供給付費 / 客製用戶使用。</div><div class="card" style="background:var(--surface2);margin-bottom:12px"><div class="hint" data-i18n="contact_label">聯絡方式</div><a href="mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry">luxandpei@gmail.com</a></div><div class="feature-desc" data-i18n="contact_modal_desc">免費用戶可以使用月排班、員工資料、班次設定、假日設定、個人休假與基本合法性檢查；自動排班、自動修正與進階規則保留為 Pro。</div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeContactModal()" data-i18n="cancel">取消</button><button class="btn btn-primary" onclick="location.href='mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry'" data-i18n="email_me">寄信給我</button></div></div></div>
 <div id="toast" class="toast"></div>
 <script>
@@ -228,6 +228,45 @@ login_status:'ログイン状態',
 login:'ログイン',
 logout:'ログアウト',
   nav_label:'メニュー',nav_dashboard:'概要',nav_schedule:'月間シフト',nav_staff:'スタッフ',nav_shifts:'シフト設定',nav_holidays:'祝日設定',nav_leaves:'個人休暇',nav_plans:'プラン',plan_name:'Freeプラン',plan_desc:'5名・月間シフト・基本ルール<br>高度機能はPro',upgrade_btn:'Proへ ↑',this_month:'今月',validate_schedule_btn:'法令チェック',auto_fix_btn:'Pro修正',generate_schedule_btn:'自動作成 Pro',export_csv:'CSV出力',stat_emp:'スタッフ数',stat_emp_sub:'Free上限5名',stat_shifts:'今月のシフト',stat_shifts_sub:'休日除く',stat_holidays:'祝日',stat_holidays_sub:'カスタム可',stat_cover:'カバー率',stat_cover_sub:'必要人数カバー',month_overview:'月間概要',month_overview_hint:'月単位で不足・祝日・休暇衝突を確認。',open_month_schedule:'月間シフトを開く',monthly_schedule:'月間シフト',monthly_schedule_hint:'編集で各シフトのスタッフを設定。祝日と休暇が表示されます。',staff_list:'スタッフ情報',staff_hint:'Freeは5名まで。超過分はProで利用可能。',add_staff_btn:'スタッフ追加',col_emp:'スタッフ',col_position:'役職',col_role_group:'役割制限',col_status:'状態',shift_settings_title:'シフト設定',shift_settings_hint:'Freeは時間と必要人数を編集可能。役割制限はPro。',shift_col_name:'シフト',shift_col_code:'コード',shift_col_start:'開始',shift_col_end:'終了',shift_col_required:'必要人数',shift_col_role:'役割制限',holiday_settings:'祝日設定',holiday_hint:'祝日、店休日、特別日を設定します。',date_label:'日付',holiday_name_label:'祝日名',holiday_name_placeholder:'例：端午節',add_holiday:'祝日追加',holiday_list:'祝日一覧',leave_settings:'個人休暇設定',leave_hint:'休暇日にシフトが入るとチェックで警告します。',staff_label:'スタッフ',leave_reason_label:'理由',leave_reason_placeholder:'例：有休',add_leave:'休暇追加',leave_list:'休暇一覧',free_features_title:'無料版',free_features_desc:'✔ シフト作成<br>✔ シフト検証<br>✔ スタッフ情報<br>✔ シフト設定<br>✔ 祝日設定<br>✔ 個人休暇設定<br>✔ 基本法令ルール',pro_features_desc:'✔ 自動シフト作成<br>✔ 自動修正<br>✔ 人数上限解除<br>✔ 高度な法令ルール<br>✔ 複数拠点<br>✔ 複数役割制限',issue_panel_title:'⚠️ シフト問題',cancel:'キャンセル',save:'保存',add_staff_title:'スタッフ追加',add_staff_desc:'スタッフ情報を入力',name_label:'名前',name_placeholder:'例：山田太郎',role_label:'役職',role_placeholder:'例：正社員',role_group_label:'役割制限',confirm_add:'追加',contact_modal_title:'Pro機能を開放',contact_modal_sub:'高度なシフト機能は有料/カスタム向けです。',contact_label:'連絡先',contact_modal_desc:'無料ユーザーは月間シフト、スタッフ、シフト設定、祝日、個人休暇、基本チェックを利用可能。自動作成・修正・高度ルールはPro。',email_me:'メールする',page_titles:{dashboard:'概要',schedule:'月間シフト',staff:'スタッフ',shifts:'シフト設定',holidays:'祝日設定',leaves:'個人休暇',plans:'プラン'},days:['日','月','火','水','木','金','土'],months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],edit:'編集',holiday:'祝日',leave:'休暇',no_data:'データなし',remove:'削除',active:'正常',locked:'Free上限超過',required:'必要',assigned:'配置済',missing:n=>`${n}名不足`,covered:'充足',select_staff:'スタッフ選択',none:'なし',toast_saved:'保存しました',toast_added:'追加しました',toast_removed:'削除しました',toast_csv:'CSVを出力しました',toast_name_required:'名前を入力してください',toast_date_required:'日付を選択してください',valid_message:'シフトは合法で必要人数も満たしています ✅',unmet_title:n=>`未充足シフト：${n}件`,leave_conflict_title:n=>`休暇衝突：${n}件`,holiday_shift_title:n=>`祝日シフト注意：${n}件`,weekly_hours_exceeded:(name,h)=>`${name}の週労働時間は${h}時間で基本40時間を超えています`,daily_hours_exceeded:(name,d,h)=>`${name}は${d}に${h}時間勤務、8時間超過`,consecutive_days_exceeded:(name,s)=>`${name}は${s}日連続勤務です。休日ルールを確認してください。`,paid_feature_message:f=>`${f||'この機能'}はPro/カスタム機能です。luxandpei@gmail.comまで。`,auto_fix_feature:'自動修正',generate_feature:'自動作成',csv_date:'日付',csv_shift:'シフト',csv_staff:'スタッフ'}};
+Object.assign(TRANSLATIONS.zh,{
+  menu_title:'選單',dashboard:'⊞ 總覽',schedule:'◫ 月排班',staff:'◉ 員工資料',shifts:'◷ 班次設定',holidays:'◎ 假日設定',leaves:'◌ 個人休假',plans:'◆ 方案功能',
+  register:'註冊 / 建立雲端工作區',company_code_label:'公司 / 部門代碼',company_code_placeholder:'例如 demo',username_label:'帳號',username_placeholder:'例如 admin',password_label:'密碼',password_placeholder:'例如 123456',
+  auth_title_login:'登入雲端帳號',auth_title_register:'建立雲端工作區',auth_sub_login:'登入後可使用雲端儲存、讀取與未來 Pro 功能。',auth_sub_register:'建立後可保存班表、同步多裝置，未來可升級 Pro。',
+  auth_switch_register_html:'還沒有工作區？<a href="#" onclick="setAuthMode(\'register\')">註冊 / 建立雲端工作區</a>',auth_switch_login_html:'已經有工作區？<a href="#" onclick="setAuthMode(\'login\')">回到登入</a>',
+  create_continue:'建立並繼續',login_loading:'登入中...',input_auth_required:'請輸入公司代碼、帳號與密碼',register_loading:'註冊中…',register_timeout:'註冊逾時，請稍後重試',register_failed:'註冊失敗，可能公司代碼或帳號已存在',
+  workspace_created:'已建立雲端工作區',invalid_credentials:'公司代碼、帳號或密碼錯誤',workspace_not_found:'找不到這個工作區，請先註冊',system_error_retry:'系統暫時異常，請稍後再試',
+  login_failed_status:s=>`登入失敗：${s}`,login_timeout:'登入逾時，請稍後重試',login_connection_failed:'登入失敗：無法連線到後端',logged_in:c=>`已登入：${c}`,logged_out:'已登出',
+  login_required:a=>`${a || '此功能'} 需要登入`,login_first:'請先登入',cloud_save_failed:'雲端儲存失敗',cloud_saved:'已儲存到雲端',cloud_load_failed:'雲端讀取失敗',cloud_loaded:'已讀取雲端班表',
+  login_before_pro:'請先登入後再使用 Pro 功能',auto_schedule_running:'正在自動排班…',auto_schedule_done:(u,v)=>`自動排班完成：未滿足 ${u}，違規 ${v}`,backend_connection_failed:'後端連線失敗，請確認 uvicorn main:app --reload 已啟動',
+  auto_fix_running:'正在自動修正…',auto_fix_done:(u,v)=>`自動修正完成：未滿足 ${u}，違規 ${v}`,auto_fix_failed:'AutoFix 失敗，請確認後端啟動',multi_role_restrictions:'多角色限制',
+  role_general:'一般',role_manager:'管理者',role_cook:'廚房',role_cashier:'收銀',role_groups:{general:'一般',manager:'管理者',cook:'廚房',cashier:'收銀'}
+});
+Object.assign(TRANSLATIONS.en,{
+  menu_title:'Menu',dashboard:'⊞ Overview',schedule:'◫ Monthly Schedule',staff:'◉ Staff',shifts:'◷ Shift Settings',holidays:'◎ Holidays',leaves:'◌ Personal Leave',plans:'◆ Plans',
+  register:'Register / Create workspace',company_code_label:'Company / Department Code',company_code_placeholder:'e.g. demo',username_label:'Username',username_placeholder:'e.g. admin',password_label:'Password',password_placeholder:'e.g. 123456',
+  auth_title_login:'Log in to cloud account',auth_title_register:'Create cloud workspace',auth_sub_login:'Log in to use cloud save, cloud load, and future Pro features.',auth_sub_register:'Create a workspace to save schedules, sync devices, and upgrade to Pro later.',
+  auth_switch_register_html:'No workspace yet? <a href="#" onclick="setAuthMode(\'register\')">Register / create cloud workspace</a>',auth_switch_login_html:'Already have a workspace? <a href="#" onclick="setAuthMode(\'login\')">Back to login</a>',
+  create_continue:'Create and continue',login_loading:'Logging in...',input_auth_required:'Please enter company code, username, and password',register_loading:'Registering…',register_timeout:'Registration timed out. Please try again later.',register_failed:'Registration failed. The company code or username may already exist.',
+  workspace_created:'Cloud workspace created',invalid_credentials:'Company code, username, or password is incorrect',workspace_not_found:'Workspace not found. Please register first.',system_error_retry:'System is temporarily unavailable. Please try again later.',
+  login_failed_status:s=>`Login failed: ${s}`,login_timeout:'Login timed out. Please try again later.',login_connection_failed:'Login failed: cannot connect to backend',logged_in:c=>`Logged in: ${c}`,logged_out:'Logged out',
+  login_required:a=>`${a || 'This feature'} requires login`,login_first:'Please log in first',cloud_save_failed:'Cloud save failed',cloud_saved:'Saved to cloud',cloud_load_failed:'Cloud load failed',cloud_loaded:'Loaded cloud schedule',
+  login_before_pro:'Please log in before using Pro features',auto_schedule_running:'Auto scheduling…',auto_schedule_done:(u,v)=>`Auto scheduling complete: unmet ${u}, violations ${v}`,backend_connection_failed:'Backend connection failed. Please confirm uvicorn main:app --reload is running.',
+  auto_fix_running:'Auto fixing…',auto_fix_done:(u,v)=>`Auto fix complete: unmet ${u}, violations ${v}`,auto_fix_failed:'AutoFix failed. Please confirm the backend is running.',multi_role_restrictions:'Multi-role restrictions',
+  role_general:'General',role_manager:'Manager',role_cook:'Cook',role_cashier:'Cashier',role_groups:{general:'General',manager:'Manager',cook:'Cook',cashier:'Cashier'}
+});
+Object.assign(TRANSLATIONS.ja,{
+  menu_title:'メニュー',dashboard:'⊞ 概要',schedule:'◫ 月間シフト',staff:'◉ スタッフ',shifts:'◷ シフト設定',holidays:'◎ 祝日設定',leaves:'◌ 個人休暇',plans:'◆ プラン',
+  register:'登録 / クラウドワークスペース作成',company_code_label:'会社 / 部門コード',company_code_placeholder:'例：demo',username_label:'アカウント',username_placeholder:'例：admin',password_label:'パスワード',password_placeholder:'例：123456',
+  auth_title_login:'クラウドアカウントにログイン',auth_title_register:'クラウドワークスペースを作成',auth_sub_login:'ログインするとクラウド保存、読み込み、今後のPro機能を利用できます。',auth_sub_register:'作成後はシフト保存、複数デバイス同期、将来のProアップグレードができます。',
+  auth_switch_register_html:'ワークスペースがありませんか？<a href="#" onclick="setAuthMode(\'register\')">登録 / クラウドワークスペース作成</a>',auth_switch_login_html:'すでにワークスペースがありますか？<a href="#" onclick="setAuthMode(\'login\')">ログインに戻る</a>',
+  create_continue:'作成して続行',login_loading:'ログイン中...',input_auth_required:'会社コード、アカウント、パスワードを入力してください',register_loading:'登録中…',register_timeout:'登録がタイムアウトしました。後でもう一度お試しください。',register_failed:'登録に失敗しました。会社コードまたはアカウントが既に存在する可能性があります。',
+  workspace_created:'クラウドワークスペースを作成しました',invalid_credentials:'会社コード、アカウント、またはパスワードが正しくありません',workspace_not_found:'ワークスペースが見つかりません。先に登録してください。',system_error_retry:'システムが一時的に利用できません。後でもう一度お試しください。',
+  login_failed_status:s=>`ログイン失敗：${s}`,login_timeout:'ログインがタイムアウトしました。後でもう一度お試しください。',login_connection_failed:'ログイン失敗：バックエンドに接続できません',logged_in:c=>`ログイン済み：${c}`,logged_out:'ログアウトしました',
+  login_required:a=>`${a || 'この機能'}にはログインが必要です`,login_first:'先にログインしてください',cloud_save_failed:'クラウド保存に失敗しました',cloud_saved:'クラウドに保存しました',cloud_load_failed:'クラウド読み込みに失敗しました',cloud_loaded:'クラウドのシフトを読み込みました',
+  login_before_pro:'Pro機能を使う前にログインしてください',auto_schedule_running:'自動作成中…',auto_schedule_done:(u,v)=>`自動作成完了：未充足 ${u}、違反 ${v}`,backend_connection_failed:'バックエンド接続に失敗しました。uvicorn main:app --reload が起動しているか確認してください。',
+  auto_fix_running:'自動修正中…',auto_fix_done:(u,v)=>`自動修正完了：未充足 ${u}、違反 ${v}`,auto_fix_failed:'AutoFixに失敗しました。バックエンド起動を確認してください。',multi_role_restrictions:'複数役割制限',
+  role_general:'一般',role_manager:'管理者',role_cook:'調理',role_cashier:'レジ',role_groups:{general:'一般',manager:'管理者',cook:'調理',cashier:'レジ'}
+});
 let currentLang=localStorage.getItem('LumShift_lang')||'zh';let T=TRANSLATIONS[currentLang];let currentView='dashboard';let cursor=new Date();cursor.setDate(1);let editingDate=null;
 const FREE_LIMIT=5;const shiftClasses={AM:'s-am',PM:'s-pm',NT:'s-nt'};
 let staff=JSON.parse(localStorage.getItem('LumShift_staff')||'null')||[{id:1,name:'Amy',role:'全職',roleGroup:'general'},{id:2,name:'Ben',role:'兼職',roleGroup:'general'},{id:3,name:'Chia',role:'店長',roleGroup:'manager'},{id:4,name:'Dora',role:'全職',roleGroup:'general'},{id:5,name:'Eli',role:'工讀生',roleGroup:'general'}];
@@ -258,6 +297,8 @@ function applyLang(){
   );
 
   document.getElementById('page-title').textContent=T.page_titles[currentView];
+  setAuthMode(authMode);
+  refreshTopAuthUI();
 
   renderAll();
 }
@@ -285,16 +326,19 @@ function planStaffLimit(){
 function activeStaff(){
   return staff.slice(0, planStaffLimit())
 }
+function roleGroupLabel(role){
+  return T.role_groups?.[role] || role || T.role_groups?.general || 'general'
+}
 function staffById(id){return staff.find(s=>s.id==id)}function leavesForDate(date){return leaves.filter(l=>l.date===date)}function isHoliday(date){return holidays[date]}function getDaySchedule(date){const mk=date.slice(0,7);schedule[mk]=schedule[mk]||{};schedule[mk][date]=schedule[mk][date]||{};shifts.forEach(s=>schedule[mk][date][s.code]=schedule[mk][date][s.code]||[]);return schedule[mk][date]}
 function renderMonthGrid(id,compact){const el=document.getElementById(id);if(!el)return;el.innerHTML='';T.days.forEach(d=>{const h=document.createElement('div');h.className='dow';h.textContent=d;el.appendChild(h)});monthDates(false).forEach(cell=>{const div=document.createElement('div');div.className='day-card'+(!cell?' muted':'');if(!cell){el.appendChild(div);return}const date=ymd(cell.date);const ds=getDaySchedule(date);let badges='';if(isHoliday(date))badges+=`<span class="holiday-chip">${T.holiday}</span>`;const lf=leavesForDate(date);if(lf.length)badges+=`<span class="leave-chip">${T.leave} ${lf.length}</span>`;div.innerHTML=`<div class="day-head"><div class="day-num">${cell.date.getDate()}</div><div>${badges}</div></div>`;shifts.forEach(s=>{const assigned=ds[s.code]||[];const missing=Math.max(0,Number(s.required)-assigned.length);const names=assigned.map(id=>staffById(id)?.name).filter(Boolean).join(', ')||T.none;const row=document.createElement('div');row.className='shift-row '+(missing?'bad':'');row.innerHTML=`<span class="shift-name ${shiftClasses[s.code]||''}">${s.code}</span><span class="shift-people">${assigned.length}/${s.required} · ${names}</span>`;div.appendChild(row)});const btn=document.createElement('button');btn.className='mini-btn';btn.textContent=T.edit;btn.onclick=()=>openEditModal(date);div.appendChild(btn);el.appendChild(div)})}
 function renderStats(){let totalReq=0,totalAss=0,shiftCount=0;const mk=monthKey();Object.keys(schedule[mk]||{}).forEach(date=>{shifts.forEach(s=>{totalReq+=Number(s.required);const n=(schedule[mk][date][s.code]||[]).length;totalAss+=Math.min(n,Number(s.required));shiftCount+=n})});const hs=Object.keys(holidays).filter(k=>k.startsWith(mk)).length;document.getElementById('d-emp').textContent =
   isPro() ? `${staff.length}` : `${Math.min(staff.length,FREE_LIMIT)}/${FREE_LIMIT}`;document.getElementById('d-shifts').textContent=shiftCount;document.getElementById('d-holidays').textContent=hs;document.getElementById('d-cover').textContent=totalReq?Math.round(totalAss/totalReq*100)+'%':'—'}
-function renderStaff(){const tb=document.getElementById('staff-tbody');if(!tb)return;tb.innerHTML='';staff.forEach((s,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><div class="emp-cell"><div class="avatar">${s.name[0]||'?'}</div><div><div class="emp-name">${s.name}</div><div class="emp-role">ID ${s.id}</div></div></div></td><td><input value="${s.role||''}" onchange="staff[${i}].role=this.value;saveAll();renderAll()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><select onchange="staff[${i}].roleGroup=this.value;saveAll();renderAll()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"><option value="general" ${s.roleGroup==='general'?'selected':''}>General</option><option value="manager" ${s.roleGroup==='manager'?'selected':''}>Manager</option><option value="cook" ${s.roleGroup==='cook'?'selected':''}>Cook</option><option value="cashier" ${s.roleGroup==='cashier'?'selected':''}>Cashier</option></select> ${(!isPro() && i>=FREE_LIMIT)?'<span class="pro-chip">Pro</span>':''}
+function renderStaff(){const tb=document.getElementById('staff-tbody');if(!tb)return;tb.innerHTML='';staff.forEach((s,i)=>{const roleOptions=['general','manager','cook','cashier'].map(role=>`<option value="${role}" ${s.roleGroup===role?'selected':''}>${roleGroupLabel(role)}</option>`).join('');const tr=document.createElement('tr');tr.innerHTML=`<td><div class="emp-cell"><div class="avatar">${s.name[0]||'?'}</div><div><div class="emp-name">${s.name}</div><div class="emp-role">ID ${s.id}</div></div></div></td><td><input value="${s.role||''}" onchange="staff[${i}].role=this.value;saveAll();renderAll()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><select onchange="staff[${i}].roleGroup=this.value;saveAll();renderAll()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px">${roleOptions}</select> ${(!isPro() && i>=FREE_LIMIT)?'<span class="pro-chip">Pro</span>':''}
 
 ${(isPro() || i<FREE_LIMIT)
   ? `<span class="tag">${T.active}</span>`
   : `<span class="tag">${T.locked}</span>`}</td><td><button class="mini-btn" onclick="removeStaff(${s.id})">${T.remove}</button></td>`;tb.appendChild(tr)})}
-function renderShifts(){const tb=document.getElementById('shift-tbody');if(!tb)return;tb.innerHTML='';shifts.forEach((s,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input value="${s.name}" onchange="shifts[${i}].name=this.value;saveAll();renderAll()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><b class="${shiftClasses[s.code]||''}">${s.code}</b></td><td><input type="time" value="${s.start}" onchange="shifts[${i}].start=this.value;saveAll();renderAll()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><input type="time" value="${s.end}" onchange="shifts[${i}].end=this.value;saveAll();renderAll()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><input type="number" min="0" value="${s.required}" onchange="shifts[${i}].required=Number(this.value);saveAll();renderAll()" style="width:80px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><select onchange="showPaidContact('Multi-role restrictions')" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"><option>${s.roleGroup||'general'}</option></select> <span class="pro-chip">Pro</span></td>`;tb.appendChild(tr)})}
+function renderShifts(){const tb=document.getElementById('shift-tbody');if(!tb)return;tb.innerHTML='';shifts.forEach((s,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input value="${s.name}" onchange="shifts[${i}].name=this.value;saveAll();renderAll()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><b class="${shiftClasses[s.code]||''}">${s.code}</b></td><td><input type="time" value="${s.start}" onchange="shifts[${i}].start=this.value;saveAll();renderAll()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><input type="time" value="${s.end}" onchange="shifts[${i}].end=this.value;saveAll();renderAll()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><input type="number" min="0" value="${s.required}" onchange="shifts[${i}].required=Number(this.value);saveAll();renderAll()" style="width:80px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><select onchange="showPaidContact(T.multi_role_restrictions)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"><option>${roleGroupLabel(s.roleGroup||'general')}</option></select> <span class="pro-chip">Pro</span></td>`;tb.appendChild(tr)})}
 function renderHolidayList(){const box=document.getElementById('holiday-list');if(!box)return;const entries=Object.entries(holidays).filter(([d])=>d.startsWith(monthKey())).sort();box.innerHTML=entries.length?'':`<div class="hint">${T.no_data}</div>`;entries.forEach(([date,name])=>{const item=document.createElement('div');item.className='issue-item';item.innerHTML=`<b>${date}</b> · ${name}<button class="mini-btn" style="float:right" onclick="delete holidays['${date}'];saveAll();renderAll();showToast(T.toast_removed)">${T.remove}</button>`;box.appendChild(item)})}
 function renderLeaveStaffOptions(){const sel=document.getElementById('leave-staff');if(!sel)return;sel.innerHTML=activeStaff().map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}function renderLeaveList(){const box=document.getElementById('leave-list');if(!box)return;const entries=leaves.filter(l=>l.date.startsWith(monthKey())).sort((a,b)=>a.date.localeCompare(b.date));box.innerHTML=entries.length?'':`<div class="hint">${T.no_data}</div>`;entries.forEach(l=>{const item=document.createElement('div');item.className='issue-item';item.innerHTML=`<b>${l.date}</b> · ${staffById(l.staffId)?.name||l.staffId} · ${l.reason||T.leave}<button class="mini-btn" style="float:right" onclick="removeLeave(${l.id})">${T.remove}</button>`;box.appendChild(item)})}
 function addHoliday(){const d=document.getElementById('holiday-date').value;const n=document.getElementById('holiday-name').value.trim()||T.holiday;if(!d)return showToast(T.toast_date_required);holidays[d]=n;document.getElementById('holiday-name').value='';saveAll();renderAll();showToast(T.toast_added)}function addLeave(){const d=document.getElementById('leave-date').value;const sid=Number(document.getElementById('leave-staff').value);const r=document.getElementById('leave-reason').value.trim()||T.leave;if(!d)return showToast(T.toast_date_required);leaves.push({id:Date.now(),staffId:sid,date:d,reason:r});document.getElementById('leave-reason').value='';saveAll();renderAll();showToast(T.toast_added)}function removeLeave(id){leaves=leaves.filter(l=>l.id!==id);saveAll();renderAll();showToast(T.toast_removed)}
@@ -375,16 +419,16 @@ function applyGeneratedSchedule(data){
 async function generateSchedulePro(){
   if(!currentCompanyCode){
     openLoginModal()
-    showToast('請先登入後再使用 Pro 功能')
+    showToast(T.login_before_pro)
     return
   }
 
   if(currentPlan !== 'pro'){
-    showPaidContact('自動排班')
+    showPaidContact(T.generate_feature)
     return
   }
   try{
-    showToast('正在自動排班…');
+    showToast(T.auto_schedule_running);
     const res = await fetch(`${API_BASE}/api/pro/schedule/generate`, {
       method: 'POST',
       headers: authHeaders(),
@@ -393,9 +437,9 @@ async function generateSchedulePro(){
     if(!res.ok)throw new Error(await res.text());
     const data=await res.json();
     applyGeneratedSchedule(data);
-    showToast(`自動排班完成：未滿足 ${data.unmet?.length||0}，違規 ${data.violations?.length||0}`);
+    showToast(T.auto_schedule_done(data.unmet?.length||0,data.violations?.length||0));
     validateSchedule();
-  }catch(err){console.error(err);showToast('後端連線失敗，請確認 uvicorn main:app --reload 已啟動')}
+  }catch(err){console.error(err);showToast(T.backend_connection_failed)}
 }
 function schedulesForBackend(){
   const mk = monthKey()
@@ -420,16 +464,16 @@ function schedulesForBackend(){
 async function autoFixSchedulePro(){
   if(!currentCompanyCode){
     openLoginModal()
-    showToast('請先登入後再使用 Pro 功能')
+    showToast(T.login_before_pro)
     return
   }
 
   if(currentPlan !== 'pro'){
-    showPaidContact('自動修正')
+    showPaidContact(T.auto_fix_feature)
     return
   }
   try{
-    showToast('正在自動修正…')
+    showToast(T.auto_fix_running)
 
     const payload = buildProPayload()
     payload.schedules = schedulesForBackend()
@@ -446,12 +490,12 @@ async function autoFixSchedulePro(){
 
     applyGeneratedSchedule(data)
 
-    showToast(`自動修正完成：未滿足 ${data.unmet?.length||0}，違規 ${data.violations?.length||0}`)
+    showToast(T.auto_fix_done(data.unmet?.length||0,data.violations?.length||0))
 
     validateSchedule()
   }catch(err){
     console.error(err)
-    showToast('AutoFix 失敗，請確認後端啟動')
+    showToast(T.auto_fix_failed)
   }
 }
 function showPaidContact(feature){document.getElementById('contact-sub').textContent=T.paid_feature_message(feature);document.getElementById('contact-modal').classList.add('open')}function closeContactModal(){document.getElementById('contact-modal').classList.remove('open')}function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
@@ -491,13 +535,13 @@ async function register(){
   const password = document.getElementById('login-password').value.trim()
 
   if(!company || !username || !password){
-    showToast('請輸入公司代碼、帳號與密碼')
+    showToast(T.input_auth_required)
     return
   }
 
   let res
   try{
-    showToast('註冊中…')
+    showToast(T.register_loading)
 
     res = await fetchWithTimeout(`${API_BASE}/api/auth/register`, {
       method: 'POST',
@@ -511,14 +555,14 @@ async function register(){
     }, 10000)
   }catch(err){
     console.error('register error:', err)
-    showToast('註冊逾時，請稍後重試')
+    showToast(T.register_timeout)
     return
   }
 
   if(!res.ok){
     const text = await res.text()
     console.error(text)
-    showToast('註冊失敗，可能公司代碼或帳號已存在')
+    showToast(T.register_failed)
     return
   }
 
@@ -541,7 +585,7 @@ async function register(){
 
   await saveScheduleToBackend()
 
-  showToast('已建立雲端工作區')
+  showToast(T.workspace_created)
 }
 async function login(){
   const company = document.getElementById('login-company').value.trim()
@@ -550,13 +594,13 @@ async function login(){
   const btn = document.getElementById('auth-submit-btn')
 
   if(!company || !username || !password){
-    showToast('請輸入公司代碼、帳號與密碼')
+    showToast(T.input_auth_required)
     return
   }
 
   try{
     btn.disabled = true
-    btn.innerText = '登入中...'
+    btn.innerText = T.login_loading
 
     const res = await fetchWithTimeout(`${API_BASE}/api/auth/login`, {
       method: 'POST',
@@ -574,10 +618,10 @@ async function login(){
     }
 
     if(!res.ok){
-      if(res.status === 401) showToast('公司代碼、帳號或密碼錯誤')
-      else if(res.status === 404) showToast('找不到這個工作區，請先註冊')
-      else if(res.status === 500) showToast('系統暫時異常，請稍後再試')
-      else showToast(data.detail || `登入失敗：${res.status}`)
+      if(res.status === 401) showToast(T.invalid_credentials)
+      else if(res.status === 404) showToast(T.workspace_not_found)
+      else if(res.status === 500) showToast(T.system_error_retry)
+      else showToast(data.detail || T.login_failed_status(res.status))
       return
     }
 
@@ -595,13 +639,13 @@ async function login(){
     refreshTopAuthUI()
     await loadScheduleFromBackend()
 
-    showToast(`已登入：${currentCompanyCode}`)
+    showToast(T.logged_in(currentCompanyCode))
   }catch(err){
     console.error('login error:', err)
-    showToast(err.name === 'AbortError' ? '登入逾時，請稍後重試' : '登入失敗：無法連線到後端')
+    showToast(err.name === 'AbortError' ? T.login_timeout : T.login_connection_failed)
   }finally{
     btn.disabled = false
-    btn.innerText = authMode === 'login' ? '登入' : '建立並繼續'
+    btn.innerText = authMode === 'login' ? T.login : T.create_continue
   }
 }
 
@@ -620,12 +664,12 @@ function logout(){
   refreshTopAuthUI()
   renderAll()
 
-  showToast('已登出')
+  showToast(T.logged_out)
 }
 
 function requireLogin(actionName){
   if(currentCompanyCode) return true
-  showToast(`${actionName || '此功能'} 需要登入`)
+  showToast(T.login_required(actionName))
   openLoginModal()
   return false
 }
@@ -638,7 +682,7 @@ function authHeaders(){
 
 async function saveScheduleToBackend(){
   if(!currentCompanyCode){
-    showToast('請先登入')
+    showToast(T.login_first)
     return
   }
 
@@ -662,11 +706,11 @@ async function saveScheduleToBackend(){
 
   if(!res.ok){
     console.error(await res.text())
-    showToast('雲端儲存失敗')
+    showToast(T.cloud_save_failed)
     return
   }
 
-  showToast('已儲存到雲端')
+  showToast(T.cloud_saved)
 }
 
 async function loadScheduleFromBackend(){
@@ -678,7 +722,7 @@ async function loadScheduleFromBackend(){
 
   if(!res.ok){
     console.error(await res.text())
-    showToast('雲端讀取失敗')
+    showToast(T.cloud_load_failed)
     return
   }
 
@@ -699,7 +743,7 @@ async function loadScheduleFromBackend(){
 
   saveAll()
   renderAll()
-  showToast('已讀取雲端班表')
+  showToast(T.cloud_loaded)
 }
 function toggleMenu(){
   const panel = document.getElementById('menu-panel')
@@ -712,7 +756,7 @@ function refreshTopAuthUI(){
   document.getElementById('menu-top-btn').style.display = loggedIn ? 'inline-flex' : 'none'
 
   const status = document.getElementById('login-status-text')
-  if(status) status.textContent = loggedIn ? `已登入：${currentCompanyCode}` : ''
+  if(status) status.textContent = loggedIn ? T.logged_in(currentCompanyCode) : T.login_status
 }
 let authMode = 'login'
 
@@ -720,20 +764,20 @@ function setAuthMode(mode){
   authMode = mode
 
   document.getElementById('auth-title').textContent =
-    mode === 'login' ? '登入雲端帳號' : '建立雲端工作區'
+    mode === 'login' ? T.auth_title_login : T.auth_title_register
 
   document.getElementById('auth-sub').textContent =
     mode === 'login'
-      ? '登入後可使用雲端儲存、讀取與未來 Pro 功能。'
-      : '建立後可保存班表、同步多裝置，未來可升級 Pro。'
+      ? T.auth_sub_login
+      : T.auth_sub_register
 
   document.getElementById('auth-submit-btn').textContent =
-    mode === 'login' ? '登入' : '建立並繼續'
+    mode === 'login' ? T.login : T.create_continue
 
   document.getElementById('auth-switch-text').innerHTML =
     mode === 'login'
-      ? `還沒有工作區？<a href="#" onclick="setAuthMode('register')">註冊 / 建立雲端工作區</a>`
-      : `已經有工作區？<a href="#" onclick="setAuthMode('login')">回到登入</a>`
+      ? T.auth_switch_register_html
+      : T.auth_switch_login_html
 }
 
 function submitAuth(){
