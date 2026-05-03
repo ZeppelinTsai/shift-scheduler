@@ -147,7 +147,7 @@ function validateSchedule(){const issues=[];const mk=monthKey();let unmet=0,leav
 function exportCSV(){const rows=[[T.csv_date,T.csv_shift,T.csv_staff]];const mk=monthKey();Object.keys(schedule[mk]||{}).sort().forEach(date=>shifts.forEach(s=>rows.push([date,s.code,(getDaySchedule(date)[s.code]||[]).map(id=>staffById(id)?.name||id).join('|')])));const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(',')).join('\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`scheduly-${monthKey()}.csv`;a.click();URL.revokeObjectURL(a.href);showToast(T.toast_csv)}
 
 // const API_BASE='http://127.0.0.1:8000';
-const API_BASE = 'https://scheduly-backend.onrender.com';
+const API_BASE = 'https://shift-scheduler-back.onrender.com';
 function shiftCodeById(id){
   return shifts[id]?.code || 'OFF'
 }
