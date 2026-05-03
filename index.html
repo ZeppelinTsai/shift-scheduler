@@ -16,6 +16,36 @@
 </head>
 <body>
 <header class="seo"><h1>免費排班系統｜月排班與台灣勞基法排班檢查</h1><p>Scheduly 是一套線上排班工具，支援月排班、班次設定、員工資料、假日設定、個人休假設定與基本勞基法檢查。免費版可進行基本排班與驗證，進階版提供自動排班、自動修正、多人上限解除、進階法規規則、多地點與多角色限制。</p></header>
+<div id="login-modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title" id="auth-title">登入雲端帳號</div>
+    <div class="modal-sub" id="auth-sub">登入後可使用雲端儲存、讀取與未來 Pro 功能。</div>
+
+    <div class="field" style="margin-bottom:12px">
+      <label>公司 / 部門代碼</label>
+      <input id="login-company" placeholder="例如 demo">
+    </div>
+
+    <div class="field" style="margin-bottom:12px">
+      <label>帳號</label>
+      <input id="login-username" placeholder="例如 admin">
+    </div>
+
+    <div class="field" style="margin-bottom:16px">
+      <label>密碼</label>
+      <input id="login-password" type="password" placeholder="例如 123456">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeLoginModal()">取消</button>
+      <button id="auth-submit-btn" class="btn btn-primary" onclick="submitAuth()">登入</button>
+    </div>
+
+    <div id="auth-switch-text" class="hint" style="margin-top:12px;text-align:right">
+      還沒有工作區？<a href="#" onclick="setAuthMode('register')">註冊 / 建立雲端工作區</a>
+    </div>
+  </div>
+</div>
 <div class="app">
 <aside class="sidebar">
   <div class="logo"><div class="logo-icon">📅</div><div class="logo-text">Sched<span>uly</span></div></div>
@@ -33,7 +63,43 @@
 <main class="main">
   <div class="topbar">
     <div class="topbar-left"><div class="page-title" id="page-title">總覽</div><div class="month-nav"><button onclick="changeMonth(-1)">←</button><span id="month-label" class="month-label">—</span><button onclick="changeMonth(1)">→</button><button onclick="goThisMonth()" data-i18n="this_month">本月</button></div></div>
-    <div class="topbar-right"><button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button><button class="btn btn-ghost" onclick="autoFixSchedulePro()" data-i18n="auto_fix_btn">Pro 修正</button><button class="btn btn-amber" onclick="generateSchedulePro()" data-i18n="generate_schedule_btn">自動排班 Pro</button><div class="lang-switcher"><button class="lang-btn active" data-lang="zh" onclick="setLang('zh')">中</button><button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button><button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日</button></div><button class="btn btn-ghost" onclick="exportCSV()" data-i18n="export_csv">匯出 CSV</button></div>
+    <div class="topbar-right"><button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button><button class="btn btn-ghost" onclick="autoFixSchedulePro()" data-i18n="auto_fix_btn">Pro 修正</button><button class="btn btn-amber" onclick="generateSchedulePro()" data-i18n="generate_schedule_btn">自動排班 Pro</button><div class="lang-switcher"><button class="lang-btn active" data-lang="zh" onclick="setLang('zh')">中</button><button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button><button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日</button></div><button class="btn btn-ghost" onclick="exportCSV()" data-i18n="export_csv">匯出 CSV</button>
+      <button id="login-top-btn" class="btn btn-ghost" onclick="openLoginModal()">登入</button>
+      <button id="menu-top-btn" class="btn btn-ghost" onclick="toggleMenu()" style="display:none">☰</button>
+    
+    </div>
+  </div>
+  <div id="menu-panel" class="issue-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3>選單</h3>
+      <button class="btn btn-ghost" onclick="toggleMenu()">×</button>
+    </div>
+
+    <div class="issue-item"><button class="btn btn-primary" onclick="validateSchedule();toggleMenu()">合法性檢查</button></div>
+    <div class="issue-item"><button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()">Pro 修正</button></div>
+    <div class="issue-item"><button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()">自動排班 Pro</button></div>
+    <div class="issue-item"><button class="btn btn-ghost" onclick="exportCSV();toggleMenu()">匯出 CSV</button></div>
+
+    <hr style="margin:10px 0;border-color:var(--border)">
+
+    <div class="issue-item"><button class="btn btn-ghost" onclick="saveScheduleToBackend();toggleMenu()">雲端儲存</button></div>
+    <div class="issue-item"><button class="btn btn-ghost" onclick="loadScheduleFromBackend();toggleMenu()">雲端讀取</button></div>
+
+    <hr style="margin:10px 0;border-color:var(--border)">
+
+    <div class="issue-item">
+      <div class="hint" style="margin-bottom:8px">語言</div>
+      <button class="btn btn-ghost" onclick="setLang('zh')">中</button>
+      <button class="btn btn-ghost" onclick="setLang('en')">EN</button>
+      <button class="btn btn-ghost" onclick="setLang('ja')">日</button>
+    </div>
+
+    <hr style="margin:10px 0;border-color:var(--border)">
+
+    <div class="issue-item">
+      <div class="hint" id="login-status-text" style="margin-bottom:8px"></div>
+      <button class="btn btn-ghost" onclick="logout();toggleMenu()">登出</button>
+    </div>
   </div>
   <div class="content">
     <section id="view-dashboard" class="view active">
@@ -212,7 +278,231 @@ async function autoFixSchedulePro(){
   }
 }
 function showPaidContact(feature){document.getElementById('contact-sub').textContent=T.paid_feature_message(feature);document.getElementById('contact-modal').classList.add('open')}function closeContactModal(){document.getElementById('contact-modal').classList.remove('open')}function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
-seedMonth();applyLang();
+
+
+</script>
+<script>
+// 登入
+let currentCompanyCode = localStorage.getItem('scheduly_company_code') || ''
+let currentUsername = localStorage.getItem('scheduly_username') || ''
+
+function openLoginModal(mode='login'){
+  setAuthMode(mode)
+  document.getElementById('login-modal').classList.add('open')
+}
+
+function closeLoginModal(){
+  document.getElementById('login-modal').classList.remove('open')
+}
+async function register(){
+  const company = document.getElementById('login-company').value.trim()
+  const username = document.getElementById('login-username').value.trim()
+  const password = document.getElementById('login-password').value.trim()
+
+  if(!company || !username || !password){
+    showToast('請輸入公司代碼、帳號與密碼')
+    return
+  }
+
+  const res = await fetch(`${API_BASE}/api/auth/register`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      company_code: company,
+      company_name: company,
+      username,
+      password
+    })
+  })
+
+  if(!res.ok){
+    const text = await res.text()
+    console.error(text)
+    showToast('註冊失敗，可能公司代碼或帳號已存在')
+    return
+  }
+
+  const data = await res.json()
+
+  currentCompanyCode = data.company_code
+  currentUsername = data.username
+
+  localStorage.setItem('scheduly_company_code', currentCompanyCode)
+  localStorage.setItem('scheduly_username', currentUsername)
+
+  closeLoginModal()
+  refreshTopAuthUI()
+
+  await saveScheduleToBackend()
+
+  showToast('已建立雲端工作區')
+}
+async function login(){
+  const company = document.getElementById('login-company').value.trim()
+  const username = document.getElementById('login-username').value.trim()
+  const password = document.getElementById('login-password').value.trim()
+
+  if(!company || !username || !password){
+    showToast('請輸入公司代碼、帳號與密碼')
+    return
+  }
+
+  const res = await fetch(`${API_BASE}/api/auth/login`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      company_code: company,
+      username,
+      password
+    })
+  })
+
+  if(!res.ok){
+    showToast('登入失敗，請檢查公司代碼、帳號或密碼')
+    return
+  }
+
+  const data = await res.json()
+
+  currentCompanyCode = data.company_code
+  currentUsername = data.username
+
+  localStorage.setItem('scheduly_company_code', currentCompanyCode)
+  localStorage.setItem('scheduly_username', currentUsername)
+
+  closeLoginModal()
+  refreshTopAuthUI()
+  await loadScheduleFromBackend()
+
+  showToast(`已登入：${currentCompanyCode}`)
+}
+function logout(){
+  localStorage.removeItem('scheduly_company_code')
+  localStorage.removeItem('scheduly_username')
+
+  currentCompanyCode = ''
+  currentUsername = ''
+
+  refreshTopAuthUI()
+  renderAll()
+
+  showToast('已登出')
+}
+
+function requireLogin(actionName){
+  if(currentCompanyCode) return true
+  showToast(`${actionName || '此功能'} 需要登入`)
+  openLoginModal()
+  return false
+}
+async function saveScheduleToBackend(){
+  if(!currentCompanyCode){
+    showToast('請先登入')
+    return
+  }
+
+  const payload = {
+    company_code: currentCompanyCode,
+    month: monthKey(),
+    data: {
+      staff,
+      shifts,
+      holidays,
+      leaves,
+      schedule
+    }
+  }
+
+  const res = await fetch(`${API_BASE}/api/save`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  })
+
+  if(!res.ok){
+    console.error(await res.text())
+    showToast('雲端儲存失敗')
+    return
+  }
+
+  showToast('已儲存到雲端')
+}
+
+async function loadScheduleFromBackend(){
+  if(!currentCompanyCode) return
+
+  const res = await fetch(`${API_BASE}/api/load?company_code=${encodeURIComponent(currentCompanyCode)}&month=${monthKey()}`)
+
+  if(!res.ok){
+    console.error(await res.text())
+    showToast('雲端讀取失敗')
+    return
+  }
+
+  const result = await res.json()
+
+  if(!result.data){
+    renderAll()
+    return
+  }
+
+  const data = result.data
+
+  if(data.staff) staff = data.staff
+  if(data.shifts) shifts = data.shifts
+  if(data.holidays) holidays = data.holidays
+  if(data.leaves) leaves = data.leaves
+  if(data.schedule) schedule = data.schedule
+
+  saveAll()
+  renderAll()
+  showToast('已讀取雲端班表')
+}
+function toggleMenu(){
+  document.getElementById('menu-panel').classList.toggle('open')
+}
+
+function refreshTopAuthUI(){
+  const loggedIn = !!currentCompanyCode
+  document.getElementById('login-top-btn').style.display = loggedIn ? 'none' : 'inline-flex'
+  document.getElementById('menu-top-btn').style.display = loggedIn ? 'inline-flex' : 'none'
+
+  const status = document.getElementById('login-status-text')
+  if(status) status.textContent = loggedIn ? `已登入：${currentCompanyCode}` : ''
+}
+let authMode = 'login'
+
+function setAuthMode(mode){
+  authMode = mode
+
+  document.getElementById('auth-title').textContent =
+    mode === 'login' ? '登入雲端帳號' : '建立雲端工作區'
+
+  document.getElementById('auth-sub').textContent =
+    mode === 'login'
+      ? '登入後可使用雲端儲存、讀取與未來 Pro 功能。'
+      : '建立後可保存班表、同步多裝置，未來可升級 Pro。'
+
+  document.getElementById('auth-submit-btn').textContent =
+    mode === 'login' ? '登入' : '建立並繼續'
+
+  document.getElementById('auth-switch-text').innerHTML =
+    mode === 'login'
+      ? `還沒有工作區？<a href="#" onclick="setAuthMode('register')">註冊 / 建立雲端工作區</a>`
+      : `已經有工作區？<a href="#" onclick="setAuthMode('login')">回到登入</a>`
+}
+
+function submitAuth(){
+  if(authMode === 'login') login()
+  else register()
+}
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  applyLang()
+  renderAll()
+  refreshTopAuthUI()
+})
 </script>
 </body>
 </html>
