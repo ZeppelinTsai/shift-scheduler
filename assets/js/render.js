@@ -58,7 +58,7 @@ function renderMonthGrid(id, compact) {
         (missing || holidayConflict || leaveConflict ? "bad" : "");
 
       row.innerHTML = `
-        <span class="shift-name" style="color:${s.color};background:${hexToRgba(s.color, 0.12)};border:1px solid ${hexToRgba(s.color, 0.35)};padding:2px 8px;border-radius:8px;">
+        <span class="shift-name" style="color:${s.color || "#3b82f6"};background:${hexToRgba(s.color || "#3b82f6", 0.12)};border:1px solid ${hexToRgba(s.color || "#3b82f6", 0.35)};border:1px solid ${hexToRgba(s.color, 0.35)};padding:2px 8px;border-radius:8px;">
           ${s.name}
         </span>
         <span class="shift-people">${assigned.length}/${required} · ${names}</span>
@@ -73,10 +73,14 @@ function renderMonthGrid(id, compact) {
     el.appendChild(div);
   });
 }
-function hexToRgba(hex, alpha) {
+function hexToRgba(hex = "#3b82f6", alpha = 1) {
+  if (!hex || typeof hex !== "string") hex = "#3b82f6";
+  if (!hex.startsWith("#")) hex = "#3b82f6";
+
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
+
   return `rgba(${r},${g},${b},${alpha})`;
 }
 function renderStats() {
