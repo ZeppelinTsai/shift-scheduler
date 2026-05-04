@@ -136,6 +136,8 @@ function applyLang() {
   refreshTopAuthUI();
 
   renderAll();
+  applyMeta(currentLang);
+  applyTitle(currentLang);
 }
 function navigate(view, el) {
   currentView = view;
@@ -242,32 +244,11 @@ function seedMonth() {
 function setLang(lang) {
   currentLang = lang;
   T = TRANSLATIONS[lang];
-  localStorage.setItem("scheduly_lang", lang);
+  localStorage.setItem("LumShift_lang", lang);
   document.documentElement.lang = lang === "zh" ? "zh-TW" : lang;
   applyLang();
 }
-function applyLang() {
-  document.querySelectorAll("[data-i18n]").forEach((el) => {
-    const v = T[el.dataset.i18n];
-    if (v !== undefined) el.textContent = v;
-  });
-  document.querySelectorAll("[data-i18n-html]").forEach((el) => {
-    const v = T[el.dataset.i18nHtml];
-    if (v !== undefined) el.innerHTML = v;
-  });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
-    const v = T[el.dataset.i18nPlaceholder];
-    if (v !== undefined) el.placeholder = v;
-  });
-  document
-    .querySelectorAll(".lang-btn")
-    .forEach((b) =>
-      b.classList.toggle("active", b.dataset.lang === currentLang),
-    );
-  document.getElementById("page-title").textContent =
-    T.page_titles[currentView];
-  renderAll();
-}
+
 function navigate(view, el) {
   currentView = view;
   document

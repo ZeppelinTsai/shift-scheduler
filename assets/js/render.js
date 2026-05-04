@@ -616,3 +616,24 @@ function exportCSV() {
   URL.revokeObjectURL(a.href);
   showToast(T.toast_csv);
 }
+const META = {
+  zh: "免費排班系統 LumShift，支援月排班、員工資料、班次設定、假日設定、個人休假設定與台灣勞基法基本排班檢查。",
+  en: "Free shift scheduler LumShift with monthly scheduling, employee management, shift settings, holidays, leave management, and Taiwan labor law validation.",
+  ja: "無料シフト管理ツール LumShift。月間シフト、従業員管理、シフト設定、休日・休暇設定、台湾労働法チェック対応。",
+};
+function applyMeta(lang) {
+  const meta = document.querySelector('meta[name="description"]');
+  if (meta && META[lang]) {
+    meta.setAttribute("content", META[lang]);
+  }
+}
+const TITLE = {
+  zh: "LumShift｜免費排班系統｜自動排班＋勞基法檢查",
+  en: "LumShift | Free Shift Scheduler with Labor Law Check",
+  ja: "LumShift｜無料シフト管理｜自動作成＋労働法チェック",
+};
+function applyTitle(lang) {
+  if (TITLE[lang]) {
+    document.title = TITLE[lang];
+  }
+}
