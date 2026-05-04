@@ -631,14 +631,24 @@
                     />
                   </div>
                 </div>
-                <button
-                  class="btn btn-primary"
-                  style="margin-top: 12px"
-                  onclick="addHoliday()"
-                  data-i18n="add_holiday"
-                >
-                  新增假日
-                </button>
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <button
+                    class="btn btn-primary"
+                    style="margin-top: 12px"
+                    onclick="addHoliday()"
+                    data-i18n="add_holiday"
+                  >
+                    新增假日
+                  </button>
+                  <button
+                    class="btn btn-ghost"
+                    style="margin-top: 12px"
+                    onclick="importHolidays()"
+                    data-i18n="import_national_holiday"
+                  >
+                    匯入國定假日
+                  </button>
+                </div>
               </div>
               <div class="card">
                 <div class="table-title" data-i18n="holiday_list">假日清單</div>
@@ -837,6 +847,7 @@
       </div>
     </div>
     <div id="toast" class="toast"></div>
+    <script src="https://cdn.jsdelivr.net/npm/date-holidays@3.23.7/dist/umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./assets/js/i18n.js"></script>
     <script src="./assets/js/state.js"></script>

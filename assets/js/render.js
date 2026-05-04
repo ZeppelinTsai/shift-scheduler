@@ -286,6 +286,35 @@ function addHoliday() {
   renderAll();
   showToast(T.toast_added);
 }
+function importHolidays() {
+  const year = cursor.getFullYear();
+
+  const countryMap = {
+    zh: "TW",
+    en: "US",
+    ja: "JP",
+  };
+
+  const country = countryMap[currentLang] || "TW";
+  const hd = new Holidays.default(country);
+  const list = hd.getHolidays(year);
+
+  let count = 0;
+
+  list.forEach((h) => {
+    const date = h.date.slice(0, 10);
+
+    // 不覆蓋使用者手動輸入
+    if (!holidays[date]) {
+      holidays[date] = h.name;
+      count++;
+    }
+  });
+
+  saveAll();
+  renderAll();
+  showToast(`${year} 已匯入 ${count} 個國定假日`);
+}
 function addLeave() {
   const d = document.getElementById("leave-date").value;
   const sid = Number(document.getElementById("leave-staff").value);
