@@ -108,7 +108,7 @@
             </button>
             <button
               id="auth-submit-btn"
-              class="btn btn-primary"
+              class="btn btn-success"
               onclick="submitAuth()"
               data-i18n="login"
             >
@@ -187,7 +187,7 @@
             5 位員工・月排班・基本法規<br />進階功能需 Pro
           </div>
           <button
-            class="btn btn-primary"
+            class="btn btn-success"
             style="width: 100%; justify-content: center"
             onclick="showPaidContact()"
             data-i18n="upgrade_btn"
@@ -217,26 +217,6 @@
             </div>
           </div>
           <div class="topbar-right">
-            <button
-              class="btn btn-primary"
-              onclick="validateSchedule()"
-              data-i18n="validate_schedule_btn"
-            >
-              合法性檢查
-            </button>
-            <button
-              class="btn btn-ghost"
-              onclick="autoFixSchedulePro()"
-              data-i18n="auto_fix_btn"
-            >
-              Pro 修正</button
-            ><button
-              class="btn btn-amber"
-              onclick="generateSchedulePro()"
-              data-i18n="generate_schedule_btn"
-            >
-              自動排班 Pro
-            </button>
             <div class="lang-switcher">
               <button
                 class="lang-btn active"
@@ -474,6 +454,13 @@
                     開啟月排班
                   </button>
                   <button
+                    class="btn btn-success"
+                    onclick="validateSchedule()"
+                    data-i18n="validate_schedule_btn"
+                  >
+                    合法性檢查
+                  </button>
+                  <button
                     class="btn btn-ghost"
                     onclick="
                       autoFixSchedulePro();
@@ -511,7 +498,7 @@
                 </div>
                 <div style="display: flex; align-items: center; gap: 6px">
                   <button
-                    class="btn btn-primary"
+                    class="btn btn-success"
                     onclick="validateSchedule()"
                     data-i18n="validate_schedule_btn"
                   >
@@ -554,7 +541,7 @@
                 <!-- 中：操作工具 -->
                 <div class="excel-tools-center">
                   <button
-                    class="btn btn-primary"
+                    class="btn btn-success"
                     onclick="openBatchAssignModal()"
                   >
                     排班
@@ -597,7 +584,7 @@
                   </div>
                 </div>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-success"
                   onclick="showStaffModal()"
                   data-i18n="add_staff_btn"
                 >
@@ -640,7 +627,7 @@
                     恢復預設
                   </button>
                   <button
-                    class="btn btn-primary"
+                    class="btn btn-success"
                     onclick="addShift()"
                     data-i18n="add_shift"
                   >
@@ -690,7 +677,7 @@
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px">
                   <button
-                    class="btn btn-primary"
+                    class="btn btn-success"
                     style="margin-top: 12px"
                     onclick="addHoliday()"
                     data-i18n="add_holiday"
@@ -741,7 +728,7 @@
                   </div>
                 </div>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-success"
                   style="margin-top: 12px"
                   onclick="addLeave()"
                   data-i18n="add_leave"
@@ -817,7 +804,7 @@
             >
               取消</button
             ><button
-              class="btn btn-primary"
+              class="btn btn-success"
               onclick="saveDaySchedule()"
               data-i18n="save"
             >
@@ -882,7 +869,7 @@
             >
               取消</button
             ><button
-              class="btn btn-primary"
+              class="btn btn-success"
               onclick="addStaff()"
               data-i18n="confirm_add"
             >
@@ -938,7 +925,7 @@
             >
               取消</button
             ><button
-              class="btn btn-primary"
+              class="btn btn-success"
               onclick="
                 location.href =
                   'mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry'
@@ -985,7 +972,7 @@
               取消
             </button>
             <button
-              class="btn btn-primary"
+              class="btn btn-success"
               onclick="applyBatchAssignFromModal()"
             >
               套用

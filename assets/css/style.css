@@ -216,13 +216,7 @@ a {
   font-size: 13px;
   transition: 0.15s;
 }
-.btn-primary {
-  background: var(--accent);
-  color: #073827;
-}
-.btn-primary:hover {
-  opacity: 0.86;
-}
+
 .btn-ghost {
   background: transparent;
   border-color: var(--border-hover);
