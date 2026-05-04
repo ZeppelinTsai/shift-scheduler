@@ -1,147 +1,847 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-TW">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="免費排班系統 LumShift，支援月排班、員工資料、班次設定、假日設定、個人休假設定與台灣勞基法基本排班檢查。">
-<title>LumShift｜免費排班系統｜月排班｜台灣勞基法排班檢查｜</title>
-<link rel="icon" href="/shift-scheduler/LumShiftIcon.ico">
-<link rel="canonical" href="https://zeppelintsai.github.io/shift-scheduler/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./assets/css/style.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"LumShift","operatingSystem":"Web","applicationCategory":"BusinessApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"},"description":"免費排班系統，支援月排班、台灣勞基法基本排班檢查、假日設定、個人休假設定、員工管理與班次管理。"}</script>
-</head>
-<body>
-<header class="seo"><h1>免費排班系統｜月排班與台灣勞基法排班檢查</h1><p>LumShift 是一套線上排班工具，支援月排班、班次設定、員工資料、假日設定、個人休假設定與基本勞基法檢查。免費版可進行基本排班與驗證，進階版提供自動排班、自動修正、多人上限解除、進階法規規則、多地點與多角色限制。</p></header>
-<div id="login-modal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-title" id="auth-title">登入雲端帳號</div>
-    <div class="modal-sub" id="auth-sub">登入後可使用雲端儲存、讀取與未來 Pro 功能。</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="免費排班系統 LumShift，支援月排班、員工資料、班次設定、假日設定、個人休假設定與台灣勞基法基本排班檢查。"
+    />
+    <title>LumShift｜免費排班系統｜月排班｜台灣勞基法排班檢查｜</title>
+    <link rel="icon" href="/shift-scheduler/LumShiftIcon.ico" />
+    <link
+      rel="canonical"
+      href="https://zeppelintsai.github.io/shift-scheduler/"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "LumShift",
+        "operatingSystem": "Web",
+        "applicationCategory": "BusinessApplication",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" },
+        "description": "免費排班系統，支援月排班、台灣勞基法基本排班檢查、假日設定、個人休假設定、員工管理與班次管理。"
+      }
+    </script>
+  </head>
+  <body>
+    <header class="seo">
+      <h1>免費排班系統｜月排班與台灣勞基法排班檢查</h1>
+      <p>
+        LumShift
+        是一套線上排班工具，支援月排班、班次設定、員工資料、假日設定、個人休假設定與基本勞基法檢查。免費版可進行基本排班與驗證，進階版提供自動排班、自動修正、多人上限解除、進階法規規則、多地點與多角色限制。
+      </p>
+    </header>
+    <div id="login-modal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-title" id="auth-title">登入雲端帳號</div>
+        <div class="modal-sub" id="auth-sub">
+          登入後可使用雲端儲存、讀取與未來 Pro 功能。
+        </div>
 
-    <div class="field" style="margin-bottom:12px">
-      <label data-i18n="company_code_label">公司 / 部門代碼</label>
-      <input id="login-company" data-i18n-placeholder="company_code_placeholder" placeholder="例如 demo">
-    </div>
+        <div class="field" style="margin-bottom: 12px">
+          <label data-i18n="company_code_label">公司 / 部門代碼</label>
+          <input
+            id="login-company"
+            data-i18n-placeholder="company_code_placeholder"
+            placeholder="例如 demo"
+          />
+        </div>
 
-    <div class="field" style="margin-bottom:12px">
-      <label data-i18n="username_label">帳號</label>
-      <input id="login-username" data-i18n-placeholder="username_placeholder" placeholder="例如 admin">
-    </div>
+        <div class="field" style="margin-bottom: 12px">
+          <label data-i18n="username_label">帳號</label>
+          <input
+            id="login-username"
+            data-i18n-placeholder="username_placeholder"
+            placeholder="例如 admin"
+          />
+        </div>
 
-    <div class="field" style="margin-bottom:16px">
-      <label data-i18n="password_label">密碼</label>
-      <input id="login-password" type="password" data-i18n-placeholder="password_placeholder" placeholder="例如 123456">
-    </div>
+        <div class="field" style="margin-bottom: 16px">
+          <label data-i18n="password_label">密碼</label>
+          <input
+            id="login-password"
+            type="password"
+            data-i18n-placeholder="password_placeholder"
+            placeholder="例如 123456"
+          />
+        </div>
 
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeLoginModal()" data-i18n="cancel">取消</button>
-      <button id="auth-submit-btn" class="btn btn-primary" onclick="submitAuth()" data-i18n="login">登入</button>
-    </div>
+        <div class="modal-actions">
+          <button
+            class="btn btn-ghost"
+            onclick="closeLoginModal()"
+            data-i18n="cancel"
+          >
+            取消
+          </button>
+          <button
+            id="auth-submit-btn"
+            class="btn btn-primary"
+            onclick="submitAuth()"
+            data-i18n="login"
+          >
+            登入
+          </button>
+        </div>
 
-    <div id="auth-switch-text" class="hint" style="margin-top:12px;text-align:right">
-      還沒有工作區？<a href="#" onclick="setAuthMode('register')" data-i18n="register">註冊 / 建立雲端工作區</a>
-    </div>
-  </div>
-</div>
-<div class="app">
-<aside class="sidebar">
-  <div class="logo">
-    <div class="logo-icon">
-      <img src="./LumShiftIcon.ico" alt="LumShift">
-    </div>
-    <div class="logo-text">Lum<span>Shift</span></div></div>
-  <div class="nav-label" data-i18n="nav_label">主選單</div>
-  <div class="nav-item active" data-view="dashboard" onclick="navigate('dashboard',this)"><span class="icon">⊞</span><span data-i18n="nav_dashboard">總覽</span></div>
-  <div class="nav-item" data-view="schedule" onclick="navigate('schedule',this)"><span class="icon">◫</span><span data-i18n="nav_schedule">月排班</span></div>
-  <div class="nav-item" data-view="staff" onclick="navigate('staff',this)"><span class="icon">◉</span><span data-i18n="nav_staff">員工資料</span></div>
-  <div class="nav-item" data-view="shifts" onclick="navigate('shifts',this)"><span class="icon">◷</span><span data-i18n="nav_shifts">班次設定</span></div>
-  <div class="nav-item" data-view="holidays" onclick="navigate('holidays',this)"><span class="icon">◎</span><span data-i18n="nav_holidays">假日設定</span></div>
-  <div class="nav-item" data-view="leaves" onclick="navigate('leaves',this)"><span class="icon">◌</span><span data-i18n="nav_leaves">個人休假</span></div>
-  <div class="nav-item" data-view="plans" onclick="navigate('plans',this)"><span class="icon">◆</span><span data-i18n="nav_plans">方案功能</span></div>
-  <div class="nav-spacer"></div>
-  <div class="plan-badge"><div class="plan-name" data-i18n="plan_name">Free 方案</div><div class="plan-desc" data-i18n-html="plan_desc">5 位員工・月排班・基本法規<br>進階功能需 Pro</div><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="showPaidContact()" data-i18n="upgrade_btn">升級 Pro ↑</button></div>
-</aside>
-<main class="main">
-  <div class="topbar">
-    <div class="topbar-left"><div class="page-title" id="page-title" style="display:none;" data-i18n="dashboard">總覽</div>
-    <div class="month-nav"><button onclick="changeMonth(-1)">←</button><span id="month-label" class="month-label">—</span><button onclick="changeMonth(1)">→</button><button onclick="goThisMonth()" data-i18n="this_month">本月</button></div></div>
-    <div class="topbar-right">
-      <button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button>
-      <button class="btn btn-ghost" onclick="autoFixSchedulePro()" data-i18n="auto_fix_btn">Pro 修正</button><button class="btn btn-amber" onclick="generateSchedulePro()" data-i18n="generate_schedule_btn">自動排班 Pro</button><div class="lang-switcher"><button class="lang-btn active" data-lang="zh" onclick="setLang('zh')">中</button><button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button><button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日</button></div><button class="btn btn-ghost" onclick="exportCSV()" data-i18n="export_csv">匯出 CSV</button>
-      <button id="login-top-btn" class="btn btn-ghost" onclick="openLoginModal()" data-i18n="login">登入</button>
-      <button id="menu-top-btn" class="btn btn-ghost" onclick="toggleMenu()" style="display:none">☰</button>
-    
-    </div>
-  </div>
-  
-  <div id="menu-panel" class="issue-panel">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <h3 data-i18n="menu_title">選單</h3>
-      <button class="btn btn-ghost" onclick="toggleMenu()">×</button>
-    </div>
-    <div class="issue-item" onclick="navigate('dashboard',document.querySelector('[data-view=dashboard]'));toggleMenu()" data-i18n="dashboard">⊞ 總覽</div>
-    <div class="issue-item" onclick="navigate('schedule',document.querySelector('[data-view=schedule]'));toggleMenu()" data-i18n="schedule">◫ 月排班</div>
-    <div class="issue-item" onclick="navigate('staff',document.querySelector('[data-view=staff]'));toggleMenu()" data-i18n="staff">◉ 員工資料</div>
-    <div class="issue-item" onclick="navigate('shifts',document.querySelector('[data-view=shifts]'));toggleMenu()" data-i18n="shifts">◷ 班次設定</div>
-    <div class="issue-item" onclick="navigate('holidays',document.querySelector('[data-view=holidays]'));toggleMenu()" data-i18n="holidays">◎ 假日設定</div>
-    <div class="issue-item" onclick="navigate('leaves',document.querySelector('[data-view=leaves]'));toggleMenu()" data-i18n="leaves">◌ 個人休假</div>
-    <div class="issue-item" onclick="navigate('plans',document.querySelector('[data-view=plans]'));toggleMenu()" data-i18n="plans">◆ 方案功能</div>
-
-    <hr style="margin:10px 0;border-color:var(--border)">
-
-    <div class="issue-item">
-      <div class="hint" style="margin-bottom:8px" data-i18n="language">語言</div>
-        <button class="btn btn-ghost mobile-lang-btn" data-lang="zh" onclick="setLang('zh')">中</button>
-        <button class="btn btn-ghost mobile-lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
-        <button class="btn btn-ghost mobile-lang-btn" data-lang="ja" onclick="setLang('ja')">日</button>
-    </div>
-
-    <hr style="margin:10px 0;border-color:var(--border)">
-
-    <div class="issue-item">
-      <div class="hint" id="login-status-text" style="margin-bottom:8px" data-i18n="login_status">登入狀態</div>
-      <button class="btn btn-ghost" onclick="logout();toggleMenu()" data-i18n="logout">登出</button>
-    </div>
-  </div>
-  <div class="content">
-    <section id="view-dashboard" class="view active">
-      <div class="stats-row"><div class="stat-card"><div class="stat-label" data-i18n="stat_emp">員工數</div><div id="d-emp" class="stat-val green">—</div><div class="stat-sub" data-i18n="stat_emp_sub">Free 上限 5 人</div></div><div class="stat-card"><div class="stat-label" data-i18n="stat_shifts">本月排定班次</div><div id="d-shifts" class="stat-val blue">—</div><div class="stat-sub" data-i18n="stat_shifts_sub">不含休假</div></div><div class="stat-card"><div class="stat-label" data-i18n="stat_holidays">本月假日</div><div id="d-holidays" class="stat-val amber">—</div><div class="stat-sub" data-i18n="stat_holidays_sub">可自訂</div></div><div class="stat-card"><div class="stat-label" data-i18n="stat_cover">覆蓋率</div><div id="d-cover" class="stat-val red">—</div><div class="stat-sub" data-i18n="stat_cover_sub">需求班次覆蓋</div></div></div>
-      <div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="month_overview">月排班總覽</div><div class="hint" data-i18n="month_overview_hint">以月份為單位檢查缺班、假日與個人休假衝突。</div></div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <button class="btn btn-primary" onclick="navigate('schedule',document.querySelector('[data-view=schedule]'))" data-i18n="open_month_schedule">開啟月排班</button>
-        <button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()" data-i18n="auto_fix_btn">Pro 修正</button>
-        <button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()" data-i18n="generate_schedule_btn">自動排班 Pro</button>
+        <div
+          id="auth-switch-text"
+          class="hint"
+          style="margin-top: 12px; text-align: right"
+        >
+          還沒有工作區？<a
+            href="#"
+            onclick="setAuthMode('register')"
+            data-i18n="register"
+            >註冊 / 建立雲端工作區</a
+          >
+        </div>
       </div>
-    </div><div id="dashboard-grid" class="month-grid"></div></div>
-    </section>
-    <section id="view-schedule" class="view"><div class="table-card"><div class="toolbar">
-      <div>
-        <div class="table-title" data-i18n="monthly_schedule">月排班</div>
-        <div class="hint" data-i18n="monthly_schedule_hint">點「編輯」可設定該日每個班次的人員；假日與個人休假會標記在日期上。</div>
+    </div>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-icon">
+            <img src="./LumShiftIcon.ico" alt="LumShift" />
+          </div>
+          <div class="logo-text">Lum<span>Shift</span></div>
+        </div>
+        <div class="nav-label" data-i18n="nav_label">主選單</div>
+        <div
+          class="nav-item active"
+          data-view="dashboard"
+          onclick="navigate('dashboard', this)"
+        >
+          <span class="icon">⊞</span><span data-i18n="nav_dashboard">總覽</span>
+        </div>
+        <div
+          class="nav-item"
+          data-view="schedule"
+          onclick="navigate('schedule', this)"
+        >
+          <span class="icon">◫</span
+          ><span data-i18n="nav_schedule">月排班</span>
+        </div>
+        <div
+          class="nav-item"
+          data-view="staff"
+          onclick="navigate('staff', this)"
+        >
+          <span class="icon">◉</span><span data-i18n="nav_staff">員工資料</span>
+        </div>
+        <div
+          class="nav-item"
+          data-view="shifts"
+          onclick="navigate('shifts', this)"
+        >
+          <span class="icon">◷</span
+          ><span data-i18n="nav_shifts">班次設定</span>
+        </div>
+        <div
+          class="nav-item"
+          data-view="holidays"
+          onclick="navigate('holidays', this)"
+        >
+          <span class="icon">◎</span
+          ><span data-i18n="nav_holidays">假日設定</span>
+        </div>
+        <div
+          class="nav-item"
+          data-view="leaves"
+          onclick="navigate('leaves', this)"
+        >
+          <span class="icon">◌</span
+          ><span data-i18n="nav_leaves">個人休假</span>
+        </div>
+        <div
+          class="nav-item"
+          data-view="plans"
+          onclick="navigate('plans', this)"
+        >
+          <span class="icon">◆</span><span data-i18n="nav_plans">方案功能</span>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="plan-badge">
+          <div class="plan-name" data-i18n="plan_name">Free 方案</div>
+          <div class="plan-desc" data-i18n-html="plan_desc">
+            5 位員工・月排班・基本法規<br />進階功能需 Pro
+          </div>
+          <button
+            class="btn btn-primary"
+            style="width: 100%; justify-content: center"
+            onclick="showPaidContact()"
+            data-i18n="upgrade_btn"
+          >
+            升級 Pro ↑
+          </button>
+        </div>
+      </aside>
+      <main class="main">
+        <div class="topbar">
+          <div class="topbar-left">
+            <div
+              class="page-title"
+              id="page-title"
+              style="display: none"
+              data-i18n="dashboard"
+            >
+              總覽
+            </div>
+            <div class="month-nav">
+              <button onclick="changeMonth(-1)">←</button
+              ><span id="month-label" class="month-label">—</span
+              ><button onclick="changeMonth(1)">→</button
+              ><button onclick="goThisMonth()" data-i18n="this_month">
+                本月
+              </button>
+            </div>
+          </div>
+          <div class="topbar-right">
+            <button
+              class="btn btn-primary"
+              onclick="validateSchedule()"
+              data-i18n="validate_schedule_btn"
+            >
+              合法性檢查
+            </button>
+            <button
+              class="btn btn-ghost"
+              onclick="autoFixSchedulePro()"
+              data-i18n="auto_fix_btn"
+            >
+              Pro 修正</button
+            ><button
+              class="btn btn-amber"
+              onclick="generateSchedulePro()"
+              data-i18n="generate_schedule_btn"
+            >
+              自動排班 Pro
+            </button>
+            <div class="lang-switcher">
+              <button
+                class="lang-btn active"
+                data-lang="zh"
+                onclick="setLang('zh')"
+              >
+                中</button
+              ><button class="lang-btn" data-lang="en" onclick="setLang('en')">
+                EN</button
+              ><button class="lang-btn" data-lang="ja" onclick="setLang('ja')">
+                日
+              </button>
+            </div>
+            <button
+              class="btn btn-ghost"
+              onclick="exportCSV()"
+              data-i18n="export_csv"
+            >
+              匯出 CSV
+            </button>
+            <button
+              id="login-top-btn"
+              class="btn btn-ghost"
+              onclick="openLoginModal()"
+              data-i18n="login"
+            >
+              登入
+            </button>
+            <button
+              id="menu-top-btn"
+              class="btn btn-ghost"
+              onclick="toggleMenu()"
+              style="display: none"
+            >
+              ☰
+            </button>
+          </div>
+        </div>
+
+        <div id="menu-panel" class="issue-panel">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 14px;
+            "
+          >
+            <h3 data-i18n="menu_title">選單</h3>
+            <button class="btn btn-ghost" onclick="toggleMenu()">×</button>
+          </div>
+          <div
+            class="issue-item"
+            onclick="
+              navigate(
+                'dashboard',
+                document.querySelector('[data-view=dashboard]'),
+              );
+              toggleMenu();
+            "
+            data-i18n="dashboard"
+          >
+            ⊞ 總覽
+          </div>
+          <div
+            class="issue-item"
+            onclick="
+              navigate(
+                'schedule',
+                document.querySelector('[data-view=schedule]'),
+              );
+              toggleMenu();
+            "
+            data-i18n="schedule"
+          >
+            ◫ 月排班
+          </div>
+          <div
+            class="issue-item"
+            onclick="
+              navigate('staff', document.querySelector('[data-view=staff]'));
+              toggleMenu();
+            "
+            data-i18n="staff"
+          >
+            ◉ 員工資料
+          </div>
+          <div
+            class="issue-item"
+            onclick="
+              navigate('shifts', document.querySelector('[data-view=shifts]'));
+              toggleMenu();
+            "
+            data-i18n="shifts"
+          >
+            ◷ 班次設定
+          </div>
+          <div
+            class="issue-item"
+            onclick="
+              navigate(
+                'holidays',
+                document.querySelector('[data-view=holidays]'),
+              );
+              toggleMenu();
+            "
+            data-i18n="holidays"
+          >
+            ◎ 假日設定
+          </div>
+          <div
+            class="issue-item"
+            onclick="
+              navigate('leaves', document.querySelector('[data-view=leaves]'));
+              toggleMenu();
+            "
+            data-i18n="leaves"
+          >
+            ◌ 個人休假
+          </div>
+          <div
+            class="issue-item"
+            onclick="
+              navigate('plans', document.querySelector('[data-view=plans]'));
+              toggleMenu();
+            "
+            data-i18n="plans"
+          >
+            ◆ 方案功能
+          </div>
+
+          <hr style="margin: 10px 0; border-color: var(--border)" />
+
+          <div class="issue-item">
+            <div class="hint" style="margin-bottom: 8px" data-i18n="language">
+              語言
+            </div>
+            <button
+              class="btn btn-ghost mobile-lang-btn"
+              data-lang="zh"
+              onclick="setLang('zh')"
+            >
+              中
+            </button>
+            <button
+              class="btn btn-ghost mobile-lang-btn"
+              data-lang="en"
+              onclick="setLang('en')"
+            >
+              EN
+            </button>
+            <button
+              class="btn btn-ghost mobile-lang-btn"
+              data-lang="ja"
+              onclick="setLang('ja')"
+            >
+              日
+            </button>
+          </div>
+
+          <hr style="margin: 10px 0; border-color: var(--border)" />
+
+          <div class="issue-item">
+            <div
+              class="hint"
+              id="login-status-text"
+              style="margin-bottom: 8px"
+              data-i18n="login_status"
+            >
+              登入狀態
+            </div>
+            <button
+              class="btn btn-ghost"
+              onclick="
+                logout();
+                toggleMenu();
+              "
+              data-i18n="logout"
+            >
+              登出
+            </button>
+          </div>
+        </div>
+        <div class="content">
+          <section id="view-dashboard" class="view active">
+            <div class="stats-row">
+              <div class="stat-card">
+                <div class="stat-label" data-i18n="stat_emp">員工數</div>
+                <div id="d-emp" class="stat-val green">—</div>
+                <div class="stat-sub" data-i18n="stat_emp_sub">
+                  Free 上限 5 人
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label" data-i18n="stat_shifts">
+                  本月排定班次
+                </div>
+                <div id="d-shifts" class="stat-val blue">—</div>
+                <div class="stat-sub" data-i18n="stat_shifts_sub">不含休假</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label" data-i18n="stat_holidays">本月假日</div>
+                <div id="d-holidays" class="stat-val amber">—</div>
+                <div class="stat-sub" data-i18n="stat_holidays_sub">可自訂</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label" data-i18n="stat_cover">覆蓋率</div>
+                <div id="d-cover" class="stat-val red">—</div>
+                <div class="stat-sub" data-i18n="stat_cover_sub">
+                  需求班次覆蓋
+                </div>
+              </div>
+            </div>
+            <div class="table-card">
+              <div class="toolbar">
+                <div>
+                  <div class="table-title" data-i18n="month_overview">
+                    月排班總覽
+                  </div>
+                  <div class="hint" data-i18n="month_overview_hint">
+                    以月份為單位檢查缺班、假日與個人休假衝突。
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px">
+                  <button
+                    class="btn btn-primary"
+                    onclick="
+                      navigate(
+                        'schedule',
+                        document.querySelector('[data-view=schedule]'),
+                      )
+                    "
+                    data-i18n="open_month_schedule"
+                  >
+                    開啟月排班
+                  </button>
+                  <button
+                    class="btn btn-ghost"
+                    onclick="
+                      autoFixSchedulePro();
+                      toggleMenu();
+                    "
+                    data-i18n="auto_fix_btn"
+                  >
+                    Pro 修正
+                  </button>
+                  <button
+                    class="btn btn-amber"
+                    onclick="
+                      generateSchedulePro();
+                      toggleMenu();
+                    "
+                    data-i18n="generate_schedule_btn"
+                  >
+                    自動排班 Pro
+                  </button>
+                </div>
+              </div>
+              <div id="dashboard-grid" class="month-grid"></div>
+            </div>
+          </section>
+          <section id="view-schedule" class="view">
+            <div class="table-card">
+              <div class="toolbar">
+                <div>
+                  <div class="table-title" data-i18n="monthly_schedule">
+                    月排班
+                  </div>
+                  <div class="hint" data-i18n="monthly_schedule_hint">
+                    點「編輯」可設定該日每個班次的人員；假日與個人休假會標記在日期上。
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px">
+                  <button
+                    class="btn btn-primary"
+                    onclick="validateSchedule()"
+                    data-i18n="validate_schedule_btn"
+                  >
+                    合法性檢查
+                  </button>
+                  <button
+                    class="btn btn-ghost"
+                    onclick="
+                      autoFixSchedulePro();
+                      toggleMenu();
+                    "
+                    data-i18n="auto_fix_btn"
+                  >
+                    Pro 修正
+                  </button>
+                  <button
+                    class="btn btn-amber"
+                    onclick="
+                      generateSchedulePro();
+                      toggleMenu();
+                    "
+                    data-i18n="generate_schedule_btn"
+                  >
+                    自動排班 Pro
+                  </button>
+                </div>
+              </div>
+              <div id="schedule-grid" class="month-grid"></div>
+            </div>
+          </section>
+          <section id="view-staff" class="view">
+            <div class="table-card">
+              <div class="toolbar">
+                <div>
+                  <div class="table-title" data-i18n="staff_list">員工資料</div>
+                  <div class="hint" data-i18n="staff_hint">
+                    免費版最多 5 人；超過人數會保留資料，但需 Pro 才能完整使用。
+                  </div>
+                </div>
+                <button
+                  class="btn btn-primary"
+                  onclick="showStaffModal()"
+                  data-i18n="add_staff_btn"
+                >
+                  新增員工
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table class="sched-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="col_emp">員工</th>
+                      <th data-i18n="col_position">職位</th>
+                      <th data-i18n="col_role_group">角色限制</th>
+                      <th data-i18n="col_status">狀態</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="staff-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+          <section id="view-shifts" class="view">
+            <div class="table-card">
+              <div class="toolbar">
+                <div>
+                  <div class="table-title" data-i18n="shift_settings_title">
+                    班次設定
+                  </div>
+                  <div class="hint" data-i18n="shift_settings_hint">
+                    免費版可調整班次時間與每日需求人數；多角色限制屬於進階版。
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px">
+                  <button
+                    class="btn btn-ghost"
+                    onclick="resetShifts()"
+                    data-i18n="reset_shifts"
+                  >
+                    恢復預設
+                  </button>
+                  <button
+                    class="btn btn-primary"
+                    onclick="addShift()"
+                    data-i18n="add_shift"
+                  >
+                    新增班次
+                  </button>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="sched-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="shift_col_name">班次</th>
+                      <th data-i18n="color">顏色</th>
+                      <th data-i18n="shift_col_start">開始</th>
+                      <th data-i18n="shift_col_end">結束</th>
+                      <th data-i18n="shift_col_required">每日需求人數</th>
+                      <th data-i18n="shift_col_role">角色限制</th>
+                    </tr>
+                  </thead>
+                  <tbody id="shift-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+          <section id="view-holidays" class="view">
+            <div class="settings-list">
+              <div class="card">
+                <div class="table-title" data-i18n="holiday_settings">
+                  假日設定
+                </div>
+                <div class="hint" data-i18n="holiday_hint">
+                  設定國定假日、店休日或特殊日，會出現在月排班上。
+                </div>
+                <div class="form-grid" style="margin-top: 14px">
+                  <div class="field">
+                    <label data-i18n="date_label">日期</label
+                    ><input id="holiday-date" type="date" />
+                  </div>
+                  <div class="field">
+                    <label data-i18n="holiday_name_label">假日名稱</label
+                    ><input
+                      id="holiday-name"
+                      data-i18n-placeholder="holiday_name_placeholder"
+                      placeholder="例如：端午節"
+                    />
+                  </div>
+                </div>
+                <button
+                  class="btn btn-primary"
+                  style="margin-top: 12px"
+                  onclick="addHoliday()"
+                  data-i18n="add_holiday"
+                >
+                  新增假日
+                </button>
+              </div>
+              <div class="card">
+                <div class="table-title" data-i18n="holiday_list">假日清單</div>
+                <div id="holiday-list" style="margin-top: 12px"></div>
+              </div>
+            </div>
+          </section>
+          <section id="view-leaves" class="view">
+            <div class="settings-list">
+              <div class="card">
+                <div class="table-title" data-i18n="leave_settings">
+                  個人休假設定
+                </div>
+                <div class="hint" data-i18n="leave_hint">
+                  免費版可設定員工休假；若排到休假日，合法性檢查會提示衝突。
+                </div>
+                <div class="form-grid" style="margin-top: 14px">
+                  <div class="field">
+                    <label data-i18n="staff_label">員工</label
+                    ><select id="leave-staff"></select>
+                  </div>
+                  <div class="field">
+                    <label data-i18n="date_label">日期</label
+                    ><input id="leave-date" type="date" />
+                  </div>
+                  <div class="field">
+                    <label data-i18n="leave_reason_label">原因</label
+                    ><input
+                      id="leave-reason"
+                      data-i18n-placeholder="leave_reason_placeholder"
+                      placeholder="例如：特休"
+                    />
+                  </div>
+                </div>
+                <button
+                  class="btn btn-primary"
+                  style="margin-top: 12px"
+                  onclick="addLeave()"
+                  data-i18n="add_leave"
+                >
+                  新增休假
+                </button>
+              </div>
+              <div class="card">
+                <div class="table-title" data-i18n="leave_list">休假清單</div>
+                <div id="leave-list" style="margin-top: 12px"></div>
+              </div>
+            </div>
+          </section>
+          <section id="view-plans" class="view">
+            <div class="feature-grid">
+              <div class="feature-card">
+                <div class="feature-title" data-i18n="free_features_title">
+                  免費版
+                </div>
+                <div
+                  class="feature-desc"
+                  data-i18n-html="free_features_desc"
+                ></div>
+              </div>
+              <div class="feature-card pro">
+                <div class="feature-title">Pro</div>
+                <div
+                  class="feature-desc"
+                  data-i18n-html="pro_features_desc"
+                ></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <aside id="issue-panel" class="issue-panel">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 14px;
+        "
+      >
+        <h3 data-i18n="issue_panel_title">⚠️ 排班問題</h3>
+        <button class="btn btn-ghost" onclick="closeIssuePanel()">×</button>
       </div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <button class="btn btn-primary" onclick="validateSchedule()" data-i18n="validate_schedule_btn">合法性檢查</button>
-        <button class="btn btn-ghost" onclick="autoFixSchedulePro();toggleMenu()" data-i18n="auto_fix_btn">Pro 修正</button>
-        <button class="btn btn-amber" onclick="generateSchedulePro();toggleMenu()" data-i18n="generate_schedule_btn">自動排班 Pro</button>
+      <div id="issue-list"></div>
+    </aside>
+    <div id="edit-modal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-title" id="edit-title">編輯排班</div>
+        <div class="modal-sub" id="edit-sub"></div>
+        <div id="edit-form"></div>
+        <div class="modal-actions">
+          <button
+            class="btn btn-ghost"
+            onclick="closeEditModal()"
+            data-i18n="cancel"
+          >
+            取消</button
+          ><button
+            class="btn btn-primary"
+            onclick="saveDaySchedule()"
+            data-i18n="save"
+          >
+            儲存
+          </button>
+        </div>
       </div>
-    </div><div id="schedule-grid" class="month-grid"></div></div></section>
-    <section id="view-staff" class="view"><div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="staff_list">員工資料</div><div class="hint" data-i18n="staff_hint">免費版最多 5 人；超過人數會保留資料，但需 Pro 才能完整使用。</div></div><button class="btn btn-primary" onclick="showStaffModal()" data-i18n="add_staff_btn">新增員工</button></div><div class="table-wrap"><table class="sched-table"><thead><tr><th data-i18n="col_emp">員工</th><th data-i18n="col_position">職位</th><th data-i18n="col_role_group">角色限制</th><th data-i18n="col_status">狀態</th><th></th></tr></thead><tbody id="staff-tbody"></tbody></table></div></div></section>
-    <section id="view-shifts" class="view"><div class="table-card"><div class="toolbar"><div><div class="table-title" data-i18n="shift_settings_title">班次設定</div><div class="hint" data-i18n="shift_settings_hint">免費版可調整班次時間與每日需求人數；多角色限制屬於進階版。</div></div></div><div class="table-wrap"><table class="sched-table"><thead><tr><th data-i18n="shift_col_name">班次</th><th data-i18n="shift_col_code">代碼</th><th data-i18n="shift_col_start">開始</th><th data-i18n="shift_col_end">結束</th><th data-i18n="shift_col_required">每日需求人數</th><th data-i18n="shift_col_role">角色限制</th></tr></thead><tbody id="shift-tbody"></tbody></table></div></div></section>
-    <section id="view-holidays" class="view"><div class="settings-list"><div class="card"><div class="table-title" data-i18n="holiday_settings">假日設定</div><div class="hint" data-i18n="holiday_hint">設定國定假日、店休日或特殊日，會出現在月排班上。</div><div class="form-grid" style="margin-top:14px"><div class="field"><label data-i18n="date_label">日期</label><input id="holiday-date" type="date"></div><div class="field"><label data-i18n="holiday_name_label">假日名稱</label><input id="holiday-name" data-i18n-placeholder="holiday_name_placeholder" placeholder="例如：端午節"></div></div><button class="btn btn-primary" style="margin-top:12px" onclick="addHoliday()" data-i18n="add_holiday">新增假日</button></div><div class="card"><div class="table-title" data-i18n="holiday_list">假日清單</div><div id="holiday-list" style="margin-top:12px"></div></div></div></section>
-    <section id="view-leaves" class="view"><div class="settings-list"><div class="card"><div class="table-title" data-i18n="leave_settings">個人休假設定</div><div class="hint" data-i18n="leave_hint">免費版可設定員工休假；若排到休假日，合法性檢查會提示衝突。</div><div class="form-grid" style="margin-top:14px"><div class="field"><label data-i18n="staff_label">員工</label><select id="leave-staff"></select></div><div class="field"><label data-i18n="date_label">日期</label><input id="leave-date" type="date"></div><div class="field"><label data-i18n="leave_reason_label">原因</label><input id="leave-reason" data-i18n-placeholder="leave_reason_placeholder" placeholder="例如：特休"></div></div><button class="btn btn-primary" style="margin-top:12px" onclick="addLeave()" data-i18n="add_leave">新增休假</button></div><div class="card"><div class="table-title" data-i18n="leave_list">休假清單</div><div id="leave-list" style="margin-top:12px"></div></div></div></section>
-    <section id="view-plans" class="view"><div class="feature-grid"><div class="feature-card"><div class="feature-title" data-i18n="free_features_title">免費版</div><div class="feature-desc" data-i18n-html="free_features_desc"></div></div><div class="feature-card pro"><div class="feature-title">Pro</div><div class="feature-desc" data-i18n-html="pro_features_desc"></div></div></div></section>
-  </div>
-</main></div>
-<aside id="issue-panel" class="issue-panel"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3 data-i18n="issue_panel_title">⚠️ 排班問題</h3><button class="btn btn-ghost" onclick="closeIssuePanel()">×</button></div><div id="issue-list"></div></aside>
-<div id="edit-modal" class="modal-overlay"><div class="modal"><div class="modal-title" id="edit-title">編輯排班</div><div class="modal-sub" id="edit-sub"></div><div id="edit-form"></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeEditModal()" data-i18n="cancel">取消</button><button class="btn btn-primary" onclick="saveDaySchedule()" data-i18n="save">儲存</button></div></div></div>
-<div id="staff-modal" class="modal-overlay"><div class="modal"><div class="modal-title" data-i18n="add_staff_title">新增員工</div><div class="modal-sub" data-i18n="add_staff_desc">填寫基本員工資料</div><div class="form-grid"><div class="field"><label data-i18n="name_label">姓名</label><input id="new-name" data-i18n-placeholder="name_placeholder" placeholder="例：王大明"></div><div class="field"><label data-i18n="role_label">職位</label><input id="new-role" data-i18n-placeholder="role_placeholder" placeholder="例：全職"></div><div class="field"><label data-i18n="role_group_label">角色限制</label><select id="new-role-group"><option value="general" data-i18n="role_general">一般</option><option value="manager" data-i18n="role_manager">管理者</option><option value="cook" data-i18n="role_cook">廚房</option><option value="cashier" data-i18n="role_cashier">收銀</option></select></div></div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeStaffModal()" data-i18n="cancel">取消</button><button class="btn btn-primary" onclick="addStaff()" data-i18n="confirm_add">確認新增</button></div></div></div>
-<div id="contact-modal" class="modal-overlay"><div class="modal"><div class="modal-title" data-i18n="contact_modal_title">開通 Pro 功能</div><div class="modal-sub" id="contact-sub" data-i18n="contact_modal_sub">進階排班功能提供給付費 / 客製用戶使用。</div><div class="card" style="background:var(--surface2);margin-bottom:12px"><div class="hint" data-i18n="contact_label">聯絡方式</div><a href="mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry">luxandpei@gmail.com</a></div><div class="feature-desc" data-i18n="contact_modal_desc">免費用戶可以使用月排班、員工資料、班次設定、假日設定、個人休假與基本合法性檢查；自動排班、自動修正與進階規則保留為 Pro。</div><div class="modal-actions"><button class="btn btn-ghost" onclick="closeContactModal()" data-i18n="cancel">取消</button><button class="btn btn-primary" onclick="location.href='mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry'" data-i18n="email_me">寄信給我</button></div></div></div>
-<div id="toast" class="toast"></div>
-<script src="./assets/js/i18n.js"></script>
-<script src="./assets/js/state.js"></script>
-<script src="./assets/js/render.js"></script>
-<script src="./assets/js/api.js"></script>
-<script src="./assets/js/main.js"></script>
-</body>
+    </div>
+    <div id="staff-modal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-title" data-i18n="add_staff_title">新增員工</div>
+        <div class="modal-sub" data-i18n="add_staff_desc">填寫基本員工資料</div>
+        <div class="form-grid">
+          <div class="field">
+            <label data-i18n="name_label">姓名</label
+            ><input
+              id="new-name"
+              data-i18n-placeholder="name_placeholder"
+              placeholder="例：王大明"
+            />
+          </div>
+          <div class="field">
+            <label data-i18n="role_label">職位</label
+            ><input
+              id="new-role"
+              data-i18n-placeholder="role_placeholder"
+              placeholder="例：全職"
+            />
+          </div>
+          <div class="field">
+            <label data-i18n="role_group_label">角色限制</label
+            ><select id="new-role-group">
+              <option value="general" data-i18n="role_general">一般</option>
+              <option value="manager" data-i18n="role_manager">管理者</option>
+              <option value="cook" data-i18n="role_cook">廚房</option>
+              <option value="cashier" data-i18n="role_cashier">收銀</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button
+            class="btn btn-ghost"
+            onclick="closeStaffModal()"
+            data-i18n="cancel"
+          >
+            取消</button
+          ><button
+            class="btn btn-primary"
+            onclick="addStaff()"
+            data-i18n="confirm_add"
+          >
+            確認新增
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="contact-modal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-title" data-i18n="contact_modal_title">
+          開通 Pro 功能
+        </div>
+        <div class="modal-sub" id="contact-sub" data-i18n="contact_modal_sub">
+          進階排班功能提供給付費 / 客製用戶使用。
+        </div>
+        <div
+          class="card"
+          style="background: var(--surface2); margin-bottom: 12px"
+        >
+          <div class="hint" data-i18n="contact_label">聯絡方式</div>
+          <a href="mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry"
+            >luxandpei@gmail.com</a
+          >
+        </div>
+        <div class="feature-desc" data-i18n="contact_modal_desc">
+          免費用戶可以使用月排班、員工資料、班次設定、假日設定、個人休假與基本合法性檢查；自動排班、自動修正與進階規則保留為
+          Pro。
+        </div>
+        <div class="modal-actions">
+          <button
+            class="btn btn-ghost"
+            onclick="closeContactModal()"
+            data-i18n="cancel"
+          >
+            取消</button
+          ><button
+            class="btn btn-primary"
+            onclick="
+              location.href =
+                'mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry'
+            "
+            data-i18n="email_me"
+          >
+            寄信給我
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="toast" class="toast"></div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./assets/js/i18n.js"></script>
+    <script src="./assets/js/state.js"></script>
+    <script src="./assets/js/render.js"></script>
+    <script src="./assets/js/api.js"></script>
+    <script src="./assets/js/main.js"></script>
+  </body>
 </html>
