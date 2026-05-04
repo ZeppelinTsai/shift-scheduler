@@ -338,10 +338,10 @@ function removeLeave(id) {
   showToast(T.toast_removed);
 }
 function showStaffModal() {
-  document.getElementById("staff-modal").classList.add("open");
+  getBootstrapModal("staff-modal").show();
 }
 function closeStaffModal() {
-  document.getElementById("staff-modal").classList.remove("open");
+  getBootstrapModal("staff-modal").hide();
 }
 function addStaff() {
   const name = document.getElementById("new-name").value.trim();
@@ -446,10 +446,10 @@ function openEditModal(date) {
     }
     form.appendChild(wrap);
   });
-  document.getElementById("edit-modal").classList.add("open");
+  getBootstrapModal("edit-modal").show();
 }
 function closeEditModal() {
-  document.getElementById("edit-modal").classList.remove("open");
+  getBootstrapModal("edit-modal").hide();
 }
 function saveDaySchedule() {
   if (!editingDate) return;

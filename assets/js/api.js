@@ -176,10 +176,10 @@ async function autoFixSchedulePro() {
 function showPaidContact(feature) {
   document.getElementById("contact-sub").textContent =
     T.paid_feature_message(feature);
-  document.getElementById("contact-modal").classList.add("open");
+  getBootstrapModal("contact-modal").show();
 }
 function closeContactModal() {
-  document.getElementById("contact-modal").classList.remove("open");
+  getBootstrapModal("contact-modal").hide();
 }
 function showToast(msg) {
   const t = document.getElementById("toast");
@@ -194,11 +194,11 @@ let currentUsername = localStorage.getItem("LumShift_username") || "";
 
 function openLoginModal(mode = "login") {
   setAuthMode(mode);
-  document.getElementById("login-modal").classList.add("open");
+  getBootstrapModal("login-modal").show();
 }
 
 function closeLoginModal() {
-  document.getElementById("login-modal").classList.remove("open");
+  getBootstrapModal("login-modal").hide();
 }
 async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
   const controller = new AbortController();

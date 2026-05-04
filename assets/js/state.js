@@ -67,6 +67,10 @@ function monthKey() {
 let dailyDemands =
   JSON.parse(localStorage.getItem("LumShift_dailyDemands") || "null") || {};
 
+function getBootstrapModal(id) {
+  return bootstrap.Modal.getOrCreateInstance(document.getElementById(id));
+}
+
 function saveAll() {
   localStorage.setItem("LumShift_staff", JSON.stringify(staff));
   localStorage.setItem("LumShift_shifts", JSON.stringify(shifts));

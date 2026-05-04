@@ -44,70 +44,77 @@
         是一套線上排班工具，支援月排班、班次設定、員工資料、假日設定、個人休假設定與基本勞基法檢查。免費版可進行基本排班與驗證，進階版提供自動排班、自動修正、多人上限解除、進階法規規則、多地點與多角色限制。
       </p>
     </header>
-    <div id="login-modal" class="modal-overlay">
-      <div class="modal">
-        <div class="modal-title" id="auth-title">登入雲端帳號</div>
-        <div class="modal-sub" id="auth-sub">
-          登入後可使用雲端儲存、讀取與未來 Pro 功能。
-        </div>
+    <div class="modal fade" id="login-modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-header">
+            <div>
+              <h5 class="modal-title" id="auth-title">登入雲端帳號</h5>
+              <div class="modal-sub" id="auth-sub">
+                登入後可使用雲端儲存、讀取與未來 Pro 功能。
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="field" style="margin-bottom: 12px">
+              <label data-i18n="company_code_label">公司 / 部門代碼</label>
+              <input
+                id="login-company"
+                data-i18n-placeholder="company_code_placeholder"
+                placeholder="例如 demo"
+              />
+            </div>
 
-        <div class="field" style="margin-bottom: 12px">
-          <label data-i18n="company_code_label">公司 / 部門代碼</label>
-          <input
-            id="login-company"
-            data-i18n-placeholder="company_code_placeholder"
-            placeholder="例如 demo"
-          />
-        </div>
+            <div class="field" style="margin-bottom: 12px">
+              <label data-i18n="username_label">帳號</label>
+              <input
+                id="login-username"
+                data-i18n-placeholder="username_placeholder"
+                placeholder="例如 admin"
+              />
+            </div>
 
-        <div class="field" style="margin-bottom: 12px">
-          <label data-i18n="username_label">帳號</label>
-          <input
-            id="login-username"
-            data-i18n-placeholder="username_placeholder"
-            placeholder="例如 admin"
-          />
-        </div>
+            <div class="field" style="margin-bottom: 16px">
+              <label data-i18n="password_label">密碼</label>
+              <input
+                id="login-password"
+                type="password"
+                data-i18n-placeholder="password_placeholder"
+                placeholder="例如 123456"
+              />
+            </div>
 
-        <div class="field" style="margin-bottom: 16px">
-          <label data-i18n="password_label">密碼</label>
-          <input
-            id="login-password"
-            type="password"
-            data-i18n-placeholder="password_placeholder"
-            placeholder="例如 123456"
-          />
-        </div>
-
-        <div class="modal-actions">
-          <button
-            class="btn btn-ghost"
-            onclick="closeLoginModal()"
-            data-i18n="cancel"
-          >
-            取消
-          </button>
-          <button
-            id="auth-submit-btn"
-            class="btn btn-primary"
-            onclick="submitAuth()"
-            data-i18n="login"
-          >
-            登入
-          </button>
-        </div>
-
-        <div
-          id="auth-switch-text"
-          class="hint"
-          style="margin-top: 12px; text-align: right"
-        >
-          還沒有工作區？<a
-            href="#"
-            onclick="setAuthMode('register')"
-            data-i18n="register"
-            >註冊 / 建立雲端工作區</a
-          >
+            <div id="auth-switch-text" class="hint" style="text-align: right">
+              還沒有工作區？<a
+                href="#"
+                onclick="setAuthMode('register')"
+                data-i18n="register"
+                >註冊 / 建立雲端工作區</a
+              >
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-ghost"
+              data-bs-dismiss="modal"
+              data-i18n="cancel"
+            >
+              取消
+            </button>
+            <button
+              id="auth-submit-btn"
+              class="btn btn-primary"
+              onclick="submitAuth()"
+              data-i18n="login"
+            >
+              登入
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -785,114 +792,162 @@
       </div>
       <div id="issue-list"></div>
     </aside>
-    <div id="edit-modal" class="modal-overlay">
-      <div class="modal">
-        <div class="modal-title" id="edit-title">編輯排班</div>
-        <div class="modal-sub" id="edit-sub"></div>
-        <div id="edit-form"></div>
-        <div class="modal-actions">
-          <button
-            class="btn btn-ghost"
-            onclick="closeEditModal()"
-            data-i18n="cancel"
-          >
-            取消</button
-          ><button
-            class="btn btn-primary"
-            onclick="saveDaySchedule()"
-            data-i18n="save"
-          >
-            儲存
-          </button>
+    <div class="modal fade" id="edit-modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-header">
+            <div>
+              <h5 class="modal-title" id="edit-title">編輯排班</h5>
+              <div class="modal-sub" id="edit-sub"></div>
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="edit-form"></div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-ghost"
+              data-bs-dismiss="modal"
+              data-i18n="cancel"
+            >
+              取消</button
+            ><button
+              class="btn btn-primary"
+              onclick="saveDaySchedule()"
+              data-i18n="save"
+            >
+              儲存
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <div id="staff-modal" class="modal-overlay">
-      <div class="modal">
-        <div class="modal-title" data-i18n="add_staff_title">新增員工</div>
-        <div class="modal-sub" data-i18n="add_staff_desc">填寫基本員工資料</div>
-        <div class="form-grid">
-          <div class="field">
-            <label data-i18n="name_label">姓名</label
-            ><input
-              id="new-name"
-              data-i18n-placeholder="name_placeholder"
-              placeholder="例：王大明"
-            />
+    <div class="modal fade" id="staff-modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-header">
+            <div>
+              <h5 class="modal-title" data-i18n="add_staff_title">新增員工</h5>
+              <div class="modal-sub" data-i18n="add_staff_desc">
+                填寫基本員工資料
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
           </div>
-          <div class="field">
-            <label data-i18n="role_label">職位</label
-            ><input
-              id="new-role"
-              data-i18n-placeholder="role_placeholder"
-              placeholder="例：全職"
-            />
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="field">
+                <label data-i18n="name_label">姓名</label
+                ><input
+                  id="new-name"
+                  data-i18n-placeholder="name_placeholder"
+                  placeholder="例：王大明"
+                />
+              </div>
+              <div class="field">
+                <label data-i18n="role_label">職位</label
+                ><input
+                  id="new-role"
+                  data-i18n-placeholder="role_placeholder"
+                  placeholder="例：全職"
+                />
+              </div>
+              <div class="field">
+                <label data-i18n="role_group_label">角色限制</label
+                ><select id="new-role-group">
+                  <option value="general" data-i18n="role_general">一般</option>
+                  <option value="manager" data-i18n="role_manager">
+                    管理者
+                  </option>
+                  <option value="cook" data-i18n="role_cook">廚房</option>
+                  <option value="cashier" data-i18n="role_cashier">收銀</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="field">
-            <label data-i18n="role_group_label">角色限制</label
-            ><select id="new-role-group">
-              <option value="general" data-i18n="role_general">一般</option>
-              <option value="manager" data-i18n="role_manager">管理者</option>
-              <option value="cook" data-i18n="role_cook">廚房</option>
-              <option value="cashier" data-i18n="role_cashier">收銀</option>
-            </select>
+          <div class="modal-footer">
+            <button
+              class="btn btn-ghost"
+              data-bs-dismiss="modal"
+              data-i18n="cancel"
+            >
+              取消</button
+            ><button
+              class="btn btn-primary"
+              onclick="addStaff()"
+              data-i18n="confirm_add"
+            >
+              確認新增
+            </button>
           </div>
-        </div>
-        <div class="modal-actions">
-          <button
-            class="btn btn-ghost"
-            onclick="closeStaffModal()"
-            data-i18n="cancel"
-          >
-            取消</button
-          ><button
-            class="btn btn-primary"
-            onclick="addStaff()"
-            data-i18n="confirm_add"
-          >
-            確認新增
-          </button>
         </div>
       </div>
     </div>
-    <div id="contact-modal" class="modal-overlay">
-      <div class="modal">
-        <div class="modal-title" data-i18n="contact_modal_title">
-          開通 Pro 功能
-        </div>
-        <div class="modal-sub" id="contact-sub" data-i18n="contact_modal_sub">
-          進階排班功能提供給付費 / 客製用戶使用。
-        </div>
-        <div
-          class="card"
-          style="background: var(--surface2); margin-bottom: 12px"
-        >
-          <div class="hint" data-i18n="contact_label">聯絡方式</div>
-          <a href="mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry"
-            >luxandpei@gmail.com</a
-          >
-        </div>
-        <div class="feature-desc" data-i18n="contact_modal_desc">
-          免費用戶可以使用月排班、員工資料、班次設定、假日設定、個人休假與基本合法性檢查；自動排班、自動修正與進階規則保留為
-          Pro。
-        </div>
-        <div class="modal-actions">
-          <button
-            class="btn btn-ghost"
-            onclick="closeContactModal()"
-            data-i18n="cancel"
-          >
-            取消</button
-          ><button
-            class="btn btn-primary"
-            onclick="
-              location.href =
-                'mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry'
-            "
-            data-i18n="email_me"
-          >
-            寄信給我
-          </button>
+    <div class="modal fade" id="contact-modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-header">
+            <div>
+              <h5 class="modal-title" data-i18n="contact_modal_title">
+                開通 Pro 功能
+              </h5>
+              <div
+                class="modal-sub"
+                id="contact-sub"
+                data-i18n="contact_modal_sub"
+              >
+                進階排班功能提供給付費 / 客製用戶使用。
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div
+              class="card"
+              style="background: var(--surface2); margin-bottom: 12px"
+            >
+              <div class="hint" data-i18n="contact_label">聯絡方式</div>
+              <a
+                href="mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry"
+                >luxandpei@gmail.com</a
+              >
+            </div>
+            <div class="feature-desc" data-i18n="contact_modal_desc">
+              免費用戶可以使用月排班、員工資料、班次設定、假日設定、個人休假與基本合法性檢查；自動排班、自動修正與進階規則保留為
+              Pro。
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-ghost"
+              data-bs-dismiss="modal"
+              data-i18n="cancel"
+            >
+              取消</button
+            ><button
+              class="btn btn-primary"
+              onclick="
+                location.href =
+                  'mailto:luxandpei@gmail.com?subject=LumShift%20Pro%20Inquiry'
+              "
+              data-i18n="email_me"
+            >
+              寄信給我
+            </button>
+          </div>
         </div>
       </div>
     </div>
