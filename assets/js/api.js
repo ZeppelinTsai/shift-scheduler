@@ -4,12 +4,6 @@ function shiftKeyById(id) {
   const s = shifts.find((x) => Number(x.id) === Number(id));
   return s ? String(s.id) : "OFF";
 }
-function getISOWeek(dateStr) {
-  const d = new Date(dateStr + "T00:00:00");
-  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-  const yearStart = new Date(d.getFullYear(), 0, 1);
-  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-}
 function buildProPayload() {
   const mk = monthKey();
   const active = staff.map((emp, idx) => ({
@@ -49,8 +43,8 @@ function buildProPayload() {
     ),
     rules: {
       country: "TW",
-      year: cursor.getFullYear(),
-      month: cursor.getMonth() + 1,
+      year: cursor.year(),
+      month: cursor.month() + 1,
       max_shifts: 22,
       max_consecutive_days: 6,
       min_rest_hours: 11,
@@ -72,10 +66,10 @@ function applyGeneratedSchedule(data) {
     rows.forEach((shiftId, idx) => {
       const key = shiftKeyById(shiftId);
       const date = data.dates[idx];
-      if (!date || code === "OFF") return;
+      if (!date || key === "OFF") return;
       if (!schedule[mk][date]) schedule[mk][date] = {};
-      if (!schedule[mk][date][code]) schedule[mk][date][code] = [];
-      schedule[mk][date][code].push(Number(empId));
+      if (!schedule[mk][date][key]) schedule[mk][date][key] = [];
+      schedule[mk][date][key].push(Number(empId));
     });
   });
   saveAll();

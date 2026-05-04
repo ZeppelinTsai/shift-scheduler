@@ -5,8 +5,7 @@ localStorage.setItem("LumShift_plan", currentPlan);
 let currentLang = localStorage.getItem("LumShift_lang") || "zh";
 let T = TRANSLATIONS[currentLang];
 let currentView = "dashboard";
-let cursor = new Date();
-cursor.setDate(1);
+let cursor = dayjs().startOf("month");
 let editingDate = null;
 const FREE_LIMIT = 5;
 const shiftClasses = { AM: "s-am", PM: "s-pm", NT: "s-nt" };
@@ -52,21 +51,24 @@ let leaves =
   JSON.parse(localStorage.getItem("LumShift_leaves") || "null") || [];
 let schedule =
   JSON.parse(localStorage.getItem("LumShift_schedule") || "null") || {};
-function pad(n) {
-  return String(n).padStart(2, "0");
-}
-function ymd(d) {
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-function daysInMonth() {
-  return new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
-}
-function monthKey() {
-  return `${cursor.getFullYear()}-${pad(cursor.getMonth() + 1)}`;
-}
 let dailyDemands =
   JSON.parse(localStorage.getItem("LumShift_dailyDemands") || "null") || {};
 
+function pad(n) {
+  return String(n).padStart(2, "0");
+}
+function toDayjs(value) {
+  return dayjs.isDayjs(value) ? value : dayjs(value);
+}
+function ymd(d) {
+  return toDayjs(d).format("YYYY-MM-DD");
+}
+function daysInMonth() {
+  return cursor.daysInMonth();
+}
+function monthKey() {
+  return cursor.format("YYYY-MM");
+}
 function getBootstrapModal(id) {
   return bootstrap.Modal.getOrCreateInstance(document.getElementById(id));
 }
@@ -127,7 +129,6 @@ function applyLang() {
     if (v !== undefined) el.placeholder = v;
   });
 
-  // ✅ 核心修正（包含 mobile）
   document
     .querySelectorAll(".lang-btn, .mobile-lang-btn")
     .forEach((b) =>
@@ -159,34 +160,30 @@ function navigate(view, el) {
   renderAll();
 }
 function monthDates(includeOutside = false) {
-  const first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
-  const startDow = first.getDay();
+  const first = cursor.startOf("month");
+  const startDow = first.day();
   const dim = daysInMonth();
   const cells = [];
+
   if (includeOutside) {
-    const prevDim = new Date(
-      cursor.getFullYear(),
-      cursor.getMonth(),
-      0,
-    ).getDate();
+    const prevMonth = cursor.subtract(1, "month");
+    const prevDim = prevMonth.daysInMonth();
     for (let i = startDow - 1; i >= 0; i--) {
       cells.push({
-        date: new Date(
-          cursor.getFullYear(),
-          cursor.getMonth() - 1,
-          prevDim - i,
-        ),
+        date: prevMonth.date(prevDim - i),
         muted: true,
       });
     }
   } else {
     for (let i = 0; i < startDow; i++) cells.push(null);
   }
-  for (let d = 1; d <= dim; d++)
+
+  for (let d = 1; d <= dim; d++) {
     cells.push({
-      date: new Date(cursor.getFullYear(), cursor.getMonth(), d),
+      date: cursor.date(d),
       muted: false,
     });
+  }
   while (cells.length % 7 !== 0) cells.push(null);
   return cells;
 }
@@ -224,89 +221,13 @@ function getDaySchedule(date) {
 
   return schedule[mk][date];
 }
-function seedMonth() {
-  const mk = monthKey();
-  if (schedule[mk]) return;
-  schedule[mk] = {};
-  const dim = daysInMonth();
-  for (let day = 1; day <= dim; day++) {
-    const date = `${mk}-${pad(day)}`;
-    schedule[mk][date] = {};
-    shifts.forEach((s, si) => {
-      schedule[mk][date][s.code] = [];
-      if (day % 7 !== 0 && day % 6 !== 0) {
-        const ids = activeStaff()
-          .filter((_, idx) => (day + idx + si) % 3 === 0)
-          .slice(0, s.required)
-          .map((x) => x.id);
-        schedule[mk][date][s.code] = ids;
-      }
-    });
-  }
-  saveAll();
-}
-function setLang(lang) {
-  currentLang = lang;
-  T = TRANSLATIONS[lang];
-  localStorage.setItem("LumShift_lang", lang);
-  document.documentElement.lang = lang === "zh" ? "zh-TW" : lang;
-  applyLang();
-}
-
-function navigate(view, el) {
-  currentView = view;
-  document
-    .querySelectorAll(".view")
-    .forEach((v) => v.classList.remove("active"));
-  document.getElementById("view-" + view).classList.add("active");
-  document
-    .querySelectorAll(".nav-item")
-    .forEach((n) => n.classList.remove("active"));
-  if (el) el.classList.add("active");
-  document.getElementById("page-title").textContent = T.page_titles[view];
-  renderAll();
-}
 function changeMonth(delta) {
-  cursor.setMonth(cursor.getMonth() + delta);
-  cursor.setDate(1);
+  cursor = cursor.add(delta, "month").startOf("month");
   seedMonth();
   renderAll();
 }
 function goThisMonth() {
-  cursor = new Date();
-  cursor.setDate(1);
+  cursor = dayjs().startOf("month");
   seedMonth();
   renderAll();
-}
-function monthDates(includeOutside = false) {
-  const first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
-  const startDow = first.getDay();
-  const dim = daysInMonth();
-  const cells = [];
-  if (includeOutside) {
-    const prevDim = new Date(
-      cursor.getFullYear(),
-      cursor.getMonth(),
-      0,
-    ).getDate();
-    for (let i = startDow - 1; i >= 0; i--) {
-      cells.push({
-        date: new Date(
-          cursor.getFullYear(),
-          cursor.getMonth() - 1,
-          prevDim - i,
-        ),
-        muted: true,
-      });
-    }
-  } else {
-    for (let i = 0; i < startDow; i++) cells.push(null);
-  }
-  for (let d = 1; d <= dim; d++)
-    cells.push({
-      date: new Date(cursor.getFullYear(), cursor.getMonth(), d),
-      muted: false,
-    });
-  while (cells.length % 7 !== 0) cells.push(null);
-  return cells;
 }

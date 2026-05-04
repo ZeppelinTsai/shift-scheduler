@@ -2,7 +2,7 @@ function renderAll() {
   seedMonth();
 
   document.getElementById("month-label").textContent =
-    `${cursor.getFullYear()} ${T.months[cursor.getMonth()]}`;
+    `${cursor.year()} ${T.months[cursor.month()]}`;
 
   renderStats();
   renderMonthGrid("dashboard-grid", true);
@@ -38,7 +38,7 @@ function renderMonthGrid(id, compact) {
     const lf = leavesForDate(date);
     if (lf.length)
       badges += `<span class="leave-chip">${T.leave} ${lf.length}</span>`;
-    div.innerHTML = `<div class="day-head"><div class="day-num">${cell.date.getDate()}</div><div>${badges}</div></div>`;
+    div.innerHTML = `<div class="day-head"><div class="day-num">${cell.date.date()}</div><div>${badges}</div></div>`;
     shifts.forEach((s) => {
       const assigned = ds[s.id] || [];
       const isHol = !!isHoliday(date);
@@ -292,7 +292,7 @@ function addHoliday() {
   showToast(T.toast_added);
 }
 function importHolidays() {
-  const year = cursor.getFullYear();
+  const year = cursor.year();
 
   const countryMap = {
     zh: "TW",
@@ -325,7 +325,7 @@ function addLeave() {
   const sid = Number(document.getElementById("leave-staff").value);
   const r = document.getElementById("leave-reason").value.trim() || T.leave;
   if (!d) return showToast(T.toast_date_required);
-  leaves.push({ id: Date.now(), staffId: sid, date: d, reason: r });
+  leaves.push({ id: dayjs().valueOf(), staffId: sid, date: d, reason: r });
   document.getElementById("leave-reason").value = "";
   saveAll();
   renderAll();
@@ -347,8 +347,8 @@ function addStaff() {
   const name = document.getElementById("new-name").value.trim();
   if (!name) return showToast(T.toast_name_required);
   staff.push({
-    id: Date.now(),
-    code: "EMP-" + Date.now(),
+    id: dayjs().valueOf(),
+    code: "EMP-" + dayjs().valueOf(),
     name,
     role: document.getElementById("new-role").value.trim() || "",
     roleGroup: document.getElementById("new-role-group").value,
@@ -538,8 +538,8 @@ function validateSchedule() {
         current++;
         max = Math.max(max, current);
       } else current = 0;
-      const d = new Date(date);
-      const week = `${d.getFullYear()}-W${getISOWeek(date)}`;
+      const d = dayjs(date);
+      const week = `${d.isoWeekYear()}-W${d.isoWeek()}`;
       hoursByWeek[emp.id + "-" + week] =
         (hoursByWeek[emp.id + "-" + week] || 0) + (work ? 8 : 0);
     }

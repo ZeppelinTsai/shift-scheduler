@@ -16,8 +16,8 @@ function renderScheduleGrid() {
 
   const mk = monthKey();
   const days = daysInMonth();
-  const year = cursor.getFullYear();
-  const mon = cursor.getMonth();
+  const year = cursor.year();
+  const mon = cursor.month();
 
   // Build date strings for this month
   const dates = [];
@@ -74,8 +74,8 @@ function _buildThead(dates, year, mon) {
 
   const dowNames = T.days; // ['日','一','二','三','四','五','六']
   dates.forEach((dateStr) => {
-    const d = new Date(dateStr + "T00:00:00");
-    const dow = d.getDay(); // 0=Sun
+    const d = dayjs(dateStr);
+    const dow = d.day(); // 0=Sun
     const th = document.createElement("th");
     th.className = "th-dow";
 
@@ -99,8 +99,8 @@ function _buildThead(dates, year, mon) {
   trDate.appendChild(thLabel);
 
   dates.forEach((dateStr) => {
-    const d = new Date(dateStr + "T00:00:00");
-    const dow = d.getDay();
+    const d = dayjs(dateStr);
+    const dow = d.day();
     const th = document.createElement("th");
     th.className = "th-date";
 
@@ -116,7 +116,7 @@ function _buildThead(dates, year, mon) {
 
     const numEl = document.createElement("span");
     numEl.className = "date-num";
-    numEl.textContent = d.getDate();
+    numEl.textContent = d.date();
     th.appendChild(numEl);
 
     if (isHol) {
@@ -411,7 +411,7 @@ function _openCellPopover(tdEl, dateStr, emp) {
       );
     } else {
       leaves.push({
-        id: Date.now(),
+        id: dayjs().valueOf(),
         staffId: emp.id,
         date: dateStr,
         reason: T.leave || "休假",
@@ -998,7 +998,7 @@ function pasteToSelectedCells() {
 
     if (source.leave) {
       leaves.push({
-        id: Date.now() + i,
+        id: dayjs().valueOf() + i,
         staffId: Number(empId),
         date,
         reason: T.leave || "休假",
@@ -1097,7 +1097,7 @@ function applyBatchAssignFromModal() {
       );
 
       leaves.push({
-        id: Date.now() + i,
+        id: dayjs().valueOf() + i,
         staffId: Number(empId),
         date,
         reason: T.leave || "休假",
