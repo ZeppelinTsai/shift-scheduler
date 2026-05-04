@@ -1,17 +1,18 @@
 function renderAll() {
   seedMonth();
+
   document.getElementById("month-label").textContent =
     `${cursor.getFullYear()} ${T.months[cursor.getMonth()]}`;
+
   renderStats();
   renderMonthGrid("dashboard-grid", true);
-  renderMonthGrid("schedule-grid", false);
+  renderScheduleGrid();
   renderStaff();
   renderShifts();
+
   renderHolidayList();
   renderLeaveList();
-  renderLeaveStaffOptions();
 }
-
 function renderMonthGrid(id, compact) {
   const el = document.getElementById(id);
   if (!el) return;

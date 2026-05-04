@@ -1,0 +1,61 @@
+/* 🖥️ 大螢幕：左中右 */
+.excel-tools {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.excel-tools-left,
+.excel-tools-center,
+.excel-tools-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 中間撐開 */
+.excel-tools-center {
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 左右 */
+.excel-tools-left {
+  justify-content: flex-start;
+}
+
+.excel-tools-right {
+  justify-content: flex-end;
+}
+
+/* 📱 小螢幕：全部變一排 flow */
+@media (max-width: 900px) {
+  .excel-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .excel-tools-left,
+  .excel-tools-center,
+  .excel-tools-right {
+    display: contents; /* ⭐ 關鍵：打散群組 */
+  }
+}
+.cell-has-note {
+  position: relative;
+}
+
+.cell-note-mark {
+  position: absolute;
+  right: 3px;
+  bottom: 2px;
+  font-size: 10px;
+  color: var(--amber);
+  opacity: 0.9;
+}
