@@ -40,7 +40,13 @@ function buildProPayload() {
       location_id: s.locationId || null,
       color: s.color || null,
     })),
-    demands: [],
+    demands: Object.entries(dailyDemands).flatMap(([date, rules]) =>
+      shifts.map((s) => ({
+        date,
+        shiftId: Number(s.id),
+        required: Number(rules[s.id] ?? s.required ?? 0),
+      })),
+    ),
     rules: {
       country: "TW",
       year: cursor.getFullYear(),

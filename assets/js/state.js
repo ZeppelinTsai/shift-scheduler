@@ -64,12 +64,20 @@ function daysInMonth() {
 function monthKey() {
   return `${cursor.getFullYear()}-${pad(cursor.getMonth() + 1)}`;
 }
+let dailyDemands =
+  JSON.parse(localStorage.getItem("LumShift_dailyDemands") || "null") || {};
+
 function saveAll() {
   localStorage.setItem("LumShift_staff", JSON.stringify(staff));
   localStorage.setItem("LumShift_shifts", JSON.stringify(shifts));
   localStorage.setItem("LumShift_holidays", JSON.stringify(holidays));
   localStorage.setItem("LumShift_leaves", JSON.stringify(leaves));
   localStorage.setItem("LumShift_schedule", JSON.stringify(schedule));
+  localStorage.setItem("LumShift_dailyDemands", JSON.stringify(dailyDemands));
+}
+
+function getRequired(date, shift) {
+  return Number(dailyDemands?.[date]?.[shift.id] ?? shift.required ?? 0);
 }
 function seedMonth() {
   const mk = monthKey();

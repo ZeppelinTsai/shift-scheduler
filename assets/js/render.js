@@ -41,13 +41,12 @@ function renderMonthGrid(id, compact) {
     shifts.forEach((s) => {
       const assigned = ds[s.id] || [];
       const isHol = !!isHoliday(date);
-      const missing = isHol
-        ? 0
-        : Math.max(0, Number(s.required) - assigned.length);
       const holidayConflict = isHol && assigned.length > 0;
       const leaveConflict = assigned.some((id) =>
         leaves.some((l) => l.date === date && Number(l.staffId) === Number(id)),
       );
+      const required = getRequired(date, s);
+      const missing = isHol ? 0 : Math.max(0, required - assigned.length);
       const names =
         assigned
           .map((id) => staffById(id)?.name)
@@ -57,15 +56,13 @@ function renderMonthGrid(id, compact) {
       row.className =
         "shift-row " +
         (missing || holidayConflict || leaveConflict ? "bad" : "");
+
       row.innerHTML = `
-      <span class="shift-name"
-        style="background:${s.color || "#334155"};color:white;padding:2px 6px;border-radius:6px;">
-        ${s.name}
-      </span>
-      <span class="shift-people">
-        ${assigned.length}/${s.required} · ${names}
-      </span>
-      `;
+        <span class="shift-name" style="color:${s.color};background:${hexToRgba(s.color, 0.12)};border:1px solid ${hexToRgba(s.color, 0.35)};padding:2px 8px;border-radius:8px;">
+          ${s.name}
+        </span>
+        <span class="shift-people">${assigned.length}/${required} · ${names}</span>
+        `;
       div.appendChild(row);
     });
     const btn = document.createElement("button");
@@ -76,6 +73,12 @@ function renderMonthGrid(id, compact) {
     el.appendChild(div);
   });
 }
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 function renderStats() {
   let totalReq = 0,
     totalAss = 0,
@@ -83,9 +86,10 @@ function renderStats() {
   const mk = monthKey();
   Object.keys(schedule[mk] || {}).forEach((date) => {
     shifts.forEach((s) => {
-      totalReq += Number(s.required);
+      const required = getRequired(date, s);
+      totalReq += required;
       const n = (schedule[mk][date][s.id] || []).length;
-      totalAss += Math.min(n, Number(s.required));
+      totalAss += Math.min(n, required);
       shiftCount += n;
     });
   });
@@ -170,8 +174,6 @@ function renderShifts() {
 
     tb.appendChild(tr);
   });
-
-  tb.appendChild(tr);
 }
 function removeShift(index) {
   const id = shifts[index].id;
@@ -376,8 +378,24 @@ function openEditModal(date) {
     const wrap = document.createElement("div");
     wrap.className = "card";
     wrap.style.marginBottom = "10px";
-    wrap.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b class="${shiftClasses[s.id] || ""}">${s.id} ${s.start}-${s.end}</b><span class="hint">${T.required}: ${s.required}</span></div>`;
-    for (let i = 0; i < Math.max(Number(s.required), 1); i++) {
+    wrap.innerHTML = `
+    <div style="display:flex;justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px">
+    <b class="${shiftClasses[s.id] || ""}">${s.id} ${s.start}-${s.end}</b>
+    <span class="hint">${T.required}</span>
+    </div>`;
+    const reqInput = document.createElement("input");
+    reqInput.type = "number";
+    reqInput.min = "0";
+    reqInput.value = getRequired(date, s);
+    reqInput.dataset.shiftRequired = s.id;
+    reqInput.style.cssText =
+      "width:90px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px;margin-bottom:8px";
+    wrap.appendChild(reqInput);
+    const required = getRequired(date, s);
+
+    for (let i = 0; i < Math.max(Number(required), 1); i++) {
       const select = document.createElement("select");
       select.dataset.shift = s.id;
       select.style.cssText =
@@ -402,6 +420,14 @@ function closeEditModal() {
 function saveDaySchedule() {
   if (!editingDate) return;
   const ds = getDaySchedule(editingDate);
+  dailyDemands[editingDate] = dailyDemands[editingDate] || {};
+  document
+    .querySelectorAll("#edit-form input[data-shift-required]")
+    .forEach((input) => {
+      dailyDemands[editingDate][input.dataset.shiftRequired] = Number(
+        input.value || 0,
+      );
+    });
   shifts.forEach((s) => (ds[s.id] = []));
   document.querySelectorAll("#edit-form select").forEach((sel) => {
     if (sel.value) {
@@ -441,13 +467,14 @@ function validateSchedule() {
 
     shifts.forEach((s) => {
       const assigned = ds[s.id] || [];
-      const miss = Math.max(0, Number(s.required) - assigned.length);
+      const required = getRequired(date, s);
+      const miss = Math.max(0, required - assigned.length);
 
       if (miss) {
         unmet++;
         issues.push({
           type: "bad",
-          text: `${date} ${s.id}: ${T.missing(miss)}`,
+          text: `${date} ${s.name}: ${T.missing(miss)}`,
         });
       }
 
