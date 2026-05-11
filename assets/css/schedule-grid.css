@@ -33,12 +33,63 @@
   justify-content: flex-end;
 }
 
+.schedule-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.schedule-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+}
+
+.schedule-mode-btn {
+  min-width: 34px;
+  height: 30px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 10px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.schedule-mode-btn:hover {
+  color: var(--text);
+  background: var(--surface3);
+}
+
+.schedule-mode-btn.active {
+  color: var(--text);
+  background: var(--accent);
+}
+
+.excel-grid-wrapper.mode-day .excel-table,
+.excel-grid-wrapper.mode-week .excel-table {
+  min-width: 100%;
+}
+
 /* 📱 小螢幕：全部變一排 flow */
 @media (max-width: 900px) {
   .excel-tools {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .schedule-toolbar-actions {
+    justify-content: flex-start;
+    margin-top: 10px;
   }
 
   .excel-tools-left,

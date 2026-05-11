@@ -672,3 +672,33 @@ Object.assign(TRANSLATIONS.ja, {
     cashier: "レジ",
   },
 });
+
+Object.assign(TRANSLATIONS.zh, {
+  month_overview: "排班總覽",
+  monthly_schedule: "排班總覽",
+  monthly_schedule_hint:
+    "可切換月、周、日模式查看同一份排班；假日、個人休假與需求缺口會同步標記。",
+  schedule_mode_month: "月",
+  schedule_mode_week: "周",
+  schedule_mode_day: "日",
+});
+
+Object.assign(TRANSLATIONS.en, {
+  month_overview: "Schedule Overview",
+  monthly_schedule: "Schedule Overview",
+  monthly_schedule_hint:
+    "Switch between month, week, and day views for the same schedule. Holidays, leave, and demand gaps stay visible.",
+  schedule_mode_month: "Month",
+  schedule_mode_week: "Week",
+  schedule_mode_day: "Day",
+});
+
+Object.assign(TRANSLATIONS.ja, {
+  month_overview: "シフト概要",
+  monthly_schedule: "シフト概要",
+  monthly_schedule_hint:
+    "同じシフトを月・週・日表示で切り替えられます。祝日、休暇、必要人数の不足も表示されます。",
+  schedule_mode_month: "月",
+  schedule_mode_week: "週",
+  schedule_mode_day: "日",
+});

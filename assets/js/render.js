@@ -1,8 +1,8 @@
 function renderAll() {
   seedMonth();
 
-  document.getElementById("month-label").textContent =
-    `${cursor.year()} ${T.months[cursor.month()]}`;
+  document.getElementById("month-label").textContent = formatScheduleRangeLabel();
+  updateScheduleModeUI();
 
   renderStats();
   renderMonthGrid("dashboard-grid", true);
@@ -12,6 +12,22 @@ function renderAll() {
 
   renderHolidayList();
   renderLeaveList();
+}
+function formatScheduleRangeLabel() {
+  if (scheduleViewMode === "day") {
+    return `${cursor.year()} ${T.months[cursor.month()]} ${cursor.date()}`;
+  }
+
+  if (scheduleViewMode === "week") {
+    const start = cursor.startOf("week");
+    const end = start.add(6, "day");
+    if (start.month() === end.month()) {
+      return `${start.year()} ${T.months[start.month()]} ${start.date()}-${end.date()}`;
+    }
+    return `${start.format("YYYY/MM/DD")}-${end.format("MM/DD")}`;
+  }
+
+  return `${cursor.year()} ${T.months[cursor.month()]}`;
 }
 function escapeHTML(value) {
   return String(value ?? "")

@@ -14,29 +14,41 @@ function renderScheduleGrid() {
   const container = document.getElementById("schedule-grid-excel");
   if (!container) return;
 
-  const mk = monthKey();
-  const days = daysInMonth();
-  const year = cursor.year();
-  const mon = cursor.month();
-
-  // Build date strings for this month
-  const dates = [];
-  for (let d = 1; d <= days; d++) {
-    dates.push(`${mk}-${pad(d)}`);
-  }
+  const dates = _scheduleGridDates();
 
   container.innerHTML = "";
-  container.appendChild(_buildTable(dates, year, mon));
+  container.classList.toggle("mode-day", scheduleViewMode === "day");
+  container.classList.toggle("mode-week", scheduleViewMode === "week");
+  container.classList.toggle("mode-month", scheduleViewMode === "month");
+  container.appendChild(_buildTable(dates));
   restoreSelectionUI();
 }
 
+function _scheduleGridDates() {
+  if (scheduleViewMode === "day") {
+    return [ymd(cursor)];
+  }
+
+  if (scheduleViewMode === "week") {
+    const start = cursor.startOf("week");
+    return Array.from({ length: 7 }, (_, i) => ymd(start.add(i, "day")));
+  }
+
+  const mk = monthKey();
+  const dates = [];
+  for (let d = 1; d <= daysInMonth(); d++) {
+    dates.push(`${mk}-${pad(d)}`);
+  }
+  return dates;
+}
+
 /* ── build the full <table> ──────────────────────────────────── */
-function _buildTable(dates, year, mon) {
+function _buildTable(dates) {
   const table = document.createElement("table");
   table.className = "excel-table";
 
   table.appendChild(_buildColgroup(dates));
-  table.appendChild(_buildThead(dates, year, mon));
+  table.appendChild(_buildThead(dates));
   table.appendChild(_buildTbody(dates));
 
   return table;
@@ -60,7 +72,7 @@ function _buildColgroup(dates) {
 }
 
 /* ── thead: weekday row + date number row ────────────────────── */
-function _buildThead(dates, year, mon) {
+function _buildThead(dates) {
   const thead = document.createElement("thead");
 
   // Row 1 — weekday abbreviations

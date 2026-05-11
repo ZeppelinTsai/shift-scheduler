@@ -6,6 +6,7 @@ let currentLang = localStorage.getItem("LumShift_lang") || "zh";
 let T = TRANSLATIONS[currentLang];
 let currentView = "dashboard";
 let cursor = dayjs().startOf("month");
+let scheduleViewMode = localStorage.getItem("LumShift_schedule_view") || "month";
 let editingDate = null;
 const FREE_LIMIT = 5;
 const shiftClasses = { AM: "s-am", PM: "s-pm", NT: "s-nt" };
@@ -68,6 +69,28 @@ function daysInMonth() {
 }
 function monthKey() {
   return cursor.format("YYYY-MM");
+}
+function scheduleModeUnit() {
+  return scheduleViewMode === "week"
+    ? "week"
+    : scheduleViewMode === "day"
+      ? "day"
+      : "month";
+}
+function scheduleModeAnchor() {
+  return scheduleViewMode === "month" ? cursor.startOf("month") : cursor;
+}
+function setScheduleViewMode(mode) {
+  if (!["month", "week", "day"].includes(mode)) return;
+  scheduleViewMode = mode;
+  cursor = scheduleModeAnchor();
+  localStorage.setItem("LumShift_schedule_view", mode);
+  renderAll();
+}
+function updateScheduleModeUI() {
+  document.querySelectorAll("[data-schedule-mode]").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.scheduleMode === scheduleViewMode);
+  });
 }
 function getBootstrapModal(id) {
   return bootstrap.Modal.getOrCreateInstance(document.getElementById(id));
@@ -222,12 +245,14 @@ function getDaySchedule(date) {
   return schedule[mk][date];
 }
 function changeMonth(delta) {
-  cursor = cursor.add(delta, "month").startOf("month");
+  const unit = scheduleModeUnit();
+  cursor = cursor.add(delta, unit);
+  if (unit === "month") cursor = cursor.startOf("month");
   seedMonth();
   renderAll();
 }
 function goThisMonth() {
-  cursor = dayjs().startOf("month");
+  cursor = scheduleViewMode === "month" ? dayjs().startOf("month") : dayjs();
   seedMonth();
   renderAll();
 }
