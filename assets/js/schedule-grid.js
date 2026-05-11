@@ -158,8 +158,8 @@ function _buildTbody(dates) {
     tdName.className = "td-name";
     tdName.innerHTML = `
       <div class="emp-cell-inner">
-        <div class="emp-avatar">${(emp.name[0] || "?").toUpperCase()}</div>
-        <span class="emp-label">${emp.name}</span>
+        <div class="emp-avatar">${escapeHTML((emp.name[0] || "?").toUpperCase())}</div>
+        <span class="emp-label">${escapeHTML(emp.name)}</span>
       </div>`;
     tr.appendChild(tdName);
 
@@ -292,7 +292,7 @@ function _buildTbody(dates) {
         style="background:${hexToRgba(s.color || "#3b82f6", 0.15)};
                color:${s.color || "#3b82f6"};
                border-color:${hexToRgba(s.color || "#3b82f6", 0.4)}">
-        ${s.name}
+        ${escapeHTML(s.name)}
       </span>
       <span class="demand-label-text">${T.required || "需求"}</span>`;
     tr.appendChild(tdLabel);
@@ -368,7 +368,7 @@ function _openCellPopover(tdEl, dateStr, emp) {
     btn.style.setProperty("--shift-color", s.color || "#3b82f6");
     btn.innerHTML = `
       <span class="psb-dot" style="background:${s.color || "#3b82f6"}"></span>
-      <span class="psb-name">${s.name}</span>
+      <span class="psb-name">${escapeHTML(s.name)}</span>
       <span class="psb-time">${s.start}–${s.end}</span>
       <span class="psb-check">${isAssigned ? "✓" : ""}</span>`;
 
@@ -478,6 +478,13 @@ function _toggleEmpShift(dateStr, empId, shiftId) {
 
   ds[shiftId] = assigned;
   saveAll();
+}
+function _assignEmpShift(dateStr, empId, shiftId) {
+  const ds = getDaySchedule(dateStr);
+  ds[shiftId] = ds[shiftId] || [];
+  if (!ds[shiftId].some((id) => Number(id) === Number(empId))) {
+    ds[shiftId].push(Number(empId));
+  }
 }
 
 /* ── CSS injected once ───────────────────────────────────────── */
@@ -869,7 +876,7 @@ function restoreSelectionUI() {
 function applyShiftToSelected(shiftId) {
   selectedCells.forEach((key) => {
     const [date, empId] = key.split("|");
-    _toggleEmpShift(date, empId, shiftId);
+    _assignEmpShift(date, empId, shiftId);
   });
 
   saveAll();
@@ -920,11 +927,12 @@ function pasteSelection() {
     const ds = getDaySchedule(date);
     shifts.forEach((s) => {
       if ((ds[s.id] || []).includes(Number(emp))) {
-        _toggleEmpShift(targetDate, targetEmp, s.id);
+        _assignEmpShift(targetDate, targetEmp, s.id);
       }
     });
   });
 
+  saveAll();
   renderAll();
 }
 
@@ -1064,7 +1072,7 @@ function openBatchAssignModal() {
 
   const shiftSel = document.getElementById("batch-shift");
   shiftSel.innerHTML = shifts
-    .map((s) => `<option value="${s.id}">${s.name}</option>`)
+    .map((s) => `<option value="${escapeHTML(s.id)}">${escapeHTML(s.name)}</option>`)
     .join("");
 
   document.getElementById("batch-note").value = "";

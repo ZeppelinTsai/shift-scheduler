@@ -384,6 +384,8 @@ async function saveScheduleToBackend() {
       holidays,
       leaves,
       schedule,
+      dailyDemands,
+      scheduleNotes: typeof scheduleNotes !== "undefined" ? scheduleNotes : {},
     },
   };
 
@@ -429,6 +431,15 @@ async function loadScheduleFromBackend() {
   if (data.holidays) holidays = data.holidays;
   if (data.leaves) leaves = data.leaves;
   if (data.schedule) schedule = data.schedule;
+  if (data.dailyDemands) dailyDemands = data.dailyDemands;
+  if (
+    data.scheduleNotes &&
+    typeof scheduleNotes !== "undefined" &&
+    typeof saveNotes === "function"
+  ) {
+    scheduleNotes = data.scheduleNotes;
+    saveNotes();
+  }
 
   saveAll();
   renderAll();

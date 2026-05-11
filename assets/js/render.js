@@ -13,6 +13,18 @@ function renderAll() {
   renderHolidayList();
   renderLeaveList();
 }
+function escapeHTML(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+function nextShiftId() {
+  const maxId = shifts.reduce((max, s) => Math.max(max, Number(s.id) || 0), -1);
+  return maxId + 1;
+}
 function renderMonthGrid(id, compact) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -60,9 +72,9 @@ function renderMonthGrid(id, compact) {
 
       row.innerHTML = `
         <span class="shift-name" style="color:${s.color || "#3b82f6"};background:${hexToRgba(s.color || "#3b82f6", 0.12)};border:1px solid ${hexToRgba(s.color || "#3b82f6", 0.35)};border:1px solid ${hexToRgba(s.color, 0.35)};padding:2px 8px;border-radius:8px;">
-          ${s.name}
+          ${escapeHTML(s.name)}
         </span>
-        <span class="shift-people">${assigned.length}/${required} · ${names}</span>
+        <span class="shift-people">${assigned.length}/${required} · ${escapeHTML(names)}</span>
         `;
       div.appendChild(row);
     });
@@ -120,7 +132,7 @@ function renderStaff() {
       )
       .join("");
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td><div class="emp-cell"><div class="avatar">${s.name[0] || "?"}</div><div><div class="emp-name">${s.name}</div><div class="emp-role">ID ${s.id}</div></div></div></td><td><input value="${s.role || ""}" onchange="staff[${i}].role=this.value;saveAll();renderAll()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><select onchange="staff[${i}].roleGroup=this.value;saveAll();renderAll()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px">${roleOptions}</select> ${!isPro() && i >= FREE_LIMIT ? '<span class="pro-chip">Pro</span>' : ""}
+    tr.innerHTML = `<td><div class="emp-cell"><div class="avatar">${escapeHTML(s.name[0] || "?")}</div><div><div class="emp-name">${escapeHTML(s.name)}</div><div class="emp-role">ID ${escapeHTML(s.id)}</div></div></div></td><td><input value="${escapeHTML(s.role || "")}" onchange="staff[${i}].role=this.value;saveAll();renderAll()" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px"></td><td><select onchange="staff[${i}].roleGroup=this.value;saveAll();renderAll()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px">${roleOptions}</select> ${!isPro() && i >= FREE_LIMIT ? '<span class="pro-chip">Pro</span>' : ""}
 
 ${
   isPro() || i < FREE_LIMIT
@@ -140,7 +152,7 @@ function renderShifts() {
 
     tr.innerHTML = `
 <td>
-  <input value="${s.name}"
+  <input value="${escapeHTML(s.name)}"
     onchange="shifts[${i}].name=this.value;saveAll();renderAll()"
     style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px">
 </td>
@@ -155,19 +167,19 @@ function renderShifts() {
 </td>
 
 <td>
-  <input type="time" value="${s.start}"
+  <input type="time" value="${escapeHTML(s.start)}"
     onchange="shifts[${i}].start=this.value;saveAll();renderAll()"
     style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px">
 </td>
 
 <td>
-  <input type="time" value="${s.end}"
+  <input type="time" value="${escapeHTML(s.end)}"
     onchange="shifts[${i}].end=this.value;saveAll();renderAll()"
     style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px">
 </td>
 
 <td>
-  <input type="number" min="0" value="${s.required}"
+  <input type="number" min="0" value="${escapeHTML(s.required)}"
     onchange="shifts[${i}].required=Number(this.value);saveAll();renderAll()"
     style="width:80px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px">
 </td>
@@ -256,7 +268,7 @@ function renderHolidayList() {
   entries.forEach(([date, name]) => {
     const item = document.createElement("div");
     item.className = "issue-item";
-    item.innerHTML = `<b>${date}</b> · ${name}<button class="mini-btn" style="float:right" onclick="delete holidays['${date}'];saveAll();renderAll();showToast(T.toast_removed)">${T.remove}</button>`;
+    item.innerHTML = `<b>${escapeHTML(date)}</b> · ${escapeHTML(name)}<button class="mini-btn" style="float:right" onclick="delete holidays['${escapeHTML(date)}'];saveAll();renderAll();showToast(T.toast_removed)">${escapeHTML(T.remove)}</button>`;
     box.appendChild(item);
   });
 }
@@ -264,7 +276,7 @@ function renderLeaveStaffOptions() {
   const sel = document.getElementById("leave-staff");
   if (!sel) return;
   sel.innerHTML = activeStaff()
-    .map((s) => `<option value="${s.id}">${s.name}</option>`)
+    .map((s) => `<option value="${escapeHTML(s.id)}">${escapeHTML(s.name)}</option>`)
     .join("");
 }
 function renderLeaveList() {
@@ -277,7 +289,7 @@ function renderLeaveList() {
   entries.forEach((l) => {
     const item = document.createElement("div");
     item.className = "issue-item";
-    item.innerHTML = `<b>${l.date}</b> · ${staffById(l.staffId)?.name || l.staffId} · ${l.reason || T.leave}<button class="mini-btn" style="float:right" onclick="removeLeave(${l.id})">${T.remove}</button>`;
+    item.innerHTML = `<b>${escapeHTML(l.date)}</b> · ${escapeHTML(staffById(l.staffId)?.name || l.staffId)} · ${escapeHTML(l.reason || T.leave)}<button class="mini-btn" style="float:right" onclick="removeLeave(${Number(l.id)})">${escapeHTML(T.remove)}</button>`;
     box.appendChild(item);
   });
 }
@@ -379,9 +391,10 @@ function removeStaff(id) {
 
 function addShift() {
   const idx = shifts.length;
+  const id = nextShiftId();
 
   shifts.push({
-    id: idx,
+    id,
     name: `${T.new_shift} ${idx + 1}`,
     start: "09:00",
     end: "17:00",
@@ -398,11 +411,11 @@ function openEditModal(date) {
   document.getElementById("edit-title").textContent = `${T.edit} ${date}`;
   document.getElementById("edit-sub").innerHTML = [
     isHoliday(date)
-      ? `<span class="holiday-chip">${holidays[date]}</span>`
+      ? `<span class="holiday-chip">${escapeHTML(holidays[date])}</span>`
       : "",
     ...leavesForDate(date).map(
       (l) =>
-        `<span class="leave-chip">${staffById(l.staffId)?.name || ""} ${T.leave}</span>`,
+        `<span class="leave-chip">${escapeHTML(staffById(l.staffId)?.name || "")} ${escapeHTML(T.leave)}</span>`,
     ),
   ].join(" ");
   const ds = getDaySchedule(date);
@@ -416,8 +429,8 @@ function openEditModal(date) {
     <div style="display:flex;justify-content:space-between;
     align-items:center;
     margin-bottom:8px">
-    <b class="${shiftClasses[s.id] || ""}">${s.id} ${s.start}-${s.end}</b>
-    <span class="hint">${T.required}</span>
+    <b class="${escapeHTML(shiftClasses[s.id] || "")}">${escapeHTML(s.id)} ${escapeHTML(s.start)}-${escapeHTML(s.end)}</b>
+    <span class="hint">${escapeHTML(T.required)}</span>
     </div>`;
     const reqInput = document.createElement("input");
     reqInput.type = "number";
@@ -435,11 +448,11 @@ function openEditModal(date) {
       select.style.cssText =
         "width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px;margin-bottom:7px";
       select.innerHTML =
-        `<option value="">${T.none}</option>` +
+        `<option value="">${escapeHTML(T.none)}</option>` +
         activeStaff()
           .map(
             (emp) =>
-              `<option value="${emp.id}" ${(ds[s.id] || [])[i] === emp.id ? "selected" : ""}>${emp.name}</option>`,
+              `<option value="${escapeHTML(emp.id)}" ${(ds[s.id] || [])[i] === emp.id ? "selected" : ""}>${escapeHTML(emp.name)}</option>`,
           )
           .join("");
       wrap.appendChild(select);
