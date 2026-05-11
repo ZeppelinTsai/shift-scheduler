@@ -440,7 +440,36 @@
                     以月份為單位檢查缺班、假日與個人休假衝突。
                   </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 6px">
+                <div class="schedule-toolbar-actions">
+                  <div class="schedule-mode-switch" aria-label="Schedule overview mode">
+                    <button
+                      type="button"
+                      class="schedule-mode-btn active"
+                      data-schedule-mode="month"
+                      data-i18n="schedule_mode_month"
+                      onclick="setScheduleViewMode('month')"
+                    >
+                      月
+                    </button>
+                    <button
+                      type="button"
+                      class="schedule-mode-btn"
+                      data-schedule-mode="week"
+                      data-i18n="schedule_mode_week"
+                      onclick="setScheduleViewMode('week')"
+                    >
+                      周
+                    </button>
+                    <button
+                      type="button"
+                      class="schedule-mode-btn"
+                      data-schedule-mode="day"
+                      data-i18n="schedule_mode_day"
+                      onclick="setScheduleViewMode('day')"
+                    >
+                      日
+                    </button>
+                  </div>
                   <button
                     class="btn btn-primary"
                     onclick="

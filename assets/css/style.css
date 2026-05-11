@@ -379,6 +379,15 @@ a {
   background: var(--border);
   border-top: 1px solid var(--border);
 }
+.month-grid.mode-day {
+  grid-template-columns: minmax(260px, 1fr);
+}
+.month-grid.mode-day .dow {
+  display: none;
+}
+.month-grid.mode-week {
+  grid-template-columns: repeat(7, minmax(132px, 1fr));
+}
 .dow {
   background: var(--surface2);
   padding: 10px;

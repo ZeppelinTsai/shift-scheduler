@@ -45,13 +45,16 @@ function renderMonthGrid(id, compact) {
   const el = document.getElementById(id);
   if (!el) return;
   el.innerHTML = "";
+  el.classList.toggle("mode-day", scheduleViewMode === "day");
+  el.classList.toggle("mode-week", scheduleViewMode === "week");
+  el.classList.toggle("mode-month", scheduleViewMode === "month");
   T.days.forEach((d) => {
     const h = document.createElement("div");
     h.className = "dow";
     h.textContent = d;
     el.appendChild(h);
   });
-  monthDates(false).forEach((cell) => {
+  overviewDates().forEach((cell) => {
     const div = document.createElement("div");
     div.className = "day-card" + (!cell ? " muted" : "");
     if (!cell) {
@@ -101,6 +104,21 @@ function renderMonthGrid(id, compact) {
     div.appendChild(btn);
     el.appendChild(div);
   });
+}
+function overviewDates() {
+  if (scheduleViewMode === "day") {
+    return [{ date: cursor, muted: false }];
+  }
+
+  if (scheduleViewMode === "week") {
+    const start = cursor.startOf("week");
+    return Array.from({ length: 7 }, (_, i) => ({
+      date: start.add(i, "day"),
+      muted: false,
+    }));
+  }
+
+  return monthDates(false);
 }
 function hexToRgba(hex = "#3b82f6", alpha = 1) {
   if (!hex || typeof hex !== "string") hex = "#3b82f6";
