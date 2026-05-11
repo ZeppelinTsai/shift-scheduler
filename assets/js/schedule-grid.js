@@ -837,6 +837,7 @@ let selectedCells = new Set();
 let isSelecting = false;
 let batchMode = false;
 let copiedCells = [];
+let copiedCellBlock = [];
 let scheduleNotes = JSON.parse(localStorage.getItem("LumShift_notes") || "{}");
 
 function saveNotes() {
@@ -848,6 +849,65 @@ function noteKey(date, empId) {
 }
 function _cellKey(td) {
   return `${td.dataset.date}|${td.dataset.empId}`;
+}
+function _splitCellKey(key) {
+  const [date, empId] = key.split("|");
+  return { date, empId: Number(empId) };
+}
+function _activeStaffIds() {
+  return activeStaff().map((emp) => Number(emp.id));
+}
+function _sortedCellKeys(keys) {
+  const staffIds = _activeStaffIds();
+  return [...keys].sort((a, b) => {
+    const ca = _splitCellKey(a);
+    const cb = _splitCellKey(b);
+    const dateCompare = ca.date.localeCompare(cb.date);
+    if (dateCompare !== 0) return dateCompare;
+    return staffIds.indexOf(ca.empId) - staffIds.indexOf(cb.empId);
+  });
+}
+function _cellSnapshot(date, empId) {
+  const ds = getDaySchedule(date);
+  const shiftIds = shifts
+    .filter((s) => (ds[s.id] || []).some((id) => Number(id) === Number(empId)))
+    .map((s) => s.id);
+  const leave = leaves.some(
+    (l) => l.date === date && Number(l.staffId) === Number(empId),
+  );
+  const note = scheduleNotes[noteKey(date, empId)] || "";
+
+  return { shiftIds, leave, note };
+}
+function _overwriteCellFromSnapshot(date, empId, source, serial = 0) {
+  const staffId = Number(empId);
+  const ds = getDaySchedule(date);
+
+  shifts.forEach((s) => {
+    ds[s.id] = (ds[s.id] || []).filter((id) => Number(id) !== staffId);
+  });
+
+  (source.shiftIds || []).forEach((shiftId) => {
+    ds[shiftId] = ds[shiftId] || [];
+    if (!ds[shiftId].some((id) => Number(id) === staffId)) {
+      ds[shiftId].push(staffId);
+    }
+  });
+
+  leaves = leaves.filter(
+    (l) => !(l.date === date && Number(l.staffId) === staffId),
+  );
+  if (source.leave) {
+    leaves.push({
+      id: dayjs().valueOf() + serial,
+      staffId,
+      date,
+      reason: T.leave || "Leave",
+    });
+  }
+
+  if (source.note) scheduleNotes[noteKey(date, staffId)] = source.note;
+  else delete scheduleNotes[noteKey(date, staffId)];
 }
 
 function _selectCell(td) {
@@ -969,64 +1029,54 @@ function clearSelectionUI() {
 }
 
 function copySelectedCells() {
-  copiedCells = [...selectedCells].map((key) => {
-    const [date, empId] = key.split("|");
-    const ds = getDaySchedule(date);
+  const keys = _sortedCellKeys(selectedCells);
+  if (!keys.length) return;
 
-    const shiftIds = shifts
-      .filter((s) => (ds[s.id] || []).includes(Number(empId)))
-      .map((s) => s.id);
+  const anchor = _splitCellKey(keys[0]);
+  const staffIds = _activeStaffIds();
+  const anchorStaffIndex = staffIds.indexOf(anchor.empId);
 
-    const leave = leaves.some(
-      (l) => l.date === date && Number(l.staffId) === Number(empId),
-    );
-
-    return { shiftIds, leave };
+  copiedCellBlock = keys.map((key) => {
+    const cell = _splitCellKey(key);
+    return {
+      ..._cellSnapshot(cell.date, cell.empId),
+      dateOffset: dayjs(cell.date).diff(dayjs(anchor.date), "day"),
+      empOffset: staffIds.indexOf(cell.empId) - anchorStaffIndex,
+    };
   });
+  copiedCells = copiedCellBlock;
 
-  showToast?.(`已複製 ${copiedCells.length} 格`);
+  showToast?.(`已複製 ${copiedCellBlock.length} 格`);
 }
 
 function pasteToSelectedCells() {
-  if (!copiedCells.length || !selectedCells.size) return;
+  if (!copiedCellBlock.length || !selectedCells.size) return;
 
-  const targets = [...selectedCells];
+  const targets = _sortedCellKeys(selectedCells);
+  const staffIds = _activeStaffIds();
 
-  targets.forEach((key, i) => {
-    const source = copiedCells[i % copiedCells.length];
-    const [date, empId] = key.split("|");
+  if (targets.length === 1 && copiedCellBlock.length > 1) {
+    const anchor = _splitCellKey(targets[0]);
+    const anchorStaffIndex = staffIds.indexOf(anchor.empId);
 
-    // 先清掉原本班次
-    shifts.forEach((s) => {
-      const ds = getDaySchedule(date);
-      ds[s.id] = (ds[s.id] || []).filter((id) => Number(id) !== Number(empId));
+    copiedCellBlock.forEach((source, i) => {
+      const targetStaffId = staffIds[anchorStaffIndex + source.empOffset];
+      if (targetStaffId === undefined) return;
+
+      const targetDate = ymd(dayjs(anchor.date).add(source.dateOffset, "day"));
+      _overwriteCellFromSnapshot(targetDate, targetStaffId, source, i);
     });
-
-    // 貼上班次
-    source.shiftIds.forEach((shiftId) => {
-      const ds = getDaySchedule(date);
-      ds[shiftId] = ds[shiftId] || [];
-      if (!ds[shiftId].includes(Number(empId))) {
-        ds[shiftId].push(Number(empId));
-      }
+  } else {
+    targets.forEach((key, i) => {
+      const target = _splitCellKey(key);
+      const source = copiedCellBlock[i % copiedCellBlock.length];
+      _overwriteCellFromSnapshot(target.date, target.empId, source, i);
     });
-
-    // 貼上休假
-    leaves = leaves.filter(
-      (l) => !(l.date === date && Number(l.staffId) === Number(empId)),
-    );
-
-    if (source.leave) {
-      leaves.push({
-        id: dayjs().valueOf() + i,
-        staffId: Number(empId),
-        date,
-        reason: T.leave || "休假",
-      });
-    }
-  });
+  }
 
   saveAll();
+  saveNotes();
+  _clearSelection();
   renderAll();
 }
 
